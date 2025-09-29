@@ -1,0 +1,91 @@
+<!-- Render estático: el servidor sirve archivos tal cual -->
+<!-- Esta página usa la plantilla visual de base.html: copiamos su estructura mínima -->
+<!doctype html>
+<html lang="es">
+  <!-- Para simplificar el MVP, reusamos head de base.html (copiado arriba) -->
+  <!-- En producción, puedes incorporar un mini motor de plantillas si deseas -->
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>ProfeÁngeles · Inicio</title>
+    <link rel="icon" href="/public/favicon.ico"/>
+    <link rel="stylesheet" href="/styles/styles.css"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="/scripts/main.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="container nav">
+        <a class="brand" href="/">ProfeÁngeles</a>
+        <ul class="menu">
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/youtube.html">YouTube</a></li>
+          <li><a href="/about.html">Sobre / Clases</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Aprende Matemática con ejercicios claros y guiados</h1>
+          <p>Genera un ejercicio, mira su gráfico y agenda una clase personalizada.</p>
+          <a class="btn btn-whatsapp" target="_blank" rel="noopener"
+             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20una%20clase%20de%20matem%C3%A1tica.%20Vi%20tu%20web%20y%20me%20interesa%20agendar.%20Gracias!">
+            Escribir por WhatsApp
+          </a>
+        </div>
+        <img class="hero-img" alt="Ilustración matemática" src="/public/og-image.png"/>
+      </section>
+
+        <section class="card">
+        <h2>Generador de ejercicios de Matemáticas</h2>
+
+        <div class="filters">
+            <label>Tema:
+            <select id="tema"></select>
+            </label>
+            <label>Subtema:
+            <select id="subtema"></select>
+            </label>
+            <label>Tipo:
+            <select id="tipo"></select>
+            </label>
+        </div>
+
+        <div class="actions">
+            <button class="btn" id="btn-nuevo">Nuevo ejercicio</button>
+            <button class="btn btn-secondary" id="btn-mostrar">Mostrar respuesta</button>
+        </div>
+
+        <div class="math-block">
+            <h3>Enunciado</h3>
+            <div id="enunciado" class="mathjax"></div>
+        </div>
+
+
+        <div class="answer-grid">
+            <div class="math-block">
+                <h3>Solución</h3>
+                <div id="solucion" class="mathjax"></div>
+            </div>
+
+            <div class="chart-wrap">
+                <canvas id="grafico" height="260" class="chart"></canvas>
+            </div>
+        </div>
+       
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <small>© <span id="y"></span> ProfeÁngeles · <a href="https://www.linkedin.com/in/mplazadelosreyes/" target="_blank" rel="noopener">LinkedIn</a></small>
+      </div>
+      <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+    </footer>
+  </body>
+</html>

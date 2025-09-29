@@ -1,0 +1,137 @@
+let lastExercise = null;
+let chart = null;
+
+// === Opciones (extensible) ===
+const OPTIONS = {
+  "Álgebra": {
+    "Función cuadrática": [
+      { id: "analisis_completo", label: "Análisis completo (raíces, vértice, etc.)" }
+    ]
+  }
+};
+
+// === Utils ===
+function renderMath(latex, elId){
+  const el = document.getElementById(elId);
+  if (!el) return; // evita error si el elemento no existe
+  el.innerHTML = latex ? `$$${latex}$$` : "";
+  if (window.MathJax?.typesetPromise){
+    window.MathJax.typesetPromise([el]);
+  }
+}
+
+function buildApiUrl(){
+  const tema = document.getElementById('tema').value;
+  const subtema = document.getElementById('subtema').value;
+  const tipo = document.getElementById('tipo').value;
+
+  const url = new URL('http://localhost:5000/api/generate-exercise'); // en Vercel -> '/api/generate-exercise'
+  url.searchParams.set('topic', tema);
+  url.searchParams.set('subtopic', subtema);
+  url.searchParams.set('type', tipo);
+  return url.toString();
+}
+
+async function fetchEjercicio(){
+  const res = await fetch(buildApiUrl());
+  if(!res.ok) throw new Error('Error generando ejercicio');
+  return await res.json();
+}
+
+// === Acciones ===
+async function nuevoEjercicio(){
+  try{
+    const data = await fetchEjercicio();
+    lastExercise = data;
+
+    // ✅ mostrar enunciado del nuevo ejercicio
+    renderMath(data.latex_enunciado, 'enunciado');
+
+    // limpiar solución y gráfico anteriores
+    renderMath("", 'solucion');
+    if (chart){ chart.destroy(); chart = null; }
+  }catch(err){
+    alert(err.message);
+  }
+}
+
+
+async function mostrarRespuesta(){
+  try{
+    if(!lastExercise){
+      lastExercise = await fetchEjercicio();
+      // renderMath(lastExercise.latex_enunciado, 'enunciado'); // opcional si vuelves a mostrar enunciado
+    }
+    renderMath(lastExercise.latex_solucion, 'solucion');
+    dibujarGrafico(lastExercise);
+  }catch(err){
+    alert(err.message);
+  }
+}
+
+function dibujarGrafico(data){
+  const canvas = document.getElementById('grafico');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const { x_min, x_max, step } = data.graph;
+  const { coeffs } = data;
+
+  const xs = [];
+  const ys = [];
+  for(let x = x_min; x <= x_max; x += step){
+    xs.push(Number(x.toFixed(2)));
+    ys.push(coeffs.a*x*x + coeffs.b*x + coeffs.c);
+  }
+
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: xs,
+      datasets: [{ label: 'y = ax² + bx + c', data: ys }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { title:{display:true,text:'x'} },
+        y: { title:{display:true,text:'y'} }
+      }
+    }
+  });
+}
+
+// === Filtros ===
+function initFilters(){
+  const temaSel = document.getElementById('tema');
+  const subtemaSel = document.getElementById('subtema');
+  const tipoSel = document.getElementById('tipo');
+
+  temaSel.innerHTML = Object.keys(OPTIONS).map(t => `<option value="${t}">${t}</option>`).join('');
+
+  function refreshSubtemas(){
+    const t = temaSel.value;
+    const subs = Object.keys(OPTIONS[t] || {});
+    subtemaSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+    refreshTipos();
+  }
+
+  function refreshTipos(){
+    const t = temaSel.value;
+    const s = subtemaSel.value;
+    const tipos = (OPTIONS[t] && OPTIONS[t][s]) || [];
+    tipoSel.innerHTML = tipos.map(opt => `<option value="${opt.id}">${opt.label}</option>`).join('');
+  }
+
+  temaSel.addEventListener('change', refreshSubtemas);
+  subtemaSel.addEventListener('change', refreshTipos);
+
+  refreshSubtemas();
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  initFilters();
+  document.getElementById('btn-nuevo').addEventListener('click', nuevoEjercicio);
+  document.getElementById('btn-mostrar').addEventListener('click', mostrarRespuesta);
+});
