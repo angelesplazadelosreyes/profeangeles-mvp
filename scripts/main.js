@@ -25,12 +25,18 @@ function buildApiUrl(){
   const subtema = document.getElementById('subtema').value;
   const tipo = document.getElementById('tipo').value;
 
-  const url = new URL('http://localhost:5000/api/generate-exercise'); // en Vercel -> '/api/generate-exercise'
+  // Local: usa Flask en tu PC. Producción: usa Render.
+  const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  const PROD_API = 'https://profeangeles-mvp.onrender.com'; // ← tu URL de Render
+  const base = isLocal ? 'http://localhost:5000' : PROD_API;
+
+  const url = new URL('/api/generate-exercise', base);
   url.searchParams.set('topic', tema);
   url.searchParams.set('subtopic', subtema);
   url.searchParams.set('type', tipo);
   return url.toString();
 }
+
 
 async function fetchEjercicio(){
   const res = await fetch(buildApiUrl());
