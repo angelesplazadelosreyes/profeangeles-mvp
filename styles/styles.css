@@ -104,3 +104,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 /* Ejercicios: colores de botones */
 #btn-nuevo{ background: var(--btn-new); }     /* #235EDF */
 #btn-mostrar{ background: var(--btn-answer); }/* #8A16E5 */
+
+.site-footer a{ text-decoration:none }
+.site-footer a:hover{ text-decoration:underline }
