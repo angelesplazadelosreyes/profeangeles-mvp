@@ -3,31 +3,43 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>ProfeÁngeles · YouTube</title>
-  <link rel="stylesheet" href="/styles/styles.css"/>
+  <title>Profe Ángeles · Ejercicios</title>
+  <link rel="icon" href="./public/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/styles.css"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="./scripts/main.js" defer></script>
+
+  <meta property="og:title" content="ProfeÁngeles - Ejercicios" />
+  <meta property="og:description" content="Genera ejercicios y revisa soluciones guiadas." />
+  <meta property="og:image" content="./public/og-image.png" />
+  <meta property="og:type" content="website" />
 </head>
+
 <body>
 <header class="site-header">
   <nav class="container nav">
-    <a class="brand" href="/">ProfeÁngeles</a>
+    <a class="brand" href="./index.html">Profe Ángeles</a>
     <ul class="menu">
-      <li><a href="/">Inicio</a></li>
-      <li><a href="/youtube.html" class="active">YouTube</a></li>
-      <li><a href="/about.html">Sobre / Clases</a></li>
+      <li><a href="./index.html">Inicio</a></li>
+      <li><a href="./exercises.html" class="active">Ejercicios</a></li>
+      <li><a href="./about.html">Clases</a></li>
+      <li><button class="btn-login" disabled aria-disabled="true" title="Próximamente">Inicio sesión</button></li>
     </ul>
   </nav>
 </header>
 
 <main class="container">
-  <section class="card">
-    <h1>Mis playlists</h1>
-    <div class="video-grid">
-      <!-- Reemplaza el ID de playlist -->
-      <iframe class="yt" src="https://www.youtube.com/embed/videoseries?list=PLAAAAAAAAAAAA"
-              title="YouTube playlist" loading="lazy" allowfullscreen></iframe>
-    </div>
+  <section>
+    <h1>Ejercicios</h1>
+    <p>Pronto moveremos aquí el generador (cuadráticas y más). Por ahora es un marcador.</p>
   </section>
 </main>
+
 
 <footer class="site-footer">
   <div class="container footer-grid">
