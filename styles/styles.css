@@ -107,3 +107,14 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 
 .site-footer a{ text-decoration:none }
 .site-footer a:hover{ text-decoration:underline }
+
+/* Footer: iconos */
+.socials{ display:flex; gap:.75rem; }
+.socials a{ display:inline-flex; padding:.25rem; border-radius:.5rem; color:var(--text); opacity:.85; }
+.socials a:hover{ opacity:1; background:#F3F4F6; }      /* micro realce al hover */
+.socials svg{ width:22px; height:22px; display:block; } /* tamaño consistente */
+
+/* Hover con color de marca de cada red (monocromo elegante) */
+.socials a.linkedin:hover{ color:#0A66C2; }
+.socials a.instagram:hover{ color:#E4405F; }
+.socials a.whatsapp:hover{ color:#25D366; }
