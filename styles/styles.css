@@ -4,15 +4,20 @@
   --bg:#F3F4F6; /* gris claro */
   --text:#111827; /* gris oscuro */
   --muted:#6B7280;
+  --brand:#1B17E6; /* color de "ProfeÁngeles" */
+  --btn-new:#235EDF; /* se usará en "Nuevo ejercicio" */
+  --btn-answer:#8A16E5; /* se usará en "Mostrar respuesta" */
 }
+
+html{scroll-behavior:smooth}
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
 .container{max-width:1100px;margin:0 auto;padding:0 1rem}
 .site-header{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10}
 .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-.brand{font-family:Montserrat,Inter,sans-serif;font-weight:800;text-decoration:none;color:var(--text)}
-.menu{list-style:none;display:flex;gap:.75rem;margin:0;padding:0}
+.brand{font-family:Montserrat,Inter,sans-serif;font-weight:800;text-decoration:none;color:var(--brand)}
+.menu{list-style:none;display:flex;align-items:center;gap:.75rem;margin:0;padding:0}
 .menu a{text-decoration:none;color:var(--text);padding:.5rem .75rem;border-radius:.5rem}
 .menu a.active,.menu a:hover{background:#eef2ff;color:#1e40af}
 .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:1.25rem;align-items:center;padding:2rem 0}
@@ -64,3 +69,32 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 
 /* Un poco más de respiro */
 .math-block h3{ margin:0 0 .5rem; }
+
+/* Botón de "Inicio sesión" deshabilitado en la barra */
+.btn-login{
+  padding:.5rem .75rem;
+  border:1px solid #e5e7eb;
+  border-radius:.5rem;
+  background:#f9fafb;
+  font-weight:700;
+}
+.btn-login[disabled]{
+  opacity:.6;
+  cursor:not-allowed;
+}
+.btn-login:focus-visible{
+  outline:2px solid #111;
+  outline-offset:2px;
+}
+
+/* Asegura que cada <li> centre su contenido verticalmente */
+.menu > li{ display:flex; align-items:center; }
+
+/* Igualar alineación interna de enlaces y botón */
+.menu a,
+.btn-login{
+  display:inline-flex;
+  align-items:center;
+  line-height:1; /* evita “bote” por line-height heredado */
+}
+
