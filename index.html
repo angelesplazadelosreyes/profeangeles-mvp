@@ -11,9 +11,6 @@
     <link rel="icon" href="./public/favicon.ico"/>
     <link rel="stylesheet" href="./styles/styles.css"/>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="./scripts/main.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -44,44 +41,6 @@
         <img class="hero-img" alt="Ilustración matemática" src="./public/og-image.png"/>
       </section>
 
-        <section id="ejercicios" class="card">
-        <h2>Generador de ejercicios de Matemáticas</h2>
-
-        <div class="filters">
-            <label>Tema:
-            <select id="tema"></select>
-            </label>
-            <label>Subtema:
-            <select id="subtema"></select>
-            </label>
-            <label>Tipo:
-            <select id="tipo"></select>
-            </label>
-        </div>
-
-        <div class="actions">
-            <button class="btn" id="btn-nuevo">Nuevo ejercicio</button>
-            <button class="btn btn-secondary" id="btn-mostrar">Mostrar respuesta</button>
-        </div>
-
-        <div class="math-block">
-            <h3>Enunciado</h3>
-            <div id="enunciado" class="mathjax"></div>
-        </div>
-
-
-        <div class="answer-grid">
-            <div class="math-block">
-                <h3>Solución</h3>
-                <div id="solucion" class="mathjax"></div>
-            </div>
-
-            <div class="chart-wrap">
-                <canvas id="grafico" height="260" class="chart"></canvas>
-            </div>
-        </div>
-       
-        </section>
 
     </main>
 
