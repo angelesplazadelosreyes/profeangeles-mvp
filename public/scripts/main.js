@@ -38,11 +38,30 @@ function buildApiUrl(){
 }
 
 
+// Helper: reintenta ante 503 / errores de red (cold start Render)
+async function fetchWithRetry(url, opts = {}, retries = 2, delayMs = 1500) {
+  try {
+    const res = await fetch(url, opts);
+    if (res.status === 503 && retries > 0) {
+      await new Promise(r => setTimeout(r, delayMs));
+      return fetchWithRetry(url, opts, retries - 1, delayMs * 1.5);
+    }
+    return res;
+  } catch (err) {
+    if (retries > 0) {
+      await new Promise(r => setTimeout(r, delayMs));
+      return fetchWithRetry(url, opts, retries - 1, delayMs * 1.5);
+    }
+    throw err;
+  }
+}
+
 async function fetchEjercicio(){
-  const res = await fetch(buildApiUrl());
-  if(!res.ok) throw new Error('Error generando ejercicio');
+  const res = await fetchWithRetry(buildApiUrl(), { method: 'GET' }, 2, 1200);
+  if(!res.ok) throw new Error(`Error API (${res.status})`);
   return await res.json();
 }
+
 
 // === Acciones ===
 async function nuevoEjercicio(){
