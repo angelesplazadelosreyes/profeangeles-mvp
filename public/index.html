@@ -1,0 +1,79 @@
+<!-- Render estático: el servidor sirve archivos tal cual -->
+<!-- Esta página usa la plantilla visual de base.html: copiamos su estructura mínima -->
+<!doctype html>
+<html lang="es">
+  <!-- Para simplificar el MVP, reusamos head de base.html (copiado arriba) -->
+  <!-- En producción, puedes incorporar un mini motor de plantillas si deseas -->
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Profe Ángeles · Inicio</title>
+    <link rel="icon" href="./public/favicon.ico"/>
+    <link rel="stylesheet" href="./styles/styles.css"/>
+
+  </head>
+  <body>
+    <header class="site-header">
+
+      <nav class="container nav">
+        <a class="brand" href="./index.html">Profe Ángeles</a>
+        <ul class="menu">
+          <li><a href="./index.html" class="active">Inicio</a></li>
+          <li><a href="./exercises.html">Ejercicios</a></li>
+          <li><a href="./about.html">Clases</a></li>
+          <li><button class="btn-login" disabled aria-disabled="true" title="Próximamente">Inicio sesión</button></li>
+        </ul>
+      </nav>
+
+
+    </header>
+
+    <main class="container">
+      <section id="inicio" class="hero">
+        <div class="hero-copy">
+          <h1>Aprende Matemática con ejercicios claros y guiados</h1>
+          <p>Genera un ejercicio, mira su gráfico y agenda una clase personalizada.</p>
+          <a class="btn btn-whatsapp" target="_blank" rel="noopener"
+             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20una%20clase%20de%20matem%C3%A1tica.%20Vi%20tu%20web%20y%20me%20interesa%20agendar.%20Gracias!">
+            Escribir por WhatsApp
+          </a>
+        </div>
+        <img class="hero-img" alt="Ilustración matemática" src="./public/og-image.png"/>
+      </section>
+
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <small>© <span id="y"></span> Profe Ángeles</small>
+
+        <nav class="socials" aria-label="Redes sociales">
+          <!-- LinkedIn -->
+          <a class="linkedin" href="https://www.linkedin.com/in/mplazadelosreyes/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+              <path fill="currentColor" d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8.5h5V23H0V8.5zM8 8.5h4.8v2h.07c.67-1.27 2.3-2.6 4.73-2.6C21.6 7.9 24 10 24 14.3V23h-5v-7.2c0-1.72-.03-3.93-2.4-3.93-2.4 0-2.77 1.87-2.77 3.8V23H8V8.5z"/>
+            </svg>
+          </a>
+
+          <!-- Instagram (monocromo elegante) -->
+          <a class="instagram" href="https://www.instagram.com/profeangeles.cl/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+              <path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM18 6.75a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 18 6.75z"/>
+            </svg>
+          </a>
+
+          <!-- WhatsApp -->
+          <a class="whatsapp" href="https://wa.me/56971312255" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+              <path fill="currentColor" d="M20.52 3.48A11.94 11.94 0 0 0 12.06 0 12 12 0 0 0 2.3 17.74L0 24l6.42-2.24A12 12 0 1 0 20.52 3.48zM12.06 22a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.82 1.34 1.31-3.93-.23-.4a10 10 0 1 1 8.14 4.58zM17.2 14.3c-.3-.15-1.77-.87-2.05-.97s-.48-.15-.68.15-.78.97-.95 1.17-.35.22-.65.07a8.13 8.13 0 0 1-2.39-1.48 9 9 0 0 1-1.67-2.07c-.17-.3 0-.46.13-.62s.3-.35.45-.53a2 2 0 0 0 .3-.5.55.55 0 0 0 0-.52c0-.15-.68-1.64-.93-2.24s-.48-.52-.68-.53h-.58a1.1 1.1 0 0 0-.78.36A3.28 3.28 0 0 0 5 7.59a5.7 5.7 0 0 0 1.2 3.03 13 13 0 0 0 4.96 4.5 17.3 17.3 0 0 0 1.77.65 4.25 4.25 0 0 0 2 .12 3.36 3.36 0 0 0 2.2-1.56 2.74 2.74 0 0 0 .2-1.56c-.1-.16-.26-.25-.54-.37z"/>
+            </svg>
+          </a>
+        </nav>
+      </div>
+
+      <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+    </footer>
+    
+  </body>
+</html>
