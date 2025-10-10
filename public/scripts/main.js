@@ -27,7 +27,7 @@ function buildApiUrl(){
 
   // Local: usa Flask en tu PC. Producción: usa Render.
   const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  const PROD_API = 'https://profeangeles-mvp.onrender.com'; // ← tu URL de Render
+  const PROD_API = 'https://profeangeles-mvp.onrender.com'; // ← URL de Render
   const base = isLocal ? 'http://localhost:5000' : PROD_API;
 
   const url = new URL('/api/generate-exercise', base);
@@ -37,31 +37,42 @@ function buildApiUrl(){
   return url.toString();
 }
 
+// --- Warmup + backoff para Render (evita 503 en instancia free) ---
+async function warmAndFetch(apiUrl) {
+  const ROOT = 'https://profeangeles-mvp.onrender.com/';
 
-// Helper: reintenta ante 503 / errores de red (cold start Render)
-async function fetchWithRetry(url, opts = {}, retries = 2, delayMs = 1500) {
-  try {
-    const res = await fetch(url, opts);
-    if (res.status === 503 && retries > 0) {
-      await new Promise(r => setTimeout(r, delayMs));
-      return fetchWithRetry(url, opts, retries - 1, delayMs * 1.5);
-    }
-    return res;
-  } catch (err) {
-    if (retries > 0) {
-      await new Promise(r => setTimeout(r, delayMs));
-      return fetchWithRetry(url, opts, retries - 1, delayMs * 1.5);
-    }
-    throw err;
+  // 1) “Despertar” la instancia: varios pings con backoff corto
+  let wait = 1500;
+  for (let i = 0; i < 4; i++) { // ~1.5s + 2.5s + 4s + 6.5s ≈ 14.5s
+    try {
+      const r = await fetch(ROOT, { method: 'GET' });
+      if (r.ok) break; // ya respondió algo
+    } catch (_) { /* ignorar */ }
+    await new Promise(r => setTimeout(r, wait));
+    wait = Math.round(wait * 1.7);
   }
+
+  // 2) Llamada real con reintentos y backoff largo
+  wait = 1800;
+  for (let i = 0; i < 5; i++) { // ~1.8s + 3s + 5s + 8.5s + 14s ≈ 32s
+    try {
+      const res = await fetch(apiUrl, { method: 'GET' });
+      if (res.ok) return res;               // éxito
+      if (res.status !== 503) return res;   // otros códigos -> devolver
+    } catch (_) { /* error de red: reintentar */ }
+    await new Promise(r => setTimeout(r, wait));
+    wait = Math.round(wait * 1.7);
+  }
+
+  // Intento final
+  return fetch(apiUrl, { method: 'GET' });
 }
 
 async function fetchEjercicio(){
-  const res = await fetchWithRetry(buildApiUrl(), { method: 'GET' }, 2, 1200);
+  const res = await warmAndFetch(buildApiUrl());
   if(!res.ok) throw new Error(`Error API (${res.status})`);
   return await res.json();
 }
-
 
 // === Acciones ===
 async function nuevoEjercicio(){
@@ -76,10 +87,9 @@ async function nuevoEjercicio(){
     renderMath("", 'solucion');
     if (chart){ chart.destroy(); chart = null; }
   }catch(err){
-    alert(err.message);
+    alert(err.message || 'Failed to fetch');
   }
 }
-
 
 async function mostrarRespuesta(){
   try{
@@ -90,7 +100,7 @@ async function mostrarRespuesta(){
     renderMath(lastExercise.latex_solucion, 'solucion');
     dibujarGrafico(lastExercise);
   }catch(err){
-    alert(err.message);
+    alert(err.message || 'Failed to fetch');
   }
 }
 
