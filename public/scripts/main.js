@@ -26,9 +26,22 @@ function buildApiUrl(){
   const tipo = document.getElementById('tipo').value;
 
   // Local: usa Flask en tu PC. Producción: usa Render.
-  const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
   const PROD_API = 'https://profeangeles-mvp.onrender.com'; // ← URL de Render
-  const base = isLocal ? 'http://localhost:5000' : PROD_API;
+
+  // NUEVO: switch por querystring para previsualización local sin backend:
+  //   ?api=prod  -> fuerza Render
+  //   ?api=local -> fuerza localhost:5000
+  //   (sin parámetro) -> comportamiento habitual (auto)
+  const apiParam = new URLSearchParams(location.search).get('api');
+  let base;
+  if (apiParam === 'prod') {
+    base = PROD_API;
+  } else if (apiParam === 'local') {
+    base = 'http://localhost:5000';
+  } else {
+    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    base = isLocal ? 'http://localhost:5000' : PROD_API;
+  }
 
   const url = new URL('/api/generate-exercise', base);
   url.searchParams.set('topic', tema);
@@ -36,6 +49,7 @@ function buildApiUrl(){
   url.searchParams.set('type', tipo);
   return url.toString();
 }
+
 
 // --- Warmup + backoff para Render (evita 503 en instancia free) ---
 async function warmAndFetch(apiUrl) {
