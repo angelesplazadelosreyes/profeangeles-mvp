@@ -1,76 +1,83 @@
+/* ===========================
+   Variables globales (tema)
+   =========================== */
 :root{
-  --primary:#2563EB; /* azul */
-  --secondary:#10B981; /* verde */
-  --bg:#F3F4F6; /* gris claro */
-  --text:#111827; /* gris oscuro */
-  --muted:#6B7280;
-  --brand:#1B17E6; /* color de "ProfeÁngeles" */
-  --btn-new:#235EDF; /* se usará en "Nuevo ejercicio" */
-  --btn-answer:#8A16E5; /* se usará en "Mostrar respuesta" */
+  --primary:#2563EB;         /* azul primario */
+  --secondary:#10B981;       /* verde acento */
+  --bg:#F3F4F6;              /* gris claro de fondo */
+  --text:#111827;            /* texto principal */
+  --muted:#6B7280;           /* textos secundarios */
+
+  /* Marca (wordmark) */
+  --brand-blue:#2B6CB0;      /* azul que armoniza con los teals */
+  --brand-blue-hover:#1E4E8C;
 }
 
-html{scroll-behavior:smooth}
-
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
-.container{max-width:1100px;margin:0 auto;padding:0 1rem}
-.site-header{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10}
-.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-.brand{font-family:Montserrat,Inter,sans-serif;font-weight:800;text-decoration:none;color:var(--brand)}
-.menu{list-style:none;display:flex;align-items:center;gap:.75rem;margin:0;padding:0}
-.menu a{text-decoration:none;color:var(--text);padding:.5rem .75rem;border-radius:.5rem}
-.menu a.active,.menu a:hover{background:#eef2ff;color:#1e40af}
-.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:1.25rem;align-items:center;padding:2rem 0}
-.hero-copy h1{font-family:Montserrat,Inter,sans-serif;font-size:2rem;line-height:1.2;margin:.25rem 0 1rem}
-.hero-img{width:100%;max-width:460px;justify-self:end;border-radius:1rem;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-.btn{background:var(--primary);color:#fff;border:none;padding:.75rem 1rem;border-radius:.75rem;font-weight:600;cursor:pointer}
-.btn:hover{filter:brightness(.95)}
-.btn-secondary{background:#374151}
-.btn-whatsapp{background:#25D366}
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:1rem;padding:1rem;margin:1rem 0}
-.actions{display:flex;gap:.75rem;margin:.5rem 0 1rem}
-.math-block{margin:1rem 0}
-.chart{background:#fff;border:1px dashed #e5e7eb;border-radius:.5rem;padding:.5rem}
-.site-footer{margin-top:2rem;padding:1.25rem 0;border-top:1px solid #e5e7eb;background:#fff}
-.footer-grid{display:flex;justify-content:space-between;align-items:center}
-.video-grid{display:grid;grid-template-columns:1fr;gap:1rem}
-.yt{width:100%;aspect-ratio:16/9;border:0;border-radius:.75rem;box-shadow:0 6px 24px rgba(0,0,0,.08)}
-@media (max-width:900px){.hero{grid-template-columns:1fr}.hero-img{justify-self:center}}
-
-.filters{display:flex;gap:1rem;flex-wrap:wrap;margin:.25rem 0 1rem}
-.filters label{display:flex;flex-direction:column;font-size:.9rem;color:var(--muted)}
-.filters select{min-width:180px;padding:.5rem;border:1px solid #e5e7eb;border-radius:.5rem;background:#fff;color:var(--text)}
-
-.answer-grid{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:1rem;
-  align-items:start;
+/* ===========================
+   Reseteo & base
+   =========================== */
+html{ scroll-behavior:smooth; }
+*{ box-sizing:border-box; }
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
-.chart-wrap{min-height:260px}
-@media (max-width:900px){
-  .answer-grid{grid-template-columns:1fr}
+.container{ max-width:1100px; margin:0 auto; padding:0 1rem; }
+
+/* ===========================
+   Header / Navegación
+   =========================== */
+.site-header{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:64px;
 }
 
-/* Alinear solución (izq) y gráfico (der) arriba */
-.answer-grid{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:1rem;
-  align-items:start;    /* grid: inicio vertical */
-  justify-items:start;  /* alinear contenido a la izquierda */
+/* Marca: "{A} Profe Ángeles" (texto simple) */
+.brand{
+  color:var(--brand-blue);
+  font-family: Montserrat, Inter, system-ui, sans-serif;
+  font-weight:500;          /* sin negrita */
+  font-size:1.1rem;         /* un toque más grande */
+  letter-spacing:.2px;
+  text-decoration:none;
 }
-.math-block{ align-self:start; }
-.chart-wrap{ align-self:start; min-height:260px }
+.brand:hover{ color:var(--brand-blue-hover); }
 
-/* Forzar alineación izquierda del MathJax */
-.mjx-container{ text-align:left !important; }
-.mathjax{ text-align:left; }
+/* Menú */
+.menu{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  margin:0;
+  padding:0;
+}
+.menu > li{ display:flex; align-items:center; }  /* centra verticalmente */
+.menu a{
+  display:inline-flex;
+  align-items:center;
+  line-height:1;
+  text-decoration:none;
+  color:var(--text);
+  padding:.5rem .75rem;
+  border-radius:.5rem;
+}
+.menu a.active,
+.menu a:hover{ background:#eef2ff; color:#1e40af; }
 
-/* Un poco más de respiro */
-.math-block h3{ margin:0 0 .5rem; }
-
-/* Botón de "Inicio sesión" deshabilitado en la barra */
+/* Botón “Inicio sesión” (deshabilitado por ahora) */
 .btn-login{
   padding:.5rem .75rem;
   border:1px solid #e5e7eb;
@@ -78,43 +85,142 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
   background:#f9fafb;
   font-weight:700;
 }
-.btn-login[disabled]{
-  opacity:.6;
-  cursor:not-allowed;
-}
-.btn-login:focus-visible{
-  outline:2px solid #111;
-  outline-offset:2px;
-}
+.btn-login[disabled]{ opacity:.6; cursor:not-allowed; }
+.btn-login:focus-visible{ outline:2px solid #111; outline-offset:2px; }
 
-/* Asegura que cada <li> centre su contenido verticalmente */
-.menu > li{ display:flex; align-items:center; }
-
-/* Igualar alineación interna de enlaces y botón */
-.menu a,
-.btn-login{
-  display:inline-flex;
+/* ===========================
+   Hero (pág. inicio)
+   =========================== */
+.hero{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:1.25rem;
   align-items:center;
-  line-height:1; /* evita “bote” por line-height heredado */
+  padding:2rem 0;
+}
+.hero-copy h1{
+  font-family: Montserrat, Inter, sans-serif;
+  font-size:2rem;
+  line-height:1.2;
+  margin:.25rem 0 1rem;
+}
+.hero-img{
+  width:100%;
+  max-width:460px;
+  justify-self:end;
+  border-radius:1rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+@media (max-width:900px){
+  .hero{ grid-template-columns:1fr; }
+  .hero-img{ justify-self:center; }
 }
 
-/* Evitar que el header sticky tape el título al navegar por #anclas */
-#inicio, #ejercicios, #clases{ scroll-margin-top: 80px; }
+/* ===========================
+   Componentes base
+   =========================== */
+.btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  padding:.75rem 1rem;
+  border-radius:.75rem;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn:hover{ filter:brightness(.95); }
+.btn-secondary{ background:#374151; }
+.btn-whatsapp{ background:#25D366; }
 
-/* Ejercicios: colores de botones */
-#btn-nuevo{ background: var(--btn-new); }     /* #235EDF */
-#btn-mostrar{ background: var(--btn-answer); }/* #8A16E5 */
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:1rem;
+  padding:1rem;
+  margin:1rem 0;
+}
 
-.site-footer a{ text-decoration:none }
-.site-footer a:hover{ text-decoration:underline }
+/* Filtros (Ejercicios) */
+.filters{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin:.25rem 0 1rem;
+}
+.filters label{
+  display:flex;
+  flex-direction:column;
+  font-size:.9rem;
+  color:var(--muted);
+}
+.filters select{
+  min-width:180px;
+  padding:.5rem;
+  border:1px solid #e5e7eb;
+  border-radius:.5rem;
+  background:#fff;
+  color:var(--text);
+}
 
-/* Footer: iconos */
+/* Acciones (botones) */
+.actions{ display:flex; gap:.75rem; margin:.5rem 0 1rem; }
+
+/* Bloques matemáticos / gráfico */
+.math-block{ margin:1rem 0; }
+.chart{
+  background:#fff;
+  border:1px dashed #e5e7eb;
+  border-radius:.5rem;
+  padding:.5rem;
+}
+
+/* Grid enunciado/solución/gráfico (Ejercicios) — versión única */
+.answer-grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:1rem;
+  align-items:start;
+  justify-items:start;
+}
+.chart-wrap{ align-self:start; min-height:260px; }
+@media (max-width:900px){
+  .answer-grid{ grid-template-columns:1fr; }
+}
+
+/* Alineación de MathJax a la izquierda */
+.mjx-container{ text-align:left !important; }
+.mathjax{ text-align:left; }
+
+/* Margen de scroll para anclas bajo header sticky */
+#inicio, #ejercicios, #clases{ scroll-margin-top:80px; }
+
+/* ===========================
+   Footer
+   =========================== */
+.site-footer{
+  margin-top:2rem;
+  padding:1.25rem 0;
+  border-top:1px solid #e5e7eb;
+  background:#fff;
+}
+.footer-grid{ display:flex; justify-content:space-between; align-items:center; }
+
+.site-footer a{ text-decoration:none; }
+.site-footer a:hover{ text-decoration:underline; }
+
+/* Redes */
 .socials{ display:flex; gap:.75rem; }
-.socials a{ display:inline-flex; padding:.25rem; border-radius:.5rem; color:var(--text); opacity:.85; }
-.socials a:hover{ opacity:1; background:#F3F4F6; }      /* micro realce al hover */
-.socials svg{ width:22px; height:22px; display:block; } /* tamaño consistente */
+.socials a{
+  display:inline-flex;
+  padding:.25rem;
+  border-radius:.5rem;
+  color:var(--text);
+  opacity:.85;
+}
+.socials a:hover{ opacity:1; background:#F3F4F6; }
+.socials svg{ width:22px; height:22px; display:block; }
 
-/* Hover con color de marca de cada red (monocromo elegante) */
+/* Hover monocromo con color de marca */
 .socials a.linkedin:hover{ color:#0A66C2; }
 .socials a.instagram:hover{ color:#E4405F; }
 .socials a.whatsapp:hover{ color:#25D366; }
