@@ -42,30 +42,29 @@
     <!-- Sidebar -->
     <aside class="sidebar" aria-label="Materias">
       <div class="sidebar-header">MATERIAS</div>
-      <ul class="subjects">
-        <!-- Placeholder SVG: cuadrado amarillo -->
-        <li class="subjects__item" tabindex="0" aria-current="page">
+      <ul class="subjects" id="subjects">
+        <li class="subjects__item" tabindex="0" aria-current="page" data-subject="Matemáticas">
           <span class="subjects__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
           </span>
           <span class="subjects__label">Matemáticas</span>
         </li>
 
-        <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente">
+        <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente" data-subject="Química">
           <span class="subjects__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
           </span>
           <span class="subjects__label">Química <span class="subjects__soon">(próximamente)</span></span>
         </li>
 
-        <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente">
+        <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente" data-subject="Biología">
           <span class="subjects__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
           </span>
           <span class="subjects__label">Biología <span class="subjects__soon">(próximamente)</span></span>
         </li>
 
-        <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente">
+        <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente" data-subject="Física">
           <span class="subjects__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
           </span>
@@ -73,6 +72,7 @@
         </li>
       </ul>
     </aside>
+
 
     <!-- Panel derecho -->
     <div class="panel">
