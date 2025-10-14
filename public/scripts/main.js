@@ -165,7 +165,44 @@ function initFilters(){
   refreshSubtemas();
 }
 
+// === Sidebar: estado activo + título dinámico ===
+function initSubjectsSidebar(){
+  const list = document.getElementById('subjects');
+  const titleEl = document.getElementById('exercise-title');
+  if (!list || !titleEl) return; // no hay sidebar/título en esta página
+
+  const items = Array.from(list.querySelectorAll('.subjects__item'));
+
+  function setActive(item){
+    // ignorar si es "próximamente"
+    if (item.getAttribute('aria-disabled') === 'true') return;
+
+    // quitar activo del resto
+    items.forEach(i => i.removeAttribute('aria-current'));
+    // marcar activo
+    item.setAttribute('aria-current', 'page');
+
+    // actualizar título "Generador de ejercicios de {Materia}"
+    const subject = item.getAttribute('data-subject') || 'Matemáticas';
+    titleEl.textContent = `Generador de ejercicios de ${subject}`;
+  }
+
+  function handleActivate(e){
+    // click o tecla Enter/Espacio
+    if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ')) return;
+    e.preventDefault();
+    setActive(e.currentTarget);
+  }
+
+  items.forEach(item => {
+    item.addEventListener('click', handleActivate);
+    item.addEventListener('keydown', handleActivate);
+  });
+}
+
+
 window.addEventListener('DOMContentLoaded', ()=>{
+  initSubjectsSidebar();
   initFilters();
   document.getElementById('btn-nuevo').addEventListener('click', nuevoEjercicio);
   document.getElementById('btn-mostrar').addEventListener('click', mostrarRespuesta);
