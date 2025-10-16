@@ -1,0 +1,148 @@
+/* === Tokens de la página Ejercicios === */
+:root{
+  --pa-sidebar-title: #216577; /* fondo "MATERIAS" */
+  --pa-sidebar: #358CA4;       /* columna de materias */
+  --pa-hover: #63B3D9;         /* hover item */
+  --pa-card-bg: #fff;
+  --pa-card-shadow: 0 8px 24px rgba(0,0,0,.08);
+  --pa-radius: 14px;
+}
+
+/* === Layout de dos columnas (sidebar + contenido) === */
+.exercises-layout{
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+@media (max-width: 900px){
+  .exercises-layout{
+    grid-template-columns: 1fr; /* sidebar arriba en mobile */
+  }
+}
+
+/* === Sidebar de materias === */
+.sidebar{
+  background: var(--pa-sidebar);
+  color: #fff;
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-card-shadow);
+  overflow: hidden; /* redondeado del header */
+}
+
+.sidebar-header{
+  background: var(--pa-sidebar-title);
+  padding: .75rem 1rem;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+.subjects{
+  list-style: none;
+  margin: 0;
+  padding: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.subjects__item{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .6rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .05s ease;
+}
+
+.subjects__item:hover{
+  background: var(--pa-hover);
+}
+
+.subjects__item[aria-current="page"]{
+  background: rgba(0,0,0,.12);
+  font-weight: 700;
+}
+
+.subjects__icon{
+  width: 18px; height: 18px;
+  flex: 0 0 18px;
+  display: inline-block;
+  color: #FFD400; /* placeholder amarillo */
+}
+
+.subjects__label{
+  display: inline-flex;
+  gap: .25rem;
+  align-items: baseline;
+}
+
+.subjects__soon{
+  font-size: .78rem;
+  opacity: .9;
+}
+
+/* === Panel derecho (tarjetas) === */
+.panel{
+  display: grid;
+  gap: 1rem;
+}
+
+.card-header{
+  background: var(--pa-card-bg);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-card-shadow);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.card-header h2{
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.header-icon{
+  width: 22px; height: 22px;
+  color: #FFD400; /* placeholder */
+}
+
+.card-block{
+  background: var(--pa-card-bg);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-card-shadow);
+  padding: 1rem;
+}
+
+/* Reutilizamos tu grid de respuesta dentro del bloque */
+.card-block .answer-grid{
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 900px){
+  .card-block .answer-grid{ grid-template-columns: 1fr; }
+}
+
+/* Botones: unificamos color (ambos al mismo tono) */
+#btn-nuevo,
+#btn-mostrar{
+  background: var(--pa-sidebar) !important; /* #358CA4 */
+}
+#btn-nuevo:hover,
+#btn-mostrar:hover{ filter: brightness(.95); }
+
+/* Accesibilidad: foco visible en ítems y botones */
+.subjects__item:focus-visible,
+#btn-nuevo:focus-visible,
+#btn-mostrar:focus-visible,
+select:focus-visible{
+  outline: 3px solid var(--pa-hover);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
