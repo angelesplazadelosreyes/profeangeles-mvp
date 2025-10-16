@@ -146,3 +146,57 @@ select:focus-visible{
   outline-offset: 2px;
   border-radius: 10px;
 }
+
+
+/* ===== Sidebar colapsable en móvil ===== */
+
+/* Botón oculto en desktop */
+.sidebar-toggle{
+  display:none;
+}
+
+/* Reglas para <768px */
+@media (max-width: 768px){
+  /* Mostrar el botón "Materias" */
+  .sidebar-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+    padding:.6rem .9rem;
+    border:0;
+    border-radius: 999px;
+    background: var(--pa-sidebar);
+    color:#fff;
+    font-weight:700;
+    box-shadow: var(--pa-card-shadow);
+    margin: 1rem 0 .25rem;
+    cursor:pointer;
+  }
+  .sidebar-toggle:focus-visible{
+    outline:3px solid var(--pa-hover);
+    outline-offset:2px;
+  }
+
+  /* La sidebar está oculta por defecto en móvil */
+  .sidebar{
+    display:none;
+  }
+  /* Y se muestra cuando tiene la clase .is-open */
+  .sidebar.is-open{
+    display:block;
+    animation: sidebarIn .12s ease-out;
+  }
+
+  @keyframes sidebarIn{
+    from{ transform:translateY(-4px); opacity:.92; }
+    to{ transform:none; opacity:1; }
+  }
+}
+
+/* (opcional) Las materias “próximamente” no son clicables */
+.subjects__item[aria-disabled="true"]{
+  opacity:.75;
+  cursor:not-allowed;
+  pointer-events:none;
+}
