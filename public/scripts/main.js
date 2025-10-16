@@ -217,6 +217,47 @@ function initSubjectsSidebar(){
 
 window.addEventListener('DOMContentLoaded', ()=>{
   initSubjectsSidebar();
+  
+  // ===== Toggle de sidebar en móvil =====
+  function initSidebarToggle(){
+    const btn = document.getElementById('toggle-subjects');
+    const sidebar = document.getElementById('sidebar');
+    const list = document.getElementById('subjects');
+    if (!btn || !sidebar || !list) return;
+
+    function setOpen(open){
+      if (open){
+        sidebar.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }else{
+        sidebar.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    // Click del botón
+    btn.addEventListener('click', ()=>{
+      const isOpen = sidebar.classList.contains('is-open');
+      setOpen(!isOpen);
+    });
+
+    // Cerrar al seleccionar una materia (mejor UX en móvil)
+    list.addEventListener('click', (e)=>{
+      const item = e.target.closest('.subjects__item');
+      if (!item) return;
+      if (window.matchMedia('(max-width: 768px)').matches){
+        setOpen(false);
+      }
+    });
+
+    // Cerrar al hacer click fuera (solo móvil)
+    document.addEventListener('click', (e)=>{
+      if (!window.matchMedia('(max-width: 768px)').matches) return;
+      const clickedInside = sidebar.contains(e.target) || btn.contains(e.target);
+      if (!clickedInside) setOpen(false);
+    });
+  }
+  initSidebarToggle(); 
   initFilters();
   document.getElementById('btn-nuevo').addEventListener('click', nuevoEjercicio);
   document.getElementById('btn-mostrar').addEventListener('click', mostrarRespuesta);

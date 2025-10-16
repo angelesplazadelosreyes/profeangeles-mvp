@@ -38,9 +38,15 @@
 </header>
 
 <main class="container">
+  <!-- Botón para móvil: abre/cierra la barra lateral -->
+  <button class="sidebar-toggle" id="toggle-subjects"
+          aria-controls="subjects"
+          aria-expanded="false">
+    Materias
+  </button>
   <div class="exercises-layout">
     <!-- Sidebar -->
-    <aside class="sidebar" aria-label="Materias">
+    <aside class="sidebar" id="sidebar" aria-label="Materias">
       <div class="sidebar-header">MATERIAS</div>
       <ul class="subjects" id="subjects">
         <li class="subjects__item" tabindex="0" aria-current="page" data-subject="Matemáticas">
