@@ -82,13 +82,18 @@
 
     <!-- Panel derecho -->
     <div class="panel">
+      
       <!-- Tarjeta 1: encabezado -->
       <section class="card-header" aria-live="polite">
-        <span class="header-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-        </span>
-        <h2 id="exercise-title">Generador de ejercicios de Matemáticas</h2>
+        <!-- Ícono dinámico de la materia (reemplaza el cuadrito) -->
+        <span class="subject-icon-header" aria-hidden="true"></span>
+
+        <!-- Título con nombre de materia actualizable por JS -->
+        <h2 id="exercise-title">
+          Generador de ejercicios de <span id="subject-name">Matemáticas</span>
+        </h2>
       </section>
+
 
       <!-- Tarjeta 2: filtros, acciones y contenido -->
       <section class="card-block">

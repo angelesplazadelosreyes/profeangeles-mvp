@@ -200,3 +200,16 @@ select:focus-visible{
   cursor:not-allowed;
   pointer-events:none;
 }
+
+/* ===== Ícono dinámico en el título ===== */
+.subject-icon-header{
+  display:inline-flex;
+  width:20px;
+  height:20px;
+  margin-right:.5rem;     /* separa del texto */
+  vertical-align:-3px;    /* lo alinea con el H2 */
+}
+.subject-icon-header svg{
+  width:20px;
+  height:20px;
+}
