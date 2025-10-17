@@ -1,226 +1,508 @@
 /* ===========================
-   Variables globales (tema)
+   Tokens (paleta + escala)
    =========================== */
 :root{
-  --primary:#2563EB;         /* azul primario */
-  --secondary:#10B981;       /* verde acento */
-  --bg:#F3F4F6;              /* gris claro de fondo */
-  --text:#111827;            /* texto principal */
-  --muted:#6B7280;           /* textos secundarios */
+  /* Teal / marca (coherente con Exercises) */
+  --pa-primary-dark: #216577;
+  --pa-primary:       #358CA4;
+  --pa-accent:        #63B3D9;
 
-  /* Marca (wordmark) */
-  --brand-blue:#2B6CB0;      /* azul que armoniza con los teals */
-  --brand-blue-hover:#1E4E8C;
+  /* Neutros */
+  --pa-bg:      #F5F7F8;
+  --pa-surface: #FFFFFF;
+  --pa-text:    #0F172A;  /* slate-900 */
+  --pa-muted:   #475569;  /* slate-600 */
+  --pa-border:  #E5E7EB;
+
+  /* Componente */
+  --pa-radius: 14px;
+  --pa-shadow: 0 8px 24px rgba(0,0,0,.08);
+
+  /* Compat con estilos antiguos (no romper Exercises) */
+  --primary:   var(--pa-primary);
+  --secondary: #10B981;   /* solo para casos especiales */
+  --bg:        var(--pa-bg);
+  --text:      var(--pa-text);
+  --muted:     var(--pa-muted);
+  --brand-blue:        var(--pa-primary-dark);
+  --brand-blue-hover:  #1e4e58;
+
+  /* Accentos Paleta 1B (Teal + Amarillo + Rosa) */
+  --pa-accent-yellow:      #F59E0B;
+  --pa-accent-yellow-tint: #FEF3C7;
+
+  --pa-accent-pink:        #EC4899;
+  --pa-accent-pink-tint:   #FCE7F3;
+
+  /* Fondo suave para el hero (tinte teal a blanco) */
+  --pa-hero-bg: linear-gradient(180deg, rgba(53,140,164,.06), rgba(255,255,255,0));
+
+  /* Gradiente del HERO (Teal → Indigo) */
+  --hero-grad-start: #2563EB;  /* indigo 600 */
+  --hero-grad-end:   #22D3EE;  /* cyan 300 */
+
+
 }
 
 /* ===========================
-   Reseteo & base
+   Reset & base
    =========================== */
-html{ scroll-behavior:smooth; }
 *{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
 html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--text);
+  margin:0; padding:0;
+  background:var(--pa-bg);
+  color:var(--pa-text);
   font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
 .container{ max-width:1100px; margin:0 auto; padding:0 1rem; }
 
 /* ===========================
-   Header / Navegación
+   Header / Nav
    =========================== */
-.site-header{
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-.nav{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  height:64px;
+
+:root{
+  --brand-cyan:#2475EB;
+  --brand-cyan-d:#1d5fd1;
 }
 
-/* Marca: "{A} Profe Ángeles" (texto simple) */
+/* Contenedor del brand */
+.brand{
+  display:inline-flex; align-items:center; gap:.55rem;
+  text-decoration:none;
+}
+
+/* Medallón {A} */
+.brand-mark{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:28px; height:28px; padding:0 6px; border-radius:999px;
+  font-weight:800; color:#fff;
+  background:linear-gradient(180deg,#22D3EE,#2563EB);
+  box-shadow:0 4px 12px rgba(37,99,235,.25);
+}
+
+/* Texto “Profe Ángeles” */
+.brand-text{
+  display:inline-flex; align-items:center;
+  height:28px; line-height:1;
+  font-size:clamp(1.05rem, 1.2vw + .6rem, 1.35rem);
+  font-weight:600;
+  color:var(--brand-cyan);
+  text-shadow:0 1px 0 rgba(255,255,255,.65), 0 1px 8px rgba(2,6,23,.06);
+}
+.brand:hover .brand-text{ color:var(--brand-cyan-d); }
+
+@media (max-width:420px){
+  .brand-mark{ min-width:24px; height:24px; font-size:.9rem; }
+  .brand-text{ height:24px; }
+}
+
+.site-header{
+  background:var(--pa-surface);
+  border-bottom:1px solid var(--pa-border);
+  position:sticky; top:0; z-index:10;
+}
+.nav{
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px;
+}
 .brand{
   color:var(--brand-blue);
   font-family: Montserrat, Inter, system-ui, sans-serif;
-  font-weight:500;          /* sin negrita */
-  font-size:1.1rem;         /* un toque más grande */
-  letter-spacing:.2px;
-  text-decoration:none;
+  font-weight:700; letter-spacing:.2px; text-decoration:none;
 }
 .brand:hover{ color:var(--brand-blue-hover); }
-
-/* Menú */
 .menu{
-  list-style:none;
-  display:flex;
-  align-items:center;
-  gap:.75rem;
-  margin:0;
-  padding:0;
+  list-style:none; display:flex; align-items:center; gap:.75rem;
+  margin:0; padding:0;
 }
-.menu > li{ display:flex; align-items:center; }  /* centra verticalmente */
+.menu > li{ display:flex; align-items:center; }
 .menu a{
-  display:inline-flex;
-  align-items:center;
-  line-height:1;
-  text-decoration:none;
-  color:var(--text);
-  padding:.5rem .75rem;
-  border-radius:.5rem;
+  display:inline-flex; align-items:center;
+  text-decoration:none; color:var(--pa-text);
+  padding:.5rem .75rem; border-radius:.5rem;
 }
 .menu a.active,
-.menu a:hover{ background:#eef2ff; color:#1e40af; }
-
-/* Botón “Inicio sesión” (deshabilitado por ahora) */
+.menu a:hover{ background:#eaf6fb; color:var(--pa-primary-dark); }
 .btn-login{
-  padding:.5rem .75rem;
-  border:1px solid #e5e7eb;
-  border-radius:.5rem;
-  background:#f9fafb;
-  font-weight:700;
+  padding:.5rem .75rem; border:1px solid var(--pa-border);
+  border-radius:.5rem; background:#f9fafb; font-weight:700;
 }
 .btn-login[disabled]{ opacity:.6; cursor:not-allowed; }
-.btn-login:focus-visible{ outline:2px solid #111; outline-offset:2px; }
 
 /* ===========================
-   Hero (pág. inicio)
+   Hero 
    =========================== */
+
+/* La sección solo da aire alrededor del hero */
 .hero{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:1.25rem;
-  align-items:center;
-  padding:2rem 0;
+  background: transparent;
+  padding: 2rem 0;
+  border-bottom: none;
 }
+
+/* Tarjeta blanca con sombra */
+.hero-card{
+  background: var(--pa-surface);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-shadow);
+  padding: 1.25rem;
+}
+
+/* Grid interno del hero (texto + ilustración) */
+.hero-grid{
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+/* — Impacto visual del HERO — */
+.hero-card{ position: relative; overflow: clip; }
+
+/* Banda superior en degradado */
+.hero-card::after{
+  content:"";
+  position:absolute; inset:0 0 auto 0; height:4px;
+  background: linear-gradient(90deg, var(--hero-grad-start), var(--hero-grad-end));
+}
+
+/* Halos suaves de profundidad */
+.hero-card::before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(900px 300px at 85% -10%, rgba(34,211,238,.14), transparent 60%),
+    radial-gradient(700px 260px at -10% 110%, rgba(37,99,235,.12), transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Asegura que el contenido esté encima de los halos */
+.hero-grid{ position: relative; z-index: 1; }
+
+
+/* -------- Tipografía y contenido -------- */
 .hero-copy h1{
   font-family: Montserrat, Inter, sans-serif;
-  font-size:2rem;
-  line-height:1.2;
-  margin:.25rem 0 1rem;
+  font-weight: 800;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  line-height: 1.15;
+  margin: .25rem 0 .75rem;
+  letter-spacing: .2px;
 }
+
+/* Subtítulo */
+.hero .sub{
+  color: var(--pa-muted);
+  margin: .25rem 0 1rem;
+  max-width: 56ch;
+}
+
+/* Eyebrow: fila de chips */
+.hero-eyebrow{
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin: 0 0 .5rem;
+}
+
+/* Chips (amarillo/rosa) */
+.chip{
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.chip--yellow{
+  background: var(--pa-accent-yellow-tint);
+  border-color: var(--pa-accent-yellow);
+  color: #7C2D12;
+}
+.chip--pink{
+  background: var(--pa-accent-pink-tint);
+  border-color: var(--pa-accent-pink);
+  color: #831843;
+}
+
+/* CTAs */
+.hero-ctas{
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin: .5rem 0 0;
+}
+
+/* Badges */
+.badges{
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+.badges li{
+  background: #ecfeff;
+  color: #055160;
+  border: 1px solid #b6eef7;
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+/* Ilustración */
 .hero-img{
-  width:100%;
-  max-width:460px;
-  justify-self:end;
-  border-radius:1rem;
-  box-shadow:0 4px 20px rgba(0,0,0,.08);
+  width: 100%;
+  max-width: 520px;
+  justify-self: end;
+  border-radius: 1rem;
+  box-shadow: var(--pa-shadow);
+  border: 1px solid var(--pa-border); /* sutil separación del fondo */
 }
-@media (max-width:900px){
-  .hero{ grid-template-columns:1fr; }
-  .hero-img{ justify-self:center; }
+
+/* Subrayado decorativo opcional */
+.h-underline{
+  position: relative;
+  display: inline-block;
+  padding-bottom: .2rem;
+}
+.h-underline::after{
+  content:"";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 48px; height: 3px;
+  border-radius: 2px;
+  background: var(--pa-accent-pink);
+}
+
+/* -------- Responsive -------- */
+@media (min-width: 900px){
+  .hero-card{ padding: 1.75rem; }
+}
+
+@media (max-width: 900px){
+  .hero-grid{ grid-template-columns: 1fr; }
+  .hero-img{ justify-self: center; }
+}
+
+
+/* ===========================
+   Botones (texto blanco y contraste)
+   =========================== */
+.btn{
+  background: var(--pa-primary);
+  color: #fff;                           /* texto blanco por defecto */
+  border: 1px solid transparent;
+  padding: .75rem 1rem;
+  border-radius: calc(var(--pa-radius) - 4px);
+  font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: .5rem; white-space: nowrap; cursor: pointer;
+}
+.btn:hover{ filter: brightness(.96); }
+.btn:focus-visible{ outline: 3px solid rgba(53,140,164,.35); outline-offset: 2px; }
+
+/* variantes */
+.btn-primary{ background: var(--pa-primary); color:#fff; }
+
+/* un poco más oscuro para AA */
+/* Botón acento con gradiente Teal → Indigo */
+.btn-accent{
+  background-image: linear-gradient(180deg, var(--hero-grad-end), var(--hero-grad-start));
+  color:#fff;
+  border:1px solid rgba(0,0,0,.04);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, .16);
+}
+.btn-accent:hover{ filter:none; transform: translateY(-1px); }
+.btn-accent:active{ transform: translateY(0); box-shadow: 0 3px 8px rgba(37, 99, 235, .16); }
+
+.btn-whatsapp{ background: #25D366; color:#fff; }
+
+.btn-ghost{
+  background: transparent;
+  color: var(--pa-primary);
+  border: 1px solid var(--pa-primary);
+}
+.btn-ghost:hover{ background:#eaf6fb; }
+
+.btn-light{
+  background:#ECFEFF;
+  color:#055160;
+  border:1px solid #b6eef7;
 }
 
 /* ===========================
-   Componentes base
+   Cards & grids
    =========================== */
-.btn{
-  background:var(--primary);
-  color:#fff;
-  border:none;
-  padding:.75rem 1rem;
-  border-radius:.75rem;
-  font-weight:600;
-  cursor:pointer;
+.card, .value-card{
+  background:var(--pa-surface);
+  border:1px solid var(--pa-border);
+  border-radius:var(--pa-radius);
+  padding:1rem; box-shadow:var(--pa-shadow);
 }
-.btn:hover{ filter:brightness(.95); }
-.btn-secondary{ background:#374151; }
-.btn-whatsapp{ background:#25D366; }
+.value-grid{
+  display:grid; gap:1rem; grid-template-columns:repeat(4,1fr);
+  padding:1.5rem 0;
+}
+.value-card h3{ margin:.25rem 0 .5rem; }
+.value-card p{ color:var(--pa-muted); margin:0 0 .5rem; }
+.value-card a{ color:var(--pa-primary-dark); text-decoration:none; font-weight:600; }
+.value-card a:hover{ text-decoration:underline; }
 
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:1rem;
-  padding:1rem;
-  margin:1rem 0;
+@media (max-width:1000px){
+  .value-grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:600px){
+  .value-grid{ grid-template-columns:1fr; }
 }
 
-/* Filtros (Ejercicios) */
+/* ===========================
+   Demo (quick)
+   =========================== */
+.demo{ padding:1.5rem 0; }
+.demo-form{
+  display:flex; gap:.75rem; flex-wrap:wrap; align-items:end; margin:.5rem 0 1rem;
+}
+.demo-form label{
+  display:flex; flex-direction:column; gap:.35rem; color:var(--pa-muted); font-size:.95rem;
+}
+.demo-form select{
+  min-width:180px; padding:.55rem .6rem;
+  border:1px solid var(--pa-border); border-radius:.5rem; background:#fff; color:var(--pa-text);
+}
+.demo-result .exercise{
+  border:1px dashed var(--pa-border); border-radius:.75rem; padding:1rem; background:#fff;
+}
+
+/* ===========================
+   Personas (rutas por perfil)
+   =========================== */
+.personas{
+  display:grid; gap:1rem; grid-template-columns:repeat(3,1fr);
+  padding:1rem 0;
+}
+.persona{
+  background:var(--pa-surface); border:1px solid var(--pa-border);
+  border-radius:var(--pa-radius); padding:1rem; box-shadow:var(--pa-shadow);
+}
+.persona p{ color:var(--pa-muted); }
+@media (max-width:900px){ .personas{ grid-template-columns:1fr; } }
+
+/* ===========================
+   Catálogo (materias/temas)
+   =========================== */
+.catalog{ padding:1.5rem 0; }
+.catalog h2{ margin:0 0 .75rem; }
+.catalog .grid{
+  display:grid; gap:1rem; grid-template-columns:repeat(3,1fr);
+}
+.catalog .card h4{ margin:.25rem 0 .25rem; }
+.catalog .card p{ color:var(--pa-muted); margin:0 0 .5rem; }
+.catalog .card a{ color:var(--pa-primary-dark); text-decoration:none; font-weight:600; }
+.catalog .card a:hover{ text-decoration:underline; }
+@media (max-width:1000px){ .catalog .grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px){ .catalog .grid{ grid-template-columns:1fr; } }
+
+/* ===========================
+   Clases (brief)
+   =========================== */
+.classes-brief{ padding:1.5rem 0; }
+.ticks{ list-style: none; padding-left:0; margin:.5rem 0 1rem; }
+.ticks li{
+  position:relative; padding-left:1.4rem; margin:.35rem 0;
+}
+.ticks li::before{
+  content:"✓"; position:absolute; left:0; top:0; color:var(--pa-primary-dark); font-weight:800;
+}
+.cta-row{ display:flex; gap:.75rem; flex-wrap:wrap; }
+
+/* ===========================
+   Changelog, testimonios, recursos
+   =========================== */
+.changelog .log{ margin:.5rem 0 0; }
+.changelog .log li{ margin:.25rem 0; }
+.testimonials blockquote{
+  background:#fff; border-left:4px solid var(--pa-primary);
+  padding:1rem; margin:.75rem 0; border-radius:.5rem; box-shadow:var(--pa-shadow);
+}
+.resources .grid{
+  display:grid; gap:1rem; grid-template-columns:repeat(3,1fr);
+}
+@media (max-width:900px){ .resources .grid{ grid-template-columns:1fr; } }
+
+/* ===========================
+   CTA final
+   =========================== */
+.double-cta{
+  display:grid; gap:1rem; grid-template-columns:repeat(2,1fr);
+  padding:2rem 0;
+}
+.double-cta > div{
+  background:#fff; border:1px solid var(--pa-border);
+  border-radius:var(--pa-radius); padding:1rem; box-shadow:var(--pa-shadow);
+}
+@media (max-width:900px){ .double-cta{ grid-template-columns:1fr; } }
+
+/* ===========================
+   Ejercicios (compat)
+   =========================== */
 .filters{
-  display:flex;
-  gap:1rem;
-  flex-wrap:wrap;
-  margin:.25rem 0 1rem;
+  display:flex; gap:1rem; flex-wrap:wrap; margin:.25rem 0 1rem;
 }
 .filters label{
-  display:flex;
-  flex-direction:column;
-  font-size:.9rem;
-  color:var(--muted);
+  display:flex; flex-direction:column; font-size:.9rem; color:var(--pa-muted);
 }
 .filters select{
-  min-width:180px;
-  padding:.5rem;
-  border:1px solid #e5e7eb;
-  border-radius:.5rem;
-  background:#fff;
-  color:var(--text);
+  min-width:180px; padding:.5rem;
+  border:1px solid var(--pa-border); border-radius:.5rem; background:#fff; color:var(--pa-text);
 }
-
-/* Acciones (botones) */
 .actions{ display:flex; gap:.75rem; margin:.5rem 0 1rem; }
-
-/* Bloques matemáticos / gráfico */
 .math-block{ margin:1rem 0; }
 .chart{
-  background:#fff;
-  border:1px dashed #e5e7eb;
-  border-radius:.5rem;
-  padding:.5rem;
+  background:#fff; border:1px dashed var(--pa-border);
+  border-radius:.5rem; padding:.5rem;
 }
-
-/* Grid enunciado/solución/gráfico (Ejercicios) — versión única */
 .answer-grid{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:1rem;
-  align-items:start;
-  justify-items:start;
+  display:grid; grid-template-columns:1.1fr .9fr; gap:1rem; align-items:start; justify-items:start;
 }
 .chart-wrap{ align-self:start; min-height:260px; }
-@media (max-width:900px){
-  .answer-grid{ grid-template-columns:1fr; }
-}
-
-/* Alineación de MathJax a la izquierda */
+@media (max-width:900px){ .answer-grid{ grid-template-columns:1fr; } }
 .mjx-container{ text-align:left !important; }
 .mathjax{ text-align:left; }
-
-/* Margen de scroll para anclas bajo header sticky */
-#inicio, #ejercicios, #clases{ scroll-margin-top:80px; }
 
 /* ===========================
    Footer
    =========================== */
 .site-footer{
-  margin-top:2rem;
-  padding:1.25rem 0;
-  border-top:1px solid #e5e7eb;
-  background:#fff;
+  margin-top:2rem; padding:1.25rem 0;
+  border-top:1px solid var(--pa-border); background:var(--pa-surface);
 }
-.footer-grid{ display:flex; justify-content:space-between; align-items:center; }
-
-.site-footer a{ text-decoration:none; }
+.footer-grid{
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+}
+.site-footer a{ text-decoration:none; color:var(--pa-primary-dark); }
 .site-footer a:hover{ text-decoration:underline; }
 
-/* Redes */
 .socials{ display:flex; gap:.75rem; }
 .socials a{
-  display:inline-flex;
-  padding:.25rem;
-  border-radius:.5rem;
-  color:var(--text);
-  opacity:.85;
+  display:inline-flex; padding:.25rem; border-radius:.5rem;
+  color:var(--pa-text); opacity:.85;
 }
 .socials a:hover{ opacity:1; background:#F3F4F6; }
 .socials svg{ width:22px; height:22px; display:block; }
 
-/* Hover monocromo con color de marca */
 .socials a.linkedin:hover{ color:#0A66C2; }
 .socials a.instagram:hover{ color:#E4405F; }
 .socials a.whatsapp:hover{ color:#25D366; }
+
+/* ===========================
+   Utilidades
+   =========================== */
+#inicio, #ejercicios, #clases{ scroll-margin-top:80px; }

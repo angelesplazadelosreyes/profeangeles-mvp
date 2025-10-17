@@ -1,96 +1,262 @@
-<!-- Render estático: el servidor sirve archivos tal cual -->
-<!-- Esta página usa la plantilla visual de base.html: copiamos su estructura mínima -->
 <!doctype html>
 <html lang="es">
-  <!-- Para simplificar el MVP, reusamos head de base.html (copiado arriba) -->
-  <!-- En producción, puedes incorporar un mini motor de plantillas si deseas -->
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Profe Ángeles · Inicio</title>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Profe Ángeles · Inicio</title>
 
-    <!-- Assets servidos desde /public -->
-    <link rel="icon" href="/favicon.ico"/>
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico"/>
 
-    <!-- Google Fonts (igual que en exercises/classes) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+  <!-- Tipografías (mismas que exercises/classes) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
 
-    <!-- CSS global -->
-    <link rel="stylesheet" href="/styles/styles.css"/>
+  <!-- CSS global -->
+  <link rel="stylesheet" href="/styles/styles.css"/>
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="ProfeÁngeles - Inicio" />
-    <meta property="og:description" content="Aprende Matemática con ejercicios claros y guiados." />
-    <meta property="og:image" content="/og-image.png" />
-    <meta property="og:type" content="website" />
-  </head>
+  <!-- SEO / Open Graph -->
+  <meta name="description" content="Ejercicios interactivos y clases online personalizadas. Matemáticas hoy; más materias y recursos próximamente."/>
+  <meta property="og:title" content="ProfeÁngeles - Inicio"/>
+  <meta property="og:description" content="Aprende con ejercicios claros y guiados, gráficos y clases personalizadas."/>
+  <meta property="og:image" content="/og-image.png"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:locale" content="es_CL"/>
+</head>
 
-  <body>
-    <header class="site-header">
-      <nav class="container nav">
-        <a class="brand" href="/">{A} Profe Ángeles</a>
-        <ul class="menu">
-          <li><a href="/" class="active">Inicio</a></li>
-          <li><a href="/exercises">Ejercicios</a></li>
-          <li><a href="/classes">Clases</a></li>
-          <li>
-            <button class="btn-login" disabled aria-disabled="true" title="Próximamente">
-              Inicio sesión
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </header>
+<body>
+  <!-- Header (parcial) -->
+  <header class="site-header"><div data-include="header"></div></header>
 
+  <main id="main-content">
+    <!-- HERO transversal -->
+    <section class="hero container">
+      <div class="hero-card">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1>Disfruta aprendiendo: te acompaño paso a paso</h1>
+            <p class="sub">Práctica guiada y clases online para distintas materias escolares, paso a paso y con cariño. Ejercicios generados al instante y explicaciones simples.</p>
+            <div class="hero-ctas">
+              <a class="btn btn-accent" href="/exercises">Probar el generador</a>
+              <a class="btn btn-ghost" href="https://wa.me/56971312255" target="_blank" rel="noopener">Quiero una clase</a>
+            </div>
+            <ul class="badges">
+              <li>Preparación de pruebas</li>
+              <li>Seguimiento simple</li>
+            </ul>
+          </div>
 
-    <main class="container">
-      <section id="inicio" class="hero">
-        <div class="hero-copy">
-          <h1>Aprende Matemática con ejercicios claros y guiados</h1>
-          <p>Genera un ejercicio, mira su gráfico y agenda una clase personalizada.</p>
-          <a class="btn btn-whatsapp" target="_blank" rel="noopener"
-             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20una%20clase%20de%20matem%C3%A1tica.%20Vi%20tu%20web%20y%20me%20interesa%20agendar.%20Gracias!">
-            Escribir por WhatsApp
-          </a>
+          <!-- Ilustración SVG inline (igual que tenías) -->
+          <svg class="hero-img" viewBox="0 0 520 320" role="img" aria-label="Ilustración de ejercicios y gráficos" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#63B3D9"/>
+                <stop offset="1" stop-color="#358CA4"/>
+              </linearGradient>
+              <filter id="blur" x="-10%" y="-10%" width="120%" height="120%">
+                <feGaussianBlur stdDeviation="12"/>
+              </filter>
+            </defs>
+            <rect x="20" y="20" width="480" height="280" rx="18" fill="url(#g1)" opacity="0.12"/>
+            <ellipse cx="400" cy="260" rx="120" ry="28" fill="#000" opacity="0.06" filter="url(#blur)"/>
+            <g opacity="0.18" stroke="#216577" stroke-width="1">
+              <path d="M80 60V280M120 60V280M160 60V280M200 60V280M240 60V280M280 60V280M320 60V280M360 60V280M400 60V280M440 60V280"/>
+              <path d="M60 80H460M60 120H460M60 160H460M60 200H460M60 240H460"/>
+            </g>
+            <path d="M60 280H460" stroke="#216577" stroke-width="2"/>
+            <path d="M80 60V280" stroke="#216577" stroke-width="2"/>
+            <path d="M60 260 Q 200 120 340 200 T 460 260" fill="none" stroke="#358CA4" stroke-width="4"/>
+            <circle cx="200" cy="160" r="5" fill="#358CA4"/>
+            <circle cx="280" cy="190" r="5" fill="#358CA4"/>
+            <circle cx="340" cy="200" r="5" fill="#358CA4"/>
+            <rect x="300" y="70" rx="8" width="180" height="46" fill="#FFFFFF" opacity="0.9"/>
+            <text x="310" y="98" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="16" fill="#0F172A">y = ax² + bx + c</text>
+          </svg>
         </div>
-        <img class="hero-img" alt="Ilustración matemática" src="./public/og-image.png"/>
-      </section>
-
-
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-grid">
-        <small>© <span id="y"></span> Profe Ángeles</small>
-
-        <nav class="socials" aria-label="Redes sociales">
-          <!-- LinkedIn -->
-          <a class="linkedin" href="https://www.linkedin.com/in/mplazadelosreyes/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
-            <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
-              <path fill="currentColor" d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8.5h5V23H0V8.5zM8 8.5h4.8v2h.07c.67-1.27 2.3-2.6 4.73-2.6C21.6 7.9 24 10 24 14.3V23h-5v-7.2c0-1.72-.03-3.93-2.4-3.93-2.4 0-2.77 1.87-2.77 3.8V23H8V8.5z"/>
-            </svg>
-          </a>
-
-          <!-- Instagram (monocromo elegante) -->
-          <a class="instagram" href="https://www.instagram.com/profeangeles.cl/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
-            <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
-              <path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM18 6.75a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 18 6.75z"/>
-            </svg>
-          </a>
-
-          <!-- WhatsApp -->
-          <a class="whatsapp" href="https://wa.me/56971312255" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
-            <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
-              <path fill="currentColor" d="M20.52 3.48A11.94 11.94 0 0 0 12.06 0 12 12 0 0 0 2.3 17.74L0 24l6.42-2.24A12 12 0 1 0 20.52 3.48zM12.06 22a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.82 1.34 1.31-3.93-.23-.4a10 10 0 1 1 8.14 4.58zM17.2 14.3c-.3-.15-1.77-.87-2.05-.97s-.48-.15-.68.15-.78.97-.95 1.17-.35.22-.65.07a8.13 8.13 0 0 1-2.39-1.48 9 9 0 0 1-1.67-2.07c-.17-.3 0-.46.13-.62s.3-.35.45-.53a2 2 0 0 0 .3-.5.55.55 0 0 0 0-.52c0-.15-.68-1.64-.93-2.24s-.48-.52-.68-.53h-.58a1.1 1.1 0 0 0-.78.36A3.28 3.28 0 0 0 5 7.59a5.7 5.7 0 0 0 1.2 3.03 13 13 0 0 0 4.96 4.5 17.3 17.3 0 0 0 1.77.65 4.25 4.25 0 0 0 2 .12 3.36 3.36 0 0 0 2.2-1.56 2.74 2.74 0 0 0 .2-1.56c-.1-.16-.26-.25-.54-.37z"/>
-            </svg>
-          </a>
-        </nav>
       </div>
+    </section>
 
-      <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
-    </footer>
-    
-  </body>
+
+    <!-- Valor multimateria -->
+    <section class="value-grid container">
+      <article class="value-card">
+        <h3>Ejercicios interactivos</h3>
+        <p>Genera ejercicios al instante con explicación clara.</p>
+        <a href="/exercises">Ver más</a>
+      </article>
+      <article class="value-card">
+        <h3>Clases 1:1</h3>
+        <p>Diagnóstico, plan semanal y seguimiento simple para familias.</p>
+        <a href="/classes">Ver más</a>
+      </article>
+      <article class="value-card">
+        <h3>Recursos PDF</h3>
+        <p>Guías listas para imprimir y usar en clase o estudio.</p>
+        <a href="/resources.html">Ver recursos</a>
+      </article>
+      <article class="value-card">
+        <h3>Juegos 2D</h3>
+        <p>Aprender jugando con retos diseñados para motivar.</p>
+        <a href="/games.html">Probar juegos</a>
+      </article>
+    </section>
+
+    <!-- Demo rápida (hookeable a tu API) -->
+    <section class="demo container" id="quickDemo">
+      <h2>Prueba en un clic</h2>
+      <form id="demoForm" class="demo-form">
+        <label>Materia
+          <select id="demoSubject">
+            <option value="matematicas">Matemáticas</option>
+            <option value="quimica">Química</option>
+            <option value="biologia">Biología</option>
+            <option value="lenguaje">Lenguaje</option>
+          </select>
+        </label>
+        <label>Tema
+          <select id="demoTopic"></select>
+        </label>
+        <button type="submit" class="btn btn-accent">Generar</button>
+        <a class="demo-link" href="/exercises">Ver todos los temas</a>
+      </form>
+      <div id="demoResult" class="demo-result" aria-live="polite"></div>
+    </section>
+
+    <!-- Rutas por perfil -->
+    <section class="personas container">
+      <article class="persona">
+        <h3>Soy estudiante</h3>
+        <p>Práctica guiada, pasos cortos y feedback inmediato.</p>
+        <a href="/exercises" class="btn btn-light">Practicar</a>
+      </article>
+      <article class="persona">
+        <h3>Soy apoderado/a</h3>
+        <p>Clases online con plan personalizado y reporte simple.</p>
+        <a href="/classes" class="btn btn-light">Ver planes</a>
+      </article>
+      <article class="persona">
+        <h3>Soy profe</h3>
+        <p>Guías PDF y material listo para tu clase.</p>
+        <a href="/resources.html" class="btn btn-light">Recursos</a>
+      </article>
+    </section>
+
+    <!-- Catálogo de materias/temas -->
+    <section class="catalog container">
+      <h2>Explora por materia</h2>
+      <div class="grid" id="subjectGrid">
+        <article class="card" data-subject="matematicas">
+          <h4>Álgebra</h4><p>Ecuaciones, funciones, polinomios.</p>
+          <a href="/exercises#algebra">Practicar</a>
+        </article>
+        <article class="card" data-subject="matematicas">
+          <h4>Geometría</h4><p>Ángulos, triángulos, áreas y volúmenes.</p>
+          <a href="/exercises#geometria">Practicar</a>
+        </article>
+        <article class="card" data-subject="quimica">
+          <h4>Estequiometría</h4><p>Mol, relaciones y reacciones químicas.</p>
+          <a href="/exercises#estequiometria">Practicar</a>
+        </article>
+        <article class="card" data-subject="biologia">
+          <h4>Genética</h4><p>Mendel, cruces y probabilidades.</p>
+          <a href="/exercises#genetica">Practicar</a>
+        </article>
+        <article class="card" data-subject="lenguaje">
+          <h4>Comprensión lectora</h4><p>Estrategias y tipos de preguntas.</p>
+          <a href="/exercises#comprension">Practicar</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Clases (resumen) -->
+    <section class="classes-brief container">
+      <h2>Clases particulares</h2>
+      <ul class="ticks">
+        <li>Diagnóstico inicial</li>
+        <li>Plan semanal por objetivos</li>
+        <li>Seguimiento simple para familias</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn btn-accent" href="https://wa.me/56971312255" target="_blank" rel="noopener">Agendar por WhatsApp</a>
+        <a class="btn btn-ghost" href="/classes">Ver detalles</a>
+      </div>
+    </section>
+
+    <!-- Novedades / Roadmap -->
+    <section class="changelog container">
+      <h2>Lo último</h2>
+      <ul class="log">
+        <li><strong>NUEVO</strong>: Materia Química (beta) con estequiometría.</li>
+        <li>Mejoras de accesibilidad y modo oscuro.</li>
+        <li>Juegos 2D: prototipo de “Suma Rápida”.</li>
+      </ul>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="testimonials container">
+      <h2>Lo que dicen</h2>
+      <blockquote>“Por fin entendí funciones. Las explicaciones son claras.” — Antonia, 2º medio</blockquote>
+      <blockquote>“Los PDF me salvaron la clase del viernes.” — Sr. López, profesor</blockquote>
+    </section>
+
+    <!-- Recursos -->
+    <section class="resources container">
+      <h2>Recursos gratis</h2>
+      <div class="grid">
+        <article class="card"><h4>Guía de probabilidades (PDF)</h4><a href="/resources.html">Descargar</a></article>
+        <article class="card"><h4>Plantillas de estudio</h4><a href="/resources.html">Ver</a></article>
+        <article class="card"><h4>Banco de ejercicios</h4><a href="/resources.html">Explorar</a></article>
+      </div>
+    </section>
+
+    <!-- CTA final -->
+    <section class="double-cta container">
+      <div><h3>¿Practicar ahora?</h3><a class="btn btn-accent" href="/exercises">Ir a ejercicios</a></div>
+      <div><h3>¿Agendar una clase?</h3><a class="btn btn-primary" href="https://wa.me/56971312255" target="_blank" rel="noopener">WhatsApp</a></div>
+    </section>
+  </main>
+
+  <!-- Footer (parcial) -->
+  <footer class="site-footer"><div data-include="footer"></div></footer>
+
+  <!-- JS: incluye parciales + script local para la demo -->
+  <script src="/assets/partials.js" defer></script>
+  <script>
+    // ====== JS mínimo para la demo de temas ======
+    const TOPICS = {
+      matematicas: ["Álgebra", "Geometría", "Probabilidades"],
+      quimica: ["Estequiometría", "Tabla Periódica"],
+      biologia: ["Genética", "Célula"],
+      lenguaje: ["Comprensión lectora", "Redacción"]
+    };
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const subjectSel = document.getElementById('demoSubject');
+      const topicSel = document.getElementById('demoTopic');
+      if (!subjectSel || !topicSel) return;
+
+      const fillTopics = (subj)=>{
+        topicSel.innerHTML = "";
+        (TOPICS[subj]||[]).forEach(t=>{
+          const opt=document.createElement('option'); opt.value=t; opt.textContent=t;
+          topicSel.appendChild(opt);
+        });
+      };
+      fillTopics(subjectSel.value);
+      subjectSel.addEventListener('change', e=>fillTopics(e.target.value));
+
+      document.getElementById('demoForm').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const subj = subjectSel.value;
+        const topic = topicSel.value;
+        const out = document.getElementById('demoResult');
+        out.innerHTML = `<div class="exercise">
+          <div class="latex">$$\\text{Ejemplo de }${subj} \\;\\text{— tema: }${topic}$$</div>
+          <button class="btn btn-light" type="button">Ver explicación</button>
+        </div>`;
+      });
+    });
+  </script>
+</body>
 </html>
