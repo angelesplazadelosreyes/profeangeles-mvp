@@ -1,16 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    }
-  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "cleanUrls": true,
-  "routes": [
-    { "src": "/",          "dest": "/index.html" },
-    { "src": "/exercises", "dest": "/exercises.html" },
-    { "src": "/classes",   "dest": "/classes.html" }
+  "rewrites": [
+    { "source": "/exercises", "destination": "/exercises.html" },
+    { "source": "/classes", "destination": "/classes.html" }
   ]
 }
