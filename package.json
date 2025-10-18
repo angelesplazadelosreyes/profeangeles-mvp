@@ -1,0 +1,27 @@
+{
+  "name": "profeangeles-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio estático con generador de ejercicios (función cuadrática) y gráfico en frontend.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angelesplazadelosreyes/profeangeles-mvp.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angelesplazadelosreyes/profeangeles-mvp/issues"
+  },
+  "homepage": "https://github.com/angelesplazadelosreyes/profeangeles-mvp#readme",
+  "devDependencies": {
+    "vite": "^7.1.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

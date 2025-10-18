@@ -17,10 +17,6 @@
       title="Enviar correo">
       contacto@profeangeles.cl
       </a>
-      ·
-      <a href="https://wa.me/56971312255" target="_blank" rel="noopener" title="WhatsApp">
-        WhatsApp
-      </a>
     </div>
 
     <nav class="socials" aria-label="Redes sociales">
@@ -43,22 +39,4 @@
     </nav>
   </div>
 
-  <!-- utilidades locales del footer -->
-  <script>
-    // año dinámico
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
-
-    // copiar email al portapapeles al hacer clic
-    (function(){
-      const el = document.getElementById('footer-email');
-      if(!navigator.clipboard || !el) return;
-      el.addEventListener('click', async (e)=>{
-        try{
-          await navigator.clipboard.writeText('contacto@profeangeles.cl');
-          el.title = '¡Copiado!';
-          setTimeout(()=> el.title = 'Enviar correo', 1500);
-        }catch(_){}
-      });
-    })();
-  </script>
 </footer>
