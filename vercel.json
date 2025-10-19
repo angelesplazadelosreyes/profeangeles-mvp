@@ -6,5 +6,13 @@
   "rewrites": [
     { "source": "/exercises", "destination": "/exercises.html" },
     { "source": "/classes", "destination": "/classes.html" }
+  ],
+  "headers": [
+    {
+      "source": "/exercises2.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
   ]
 }
