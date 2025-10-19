@@ -5,7 +5,8 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/exercises", "destination": "/exercises.html" },
-    { "source": "/classes", "destination": "/classes.html" }
+    { "source": "/classes", "destination": "/classes.html" },
+    { "source": "/exercises2", "destination": "/exercises2.html" }
   ],
   "headers": [
     {
