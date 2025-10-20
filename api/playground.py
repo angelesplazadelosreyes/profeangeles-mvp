@@ -35,3 +35,8 @@ def generate():
         "meta": {"tema": tema, "subtema": subtema, "tipo": tipo, "source": "playground"}
     }
     return jsonify(payload), 200
+
+
+@playground_bp.get("/ping")
+def ping():
+    return {"pong": True}, 200
