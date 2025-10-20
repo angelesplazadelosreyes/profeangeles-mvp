@@ -5,7 +5,20 @@ import { fetchPlayground } from './api2.js';
 let lastExercise = null;
 let chart = null;
 
-// Reutilizamos helpers mínimos (idénticos a tu main.js)
+/* ===========================
+   Opciones (mínimas para tests)
+   =========================== */
+const OPTIONS = {
+  "Álgebra": {
+    "Función cuadrática": [
+      { id: "analisis_completo", label: "Análisis completo (raíces, vértice, etc.)" }
+    ]
+  }
+};
+
+/* ===========================
+   Utils
+   =========================== */
 function renderMath(latex, elId){
   const el = document.getElementById(elId);
   if (!el) return;
@@ -28,7 +41,7 @@ function dibujarGraficoDesdeChartObj(chartObj){
   chart = new Chart(ctx, {
     type: chartObj.type || 'line',
     data: {
-      labels: labels,
+      labels,
       datasets: [{ label: chartObj.label || 'f(x)', data: values }]
     },
     options: {
@@ -42,7 +55,7 @@ function dibujarGraficoDesdeChartObj(chartObj){
   });
 }
 
-// Si tu playground devuelve el mismo formato que prod (coeffs + graph), usamos esta función:
+// Si el playground devuelve el mismo formato que prod (coeffs + graph)
 function dibujarGraficoCuadratica(data){
   const canvas = document.getElementById('grafico');
   if (!canvas || !data?.graph || !data?.coeffs) return;
@@ -76,23 +89,55 @@ function dibujarGraficoCuadratica(data){
   });
 }
 
+/* ===========================
+   Filtros (poblar selects)
+   =========================== */
+function initFilters(){
+  const temaSel = document.getElementById('tema');
+  const subtemaSel = document.getElementById('subtema');
+  const tipoSel = document.getElementById('tipo');
+
+  if (!temaSel || !subtemaSel || !tipoSel) return;
+
+  temaSel.innerHTML = Object.keys(OPTIONS)
+    .map(t => `<option value="${t}">${t}</option>`).join('');
+
+  function refreshSubtemas(){
+    const t = temaSel.value;
+    const subs = Object.keys(OPTIONS[t] || {});
+    subtemaSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+    refreshTipos();
+  }
+
+  function refreshTipos(){
+    const t = temaSel.value;
+    const s = subtemaSel.value;
+    const tipos = (OPTIONS[t] && OPTIONS[t][s]) || [];
+    tipoSel.innerHTML = tipos.map(opt => `<option value="${opt.id}">${opt.label}</option>`).join('');
+  }
+
+  temaSel.addEventListener('change', refreshSubtemas);
+  subtemaSel.addEventListener('change', refreshTipos);
+
+  // Primera carga
+  refreshSubtemas();
+}
+
+/* ===========================
+   Acciones
+   =========================== */
 async function nuevoEjercicio(){
   try{
-    // puedes leer selects como en tu main.js si ya están poblados
     const tema = document.getElementById('tema')?.value || 'Álgebra';
     const subtema = document.getElementById('subtema')?.value || 'Función cuadrática';
     const tipo = document.getElementById('tipo')?.value || 'analisis_completo';
 
-    const data = await fetchPlayground({
-      tema: tema, subtema: subtema, tipo: tipo
-    });
+    const data = await fetchPlayground({ tema, subtema, tipo });
     lastExercise = data;
 
-    // Muestra enunciado y limpia solución previa
     renderMath(data.latex_enunciado || '', 'enunciado');
     renderMath('', 'solucion');
 
-    // Limpia gráfico anterior
     if (chart){ chart.destroy(); chart = null; }
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
@@ -105,13 +150,11 @@ async function mostrarRespuesta(){
       await nuevoEjercicio();
       if(!lastExercise) return;
     }
-    // Muestra solución
     renderMath(lastExercise.latex_solucion || '', 'solucion');
 
-    // Dibuja gráfico según lo que devuelva el playground:
-    if (lastExercise.chart){             // variante “simple”
+    if (lastExercise.chart){
       dibujarGraficoDesdeChartObj(lastExercise.chart);
-    } else if (lastExercise.graph && lastExercise.coeffs){ // formato “prod”
+    } else if (lastExercise.graph && lastExercise.coeffs){
       dibujarGraficoCuadratica(lastExercise);
     }
   }catch(err){
@@ -119,6 +162,9 @@ async function mostrarRespuesta(){
   }
 }
 
+/* ===========================
+   Boot
+   =========================== */
 function wireUI(){
   const btnNuevo = document.getElementById('btn-nuevo');
   const btnMostrar = document.getElementById('btn-mostrar');
@@ -126,4 +172,7 @@ function wireUI(){
   if (btnMostrar) btnMostrar.addEventListener('click', mostrarRespuesta);
 }
 
-window.addEventListener('DOMContentLoaded', wireUI);
+window.addEventListener('DOMContentLoaded', ()=>{
+  initFilters();
+  wireUI();
+});
