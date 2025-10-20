@@ -20,6 +20,15 @@ def create_app():
     # Debug: lista todas las rutas registradas (para verificar el blueprint)
     @app.get("/__routes")
     def routes():
+        try:
+            lines = []
+            for r in app.url_map.iter_rules():
+                lines.append(r.rule)
+            # Respuesta en texto plano para evitar problemas de serialización
+            return "\n".join(sorted(lines)), 200, {"Content-Type": "text/plain; charset=utf-8"}
+        except Exception as e:
+            return {"error": repr(e)}, 500
+
         return {"routes": sorted(str(r) for r in app.url_map.iter_rules())}, 200
 
     return app
