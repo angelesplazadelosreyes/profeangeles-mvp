@@ -8,7 +8,8 @@ const PROD_RENDER_BASE = 'https://profeangeles-mvp.onrender.com'; // mismo que u
 const LOCAL_BASE = 'http://localhost:5000';
 
 // Ruta del endpoint del playground (ajústala si tu blueprint usa otra)
-const ENDPOINT_PATH = '/api2/generate';
+const ENDPOINT_PATH = '/api/playground/generate';
+
 
 // Modo automático: local si navegas en localhost, Render si no.
 function getBaseUrl() {
