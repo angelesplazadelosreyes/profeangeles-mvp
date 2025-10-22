@@ -1,6 +1,13 @@
 # api/__init__.py
 from flask import Flask
-from flask_cors import CORS
+
+# CORS opcional: si falta la lib, seguimos sin romper el arranque.
+try:
+    from flask_cors import CORS
+except Exception:
+    def CORS(_app):  # no-op
+        return _app
+
 
 def create_app():
     app = Flask(__name__)
