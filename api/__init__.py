@@ -15,7 +15,12 @@ def create_app():
 
     @app.get("/health")
     def health():
-        return {"ok": True}, 200
+        try:
+            routes = sorted(r.rule for r in app.url_map.iter_rules())
+            return {"ok": True, "routes": routes}, 200
+        except Exception as e:
+            return {"ok": True, "routes_error": repr(e)}, 200
+
 
     # Debug: lista todas las rutas registradas (para verificar el blueprint)
     @app.get("/__routes")
