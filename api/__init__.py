@@ -36,7 +36,6 @@ def create_app():
         except Exception as e:
             return {"error": repr(e)}, 500
 
-        return {"routes": sorted(str(r) for r in app.url_map.iter_rules())}, 200
 
     return app
 
