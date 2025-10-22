@@ -1,50 +1,47 @@
 # api/__init__.py
-from flask import Flask
+# Arranca la app de PRODUCCIÓN y le agrega las rutas del playground.
+# No cambiamos nada de la app existente: solo registramos un blueprint extra.
 
-# CORS opcional: si falta la lib, seguimos sin romper el arranque.
+# Importa la app ya existente de prod
+from generate_exercise import app as legacy_app
+
+# CORS opcional (no debe romper si falta el paquete)
 try:
     from flask_cors import CORS
-except Exception:
-    def CORS(_app):  # no-op
+except Exception:  # no-op si no está instalado
+    def CORS(_app):
         return _app
 
-
 def create_app():
-    app = Flask(__name__)
-    CORS(app)
+    # Usamos la app de producción como base
+    app = legacy_app
 
-    # Blueprints
-    from generate_exercise import prod_bp
-    from playground import playground_bp
+    # Si tienes CORS, lo aplicamos (no hace daño si ya pusiste headers manuales)
+    try:
+        CORS(app)
+    except Exception:
+        pass
 
-    app.register_blueprint(prod_bp)
-    app.register_blueprint(playground_bp)
+    # Registramos el playground como blueprint adicional
+    try:
+        from playground import playground_bp  # está en el mismo directorio
+        app.register_blueprint(playground_bp)
+    except Exception as e:
+        # No rompemos el arranque si falla; lo sabremos en /__routes
+        @app.get("/__playground_import_error")
+        def __pg_err():
+            return {"playground_import_error": repr(e)}, 200
 
-
-    @app.get("/health")
-    def health():
-        try:
-            routes = sorted(r.rule for r in app.url_map.iter_rules())
-            return {"ok": True, "routes": routes}, 200
-        except Exception as e:
-            return {"ok": True, "routes_error": repr(e)}, 200
-
-
-
-    # Debug: lista todas las rutas registradas (para verificar el blueprint)
+    # Diagnóstico: lista de rutas (texto plano)
     @app.get("/__routes")
     def routes():
         try:
-            lines = []
-            for r in app.url_map.iter_rules():
-                lines.append(r.rule)
-            # Respuesta en texto plano para evitar problemas de serialización
-            return "\n".join(sorted(lines)), 200, {"Content-Type": "text/plain; charset=utf-8"}
+            lines = sorted(r.rule for r in app.url_map.iter_rules())
+            return "\n".join(lines), 200, {"Content-Type": "text/plain; charset=utf-8"}
         except Exception as e:
             return {"error": repr(e)}, 500
 
-
     return app
 
-# Para Render (si corre "app:app")
+# Render ejecuta: wsgi:app   → api/wsgi.py importa este app
 app = create_app()
