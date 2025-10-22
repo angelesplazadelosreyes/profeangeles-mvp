@@ -14,8 +14,8 @@ def create_app():
     CORS(app)
 
     # Blueprints
-    from .generate_exercise import prod_bp      # producción: /api/...
-    from .playground import playground_bp       # playground: /api/playground/...
+    from generate_exercise import prod_bp
+    from playground import playground_bp
 
     app.register_blueprint(prod_bp)
     app.register_blueprint(playground_bp)
