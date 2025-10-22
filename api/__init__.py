@@ -13,6 +13,7 @@ def create_app():
     app.register_blueprint(prod_bp)
     app.register_blueprint(playground_bp)
 
+
     @app.get("/health")
     def health():
         try:
@@ -20,6 +21,7 @@ def create_app():
             return {"ok": True, "routes": routes}, 200
         except Exception as e:
             return {"ok": True, "routes_error": repr(e)}, 200
+
 
 
     # Debug: lista todas las rutas registradas (para verificar el blueprint)
