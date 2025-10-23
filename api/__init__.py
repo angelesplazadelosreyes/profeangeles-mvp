@@ -26,20 +26,10 @@ def create_app():
     try:
         from playground import playground_bp  # está en el mismo directorio
         app.register_blueprint(playground_bp)
-    except Exception as e:
-        # No rompemos el arranque si falla; lo sabremos en /__routes
-        @app.get("/__playground_import_error")
-        def __pg_err():
-            return {"playground_import_error": repr(e)}, 200
-
-    # Diagnóstico: lista de rutas (texto plano)
-    @app.get("/__routes")
-    def routes():
-        try:
-            lines = sorted(r.rule for r in app.url_map.iter_rules())
-            return "\n".join(lines), 200, {"Content-Type": "text/plain; charset=utf-8"}
-        except Exception as e:
-            return {"error": repr(e)}, 500
+    except Exception:
+        # Si fallara el import, no rompemos el arranque de la app de prod
+        # (no exponemos endpoint de diagnóstico en producción)
+        pass
 
     return app
 
