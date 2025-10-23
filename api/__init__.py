@@ -1,12 +1,6 @@
 # api/__init__.py
 from flask import Flask
-# CORS opcional: si falta el paquete en Render, no rompemos el arranque
-try:
-    from flask_cors import CORS
-except Exception:
-    def CORS(_app):
-        return _app
-
+from flask_cors import CORS
 
 # Importa la app ya existente de prod
 from generate_exercise import app as legacy_app
