@@ -1,9 +1,12 @@
 # api/__init__.py
-# Arranca la app de PRODUCCIÓN y le agrega las rutas del playground.
-# No cambiamos nada de la app existente: solo registramos un blueprint extra.
-
 from flask import Flask
-from flask_cors import CORS
+# CORS opcional: si falta el paquete en Render, no rompemos el arranque
+try:
+    from flask_cors import CORS
+except Exception:
+    def CORS(_app):
+        return _app
+
 
 # Importa la app ya existente de prod
 from generate_exercise import app as legacy_app
