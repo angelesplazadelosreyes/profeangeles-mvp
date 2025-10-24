@@ -6,7 +6,7 @@ let lastExercise = null;
 let chart = null;
 
 /* ===========================
-   Opciones (mínimas para tests)
+   Opciones (extensible)
    =========================== */
 const OPTIONS = {
   "Álgebra": {
@@ -28,23 +28,29 @@ function renderMath(latex, elId){
   }
 }
 
-// Dibuja el gráfico si el backend envía datos estilo {chart:{labels, values}}
+// Si el playground devuelve {chart:{labels, values}} (formato simple)
 function dibujarGraficoDesdeChartObj(chartObj){
   const canvas = document.getElementById('grafico');
   if (!canvas || !chartObj) return;
   const ctx = canvas.getContext('2d');
 
-  const labels = chartObj.labels || [];
-  const values = chartObj.values || [];
+  const labels = chartObj.labels || chartObj.data?.labels || [];
+  const values =
+    chartObj.values
+    || chartObj.data?.datasets?.[0]?.data
+    || [];
 
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
     type: chartObj.type || 'line',
     data: {
       labels,
-      datasets: [{ label: chartObj.label || 'f(x)', data: values }]
+      datasets: [{
+        label: chartObj.label || chartObj.data?.datasets?.[0]?.label || 'f(x)',
+        data: values
+      }]
     },
-    options: {
+    options: chartObj.options || {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
@@ -55,7 +61,7 @@ function dibujarGraficoDesdeChartObj(chartObj){
   });
 }
 
-// Si el playground devuelve el mismo formato que prod (coeffs + graph)
+// Si el playground conserva el formato prod (coeffs + graph)
 function dibujarGraficoCuadratica(data){
   const canvas = document.getElementById('grafico');
   if (!canvas || !data?.graph || !data?.coeffs) return;
@@ -163,16 +169,159 @@ async function mostrarRespuesta(){
 }
 
 /* ===========================
+   Íconos por materia (SVG) — mismo look que main.js
+   =========================== */
+const SUBJECT_ICONS = {
+  matematicas: `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="3" rx="4" width="18" height="18" fill="#FFD400" stroke="#1d2b2f" stroke-width="1.5"/>
+      <path d="M8 16l4-8 4 8M10 12h4" stroke="#1d2b2f" stroke-width="1.8" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+  quimica: `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="3" rx="4" width="18" height="18" fill="#FF8A00" stroke="#1d2b2f" stroke-width="1.5"/>
+      <path d="M10 7h4M12 7v3l3 5a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3l3-5V7"
+            stroke="#1d2b2f" stroke-width="1.8" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+  biologia: `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="3" rx="4" width="18" height="18" fill="#00D48B" stroke="#1d2b2f" stroke-width="1.5"/>
+      <path d="M7 15c0-4 5-7 10-6 2 1 2 6-2 8-4 2-7 1-8-2Z"
+            stroke="#1d2b2f" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+      <path d="M8.5 15c3.5-1 6-2.5 8.5-5"
+            stroke="#1d2b2f" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </svg>`,
+  fisica: `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="3" rx="4" width="18" height="18" fill="#9B5DE5" stroke="#1d2b2f" stroke-width="1.5"/>
+      <ellipse cx="12" cy="12" rx="6.5" ry="3" fill="none" stroke="#1d2b2f" stroke-width="1.8"/>
+      <ellipse cx="12" cy="12" rx="6.5" ry="3" transform="rotate(60 12 12)" fill="none" stroke="#1d2b2f" stroke-width="1.8"/>
+      <ellipse cx="12" cy="12" rx="6.5" ry="3" transform="rotate(-60 12 12)" fill="none" stroke="#1d2b2f" stroke-width="1.8"/>
+      <circle cx="12" cy="12" r="1.6" fill="#1d2b2f" stroke="none"/>
+    </svg>`
+};
+
+function subjectKeyFromText(txt){
+  const s = (txt||'').toLowerCase();
+  if (s.includes('matem')) return 'matematicas';
+  if (s.includes('quím') || s.includes('quimi')) return 'quimica';
+  if (s.includes('biol')) return 'biologia';
+  if (s.includes('fís') || s.includes('fis')) return 'fisica';
+  return 'matematicas';
+}
+function getCurrentSubjectKey(){
+  const active = document.querySelector('.subjects__item[aria-current="page"]');
+  const name = active?.getAttribute('data-subject') || active?.textContent || '';
+  return subjectKeyFromText(name);
+}
+
+function applySidebarIcons(){
+  document.querySelectorAll('.subjects__item').forEach(li=>{
+    const name = li.getAttribute('data-subject') || li.textContent || '';
+    const key = subjectKeyFromText(name);
+    const box = li.querySelector('.subjects__icon');
+    if (box && SUBJECT_ICONS[key]) box.innerHTML = SUBJECT_ICONS[key];
+  });
+}
+
+function renderHeaderIcon(){
+  const holder = document.querySelector('.subject-icon-header');
+  if (!holder) return;
+  const key = getCurrentSubjectKey();
+  holder.innerHTML = SUBJECT_ICONS[key] || '';
+}
+function renderSubjectTitle(){
+  const span = document.getElementById('subject-name');
+  if (!span) return;
+  const active = document.querySelector('.subjects__item[aria-current="page"]');
+  const name = active?.getAttribute('data-subject') || active?.textContent?.trim() || 'Matemáticas';
+  span.textContent = name;
+}
+
+/* ===========================
+   Sidebar: activo + título dinámico
+   =========================== */
+function initSubjectsSidebar(){
+  const list = document.getElementById('subjects');
+  if (!list) return;
+
+  const items = Array.from(list.querySelectorAll('.subjects__item'));
+
+  function setActive(item){
+    if (item.getAttribute('aria-disabled') === 'true') return;
+    items.forEach(i => i.removeAttribute('aria-current'));
+    item.setAttribute('aria-current', 'page');
+    renderSubjectTitle();
+    renderHeaderIcon();
+  }
+
+  function handleActivate(e){
+    if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ')) return;
+    e.preventDefault();
+    setActive(e.currentTarget);
+  }
+
+  items.forEach(item => {
+    item.addEventListener('click', handleActivate);
+    item.addEventListener('keydown', handleActivate);
+  });
+}
+
+/* ===========================
+   Sidebar colapsable en móvil
+   =========================== */
+function initSidebarToggle(){
+  const btn = document.getElementById('toggle-subjects');
+  const sidebar = document.getElementById('sidebar');
+  const list = document.getElementById('subjects');
+  if (!btn || !sidebar || !list) return;
+
+  function setOpen(open){
+    if (open){
+      sidebar.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+    }else{
+      sidebar.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  btn.addEventListener('click', ()=>{
+    const isOpen = sidebar.classList.contains('is-open');
+    setOpen(!isOpen);
+  });
+
+  list.addEventListener('click', (e)=>{
+    const item = e.target.closest('.subjects__item');
+    if (!item) return;
+    if (window.matchMedia('(max-width: 768px)').matches){
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener('click', (e)=>{
+    if (!window.matchMedia('(max-width: 768px)').matches) return;
+    const clickedInside = sidebar.contains(e.target) || btn.contains(e.target);
+    if (!clickedInside) setOpen(false);
+  });
+}
+
+/* ===========================
    Boot
    =========================== */
-function wireUI(){
+window.addEventListener('DOMContentLoaded', ()=>{
+  initSubjectsSidebar();
+  initSidebarToggle();
+  initFilters();
+
+  applySidebarIcons();
+  renderSubjectTitle();
+  renderHeaderIcon();
+
   const btnNuevo = document.getElementById('btn-nuevo');
   const btnMostrar = document.getElementById('btn-mostrar');
   if (btnNuevo) btnNuevo.addEventListener('click', nuevoEjercicio);
   if (btnMostrar) btnMostrar.addEventListener('click', mostrarRespuesta);
-}
-
-window.addEventListener('DOMContentLoaded', ()=>{
-  initFilters();
-  wireUI();
 });
