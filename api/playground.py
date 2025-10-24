@@ -1,42 +1,118 @@
-# api/playground_generate.py
-from flask import Blueprint, request, jsonify
+# api/playground.py
+# Gemelo de generate_exercise.py pero como Blueprint bajo /api/playground
+import json
+import math
+import random
+import time
+from flask import Blueprint, Response, request
 
+# Blueprint con prefijo propio (no es una app independiente)
 playground_bp = Blueprint("playground", __name__, url_prefix="/api/playground")
 
+# --------------------- CORS (preflight) ---------------------
+@playground_bp.route("/generate", methods=["OPTIONS"])
+def generate_options():
+    # La app principal ya agrega los headers CORS en after_request;
+    # este endpoint solo permite el preflight sin errores.
+    return ("", 204)
+
+# --------------------- Lógica de ejercicios (gemela) ---------------------
+def rand_coeff():
+    """Devuelve a,b,c evitando casos degenerados y números enormes."""
+    a = random.choice([i for i in range(-5, 6) if i != 0])  # a != 0
+    b = random.randint(-9, 9)
+    c = random.randint(-9, 9)
+    if b == 0 and c == 0:
+        b = random.randint(1, 5)
+    return a, b, c
+
+def format_latex_quadratic(a, b, c):
+    """LaTeX compacto con signos y ocultando coeficientes 0."""
+    def term_x2(a):
+        if a == 1:  return "x^{2}"
+        if a == -1: return "-x^{2}"
+        return f"{a}x^2"
+    def term_x(b):
+        if b == 0:  return ""
+        if b == 1:  return "+ x"
+        if b == -1: return "- x"
+        return f"{'+' if b>0 else ''}{b}x"
+    def term_c(c):
+        if c == 0:  return ""
+        return f"{'+' if c>0 else ''}{c}"
+    return rf"{term_x2(a)}{term_x(b)}{term_c(c)} = 0"
+
+def quadratic_traits(a, b, c):
+    D = b*b - 4*a*c
+    h = -b/(2*a)
+    k = a*h*h + b*h + c
+    roots = []
+    if D > 0:
+        sqrtD = math.sqrt(D)
+        r1 = (-b + sqrtD)/(2*a)
+        r2 = (-b - sqrtD)/(2*a)
+        roots = [r1, r2]
+    elif D == 0:
+        r = -b/(2*a)
+        roots = [r]
+    return D, h, k, roots, c  # c = intersección en y
+
+def latex_solution(a, b, c, D, h, k, roots):
+    concav = r"\textbf{Concavidad:}~" + (r"\text{hacia arriba } \color{green}{\smile}" if a > 0
+             else r"\text{hacia abajo } \color{red}{\frown}")
+    linea_datos = rf"\textbf{{Datos:}}~a={a},~b={b},~c={c}"
+    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta=b^2-4ac={D}"
+    linea_vert  = rf"\textbf{{Vértice:}}~(h,k)=\left({h:.2f},{k:.2f}\right)"
+    linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
+    if len(roots) == 2:
+        linea_raices = rf"\textbf{{Raíces:}}~x_1={roots[0]:.2f},~x_2={roots[1]:.2f}"
+    elif len(roots) == 1:
+        linea_raices = rf"\textbf{{Raíz doble:}}~x={roots[0]:.2f}"
+    else:
+        linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
+    return (
+        r"\begin{aligned}"
+        rf"{concav} \\[6pt]"
+        rf"{linea_datos} \\[4pt]"
+        rf"{linea_disc} \\[4pt]"
+        rf"{linea_vert} \\[4pt]"
+        rf"{linea_eje} \\[4pt]"
+        rf"{linea_raices}"
+        r"\end{aligned}"
+    )
+
+# --------------------- Endpoint de playground ---------------------
 @playground_bp.get("/generate")
 def generate():
-    """
-    Endpoint de pruebas para nuevos ejercicios.
-    Puedes iterar aquí fórmulas/casos sin tocar producción.
-    """
-    # Ejemplo: parámetros (ajusta a tus selects reales)
-    tema = request.args.get("tema", "Álgebra")
+    # Nota: aquí usamos los nombres que envía main2/api2: tema, subtema, tipo
+    tema    = request.args.get("tema", "Álgebra")
     subtema = request.args.get("subtema", "Función cuadrática")
-    tipo = request.args.get("tipo", "analisis_completo")
+    etype   = request.args.get("tipo", "analisis_completo")
 
-    # TODO: aquí prueba nuevas reglas, fórmulas, LaTeX y datos del gráfico
-    # Devuelve el mismo esquema de claves que espera el front:
+    a, b, c = rand_coeff()
+    D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
+
+    latex_eq = format_latex_quadratic(a, b, c)
+    latex_enunciado = rf"\text{{Analiza la función cuadrática: }}~ {latex_eq}"
+    latex_solucion = latex_solution(a, b, c, D, h, k, roots)
+
     payload = {
-        "latex_enunciado": r"Analiza: \; x^2 - 4x + 3 = 0",
-        "latex_solucion": r"x_1=1,\; x_2=3 \;\; \text{(demo playground)}",
-        "chart": {
-            "type": "line",
-            "data": {
-                "labels": [i for i in range(-6, 7)],
-                "datasets": [
-                    {
-                        "label": "y = x^2 - 4x + 3",
-                        "data": [x*x - 4*x + 3 for x in range(-6, 7)]
-                    }
-                ]
-            },
-            "options": {"responsive": True}
+        "coeffs": {"a": a, "b": b, "c": c},
+        "latex_enunciado": latex_enunciado,
+        "latex_solucion": latex_solucion,
+        "graph": {
+            "x_min": -10, "x_max": 10, "step": 0.25,
+            "vertex": {"x": h, "y": k},
+            "roots": roots,
+            "axis": {"x": h},
+            "y_intercept": y_intercept
         },
-        "meta": {"tema": tema, "subtema": subtema, "tipo": tipo, "source": "playground"}
+        "meta": {
+            "exercise_id": f"pg_{int(time.time()*1000)}",
+            "timestamp": int(time.time()),
+            "topic": "funcion_cuadratica",
+            "filters": {"tema": tema, "subtema": subtema, "tipo": etype},
+            "source": "playground"
+        }
     }
-    return jsonify(payload), 200
-
-
-@playground_bp.get("/ping")
-def ping():
-    return {"pong": True}, 200
+    return Response(json.dumps(payload), mimetype="application/json")
