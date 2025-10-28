@@ -58,26 +58,46 @@ def quadratic_traits(a, b, c):
     return D, h, k, roots, c  # c = intersección en y
 
 def latex_solution(a, b, c, D, h, k, roots):
+    # strings con signos correctos para la canónica
+    h_abs = abs(h)
+    k_sign = "+" if k >= 0 else ""  # str(k) ya lleva signo si < 0
+    # (x - h) si h>=0 ; (x + |h|) si h<0
+    x_minus_h = rf"(x - {h_abs:.2f})" if h >= 0 else rf"(x + {h_abs:.2f})"
+
+    # Coeficiente 'a' en canónica: no mostrar 1 explícito
+    if a == 1:
+        a_str = ""
+    elif a == -1:
+        a_str = "-"
+    else:
+        a_str = f"{a}"
+
     concav = r"\textbf{Concavidad:}~" + (r"\text{hacia arriba } \color{green}{\smile}" if a > 0
              else r"\text{hacia abajo } \color{red}{\frown}")
     linea_datos = rf"\textbf{{Datos:}}~a={a},~b={b},~c={c}"
     linea_disc  = rf"\textbf{{Discriminante:}}~\Delta=b^2-4ac={D}"
     linea_vert  = rf"\textbf{{Vértice:}}~(h,k)=\left({h:.2f},{k:.2f}\right)"
     linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
+    linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"
+    linea_stand = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2 {k_sign}{k:.2f}"
+
     if len(roots) == 2:
         linea_raices = rf"\textbf{{Raíces:}}~x_1={roots[0]:.2f},~x_2={roots[1]:.2f}"
     elif len(roots) == 1:
         linea_raices = rf"\textbf{{Raíz doble:}}~x={roots[0]:.2f}"
     else:
         linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
+
     return (
         r"\begin{aligned}"
         rf"{concav} \\[6pt]"
         rf"{linea_datos} \\[4pt]"
         rf"{linea_disc} \\[4pt]"
-        rf"{linea_vert} \\[4pt]"
+        rf"{linea_raices} \\[4pt]"
         rf"{linea_eje} \\[4pt]"
-        rf"{linea_raices}"
+        rf"{linea_vert} \\[4pt]"
+        rf"{linea_y} \\[4pt]"
+        rf"{linea_stand}"
         r"\end{aligned}"
     )
 
