@@ -58,6 +58,67 @@ def quadratic_traits(a, b, c):
     return D, h, k, roots, c  # c = intersección en y
 
 def latex_solution(a, b, c, D, h, k, roots):
+    # a como prefactor: "", "-", o el número
+    if a == 1:
+        a_str = ""
+    elif a == -1:
+        a_str = "-"
+    else:
+        a_str = f"{a}"
+
+    # (x - h)^2 con signos correctos (sin paréntesis extra si h=0)
+    if abs(h) < 1e-9:
+        x_minus_h = "x"
+    elif h > 0:
+        x_minus_h = f"(x - {h:.2f})"
+    else:
+        x_minus_h = f"(x + {abs(h):.2f})"
+
+    # + k o - |k|
+    k_sign = f"+ {k:.2f}" if k >= 0 else f"- {abs(k):.2f}"
+
+    concav = (
+        r"\textbf{Concavidad:}~"
+        + (r"\text{cóncava hacia arriba } \color{green}{\smile}"
+           if a > 0 else
+           r"\text{cóncava hacia abajo } \color{red}{\frown}")
+    )
+
+    linea_datos = rf"\textbf{{Coeficientes:}}~a={a},~b={b},~c={c}"
+    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta=b^2-4ac={D}"
+    linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
+    linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
+    linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"
+    linea_stand = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2~{k_sign}"
+    linea_dom   = rf"\textbf{{Dominio:}}~\mathbb{{R}}"
+
+    if a > 0:
+        linea_rec = rf"\textbf{{Recorrido:}}~\left[{k:.2f},\, \infty\right)"
+    else:
+        linea_rec = rf"\textbf{{Recorrido:}}~\left(-\infty,\, {k:.2f}\right]"
+
+    if len(roots) == 2:
+        linea_raices = rf"\textbf{{Raíces:}}~x_1={roots[0]:.2f},~x_2={roots[1]:.2f}"
+    elif len(roots) == 1:
+        linea_raices = rf"\textbf{{Raíz doble:}}~x={roots[0]:.2f}"
+    else:
+        linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
+
+    return (
+        r"\begin{aligned}"
+        rf"{concav} \\[6pt]"
+        rf"{linea_datos} \\[6pt]"
+        rf"{linea_disc} \\[6pt]"
+        rf"{linea_raices} \\[6pt]"
+        rf"{linea_eje} \\[6pt]"
+        rf"{linea_vert} \\[6pt]"
+        rf"{linea_y} \\[6pt]"
+        rf"{linea_dom} \\[6pt]"
+        rf"{linea_rec} \\[6pt]"
+        rf"{linea_stand}"
+        r"\end{aligned}"
+    )
+
     # strings con signos correctos para la canónica
     h_abs = abs(h)
     k_sign = "+" if k >= 0 else ""  # str(k) ya lleva signo si < 0
@@ -73,13 +134,16 @@ def latex_solution(a, b, c, D, h, k, roots):
         a_str = f"{a}"
 
     concav = r"\textbf{Concavidad:}~" + (r"\text{hacia arriba } \color{green}{\smile}" if a > 0
-             else r"\text{hacia abajo } \color{red}{\frown}")
-    linea_datos = rf"\textbf{{Datos:}}~a={a},~b={b},~c={c}"
-    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta=b^2-4ac={D}"
-    linea_vert  = rf"\textbf{{Vértice:}}~(h,k)=\left({h:.2f},{k:.2f}\right)"
+             else r"\text{hacia abajo (convexa)} \color{red}{\frown}")
+    linea_datos = rf"\textbf{{Coeficientes:}}~a={a},~b={b},~c={c}"
+    linea_disc  = rf"\textbf{{Discriminante (b^2-4ac):}}~\Delta={D}"
+    linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
     linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
     linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"
     linea_stand = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2 {k_sign}{k:.2f}"
+    linea_dom   = rf"\textbf{{Dominio:}}~R"
+    linea_rec   = rf"\textbf{{Recorrido:}}~"+(rf"\textbf{{[}}{k:.2f}{{\infty]}}"if a > 0
+             else rf"\textbf{{[\infty]}}{k:.2f}{{]}}")
 
     if len(roots) == 2:
         linea_raices = rf"\textbf{{Raíces:}}~x_1={roots[0]:.2f},~x_2={roots[1]:.2f}"
@@ -91,12 +155,14 @@ def latex_solution(a, b, c, D, h, k, roots):
     return (
         r"\begin{aligned}"
         rf"{concav} \\[6pt]"
-        rf"{linea_datos} \\[4pt]"
-        rf"{linea_disc} \\[4pt]"
-        rf"{linea_raices} \\[4pt]"
-        rf"{linea_eje} \\[4pt]"
-        rf"{linea_vert} \\[4pt]"
-        rf"{linea_y} \\[4pt]"
+        rf"{linea_datos} \\[6pt]"
+        rf"{linea_disc} \\[6pt]"
+        rf"{linea_raices} \\[6pt]"
+        rf"{linea_eje} \\[6pt]"
+        rf"{linea_vert} \\[6pt]"
+        rf"{linea_y} \\[6pt]"
+        rf"{linea_dom} \\[6pt]"
+        rf"{linea_rec} \\[6pt]"
         rf"{linea_stand}"
         r"\end{aligned}"
     )
