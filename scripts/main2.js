@@ -1,19 +1,10 @@
 // /scripts/main2.js
-// Lógica de exercises2 usando la API de playground
 import { fetchPlayground } from './api2.js';
 
 let lastExercise = null;
 let chart = null;
 
-/* ============ Config (detecta ids nuevos si existen) ============ */
-const IDS = {
-  enunciado: 'enunciado',
-  solFunc: document.getElementById('sol-func') ? 'sol-func' : 'solucion',
-  solGraph: document.getElementById('sol-graph') ? 'sol-graph' : null,
-  grafico: 'grafico'
-};
-
-/* ========================= Opciones (extensible) ========================= */
+/* Opciones */
 const OPTIONS = {
   "Álgebra": {
     "Función cuadrática": [
@@ -22,7 +13,7 @@ const OPTIONS = {
   }
 };
 
-/* ================================ Utils ================================ */
+/* Utils */
 function renderMath(latex, elId){
   const el = document.getElementById(elId);
   if (!el) return;
@@ -32,146 +23,41 @@ function renderMath(latex, elId){
   }
 }
 
-/* ================== Gráfico (formato simple genérico) ================== */
-function dibujarGraficoDesdeChartObj(chartObj){
-  const canvas = document.getElementById(IDS.grafico);
-  if (!canvas || !chartObj) return;
-  const ctx = canvas.getContext('2d');
-
-  const labels = chartObj.labels || chartObj.data?.labels || [];
-  const values = chartObj.values || chartObj.data?.datasets?.[0]?.data || [];
-
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: chartObj.type || 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: chartObj.label || chartObj.data?.datasets?.[0]?.label || 'f(x)',
-        data: values,
-        borderWidth: 2,
-        pointRadius: 0
-      }]
-    },
-    options: chartObj.options || {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } }
-      },
-      scales: {
-        x: { title:{display:true,text:'x'}, grid:{color:'rgba(0,0,0,.06)'} },
-        y: { title:{display:true,text:'y'}, grid:{color:'rgba(0,0,0,.06)'} }
-      }
-    }
-  });
-}
-
-/* =========== Gráfico cuadrática con anotaciones útiles =========== */
+/* Chart.js a partir de coeffs + rango */
 function dibujarGraficoCuadratica(data){
-  const canvas = document.getElementById(IDS.grafico);
+  const canvas = document.getElementById('grafico');
   if (!canvas || !data?.graph || !data?.coeffs) return;
   const ctx = canvas.getContext('2d');
 
-  const { x_min, x_max, step, vertex, roots = [], axis, y_intercept } = data.graph;
+  const { x_min, x_max, step } = data.graph;
   const { a, b, c } = data.coeffs;
 
   const xs = [];
   const ys = [];
-  for(let x = x_min; x <= x_max + 1e-9; x += step){
+  for(let x = x_min; x <= x_max; x += step){
     xs.push(Number(x.toFixed(2)));
     ys.push(a*x*x + b*x + c);
   }
 
-  // Datos auxiliares
-  const vx = vertex?.x ?? (-(b)/(2*a));
-  const vy = vertex?.y ?? (a*vx*vx + b*vx + c);
-  const axisX = axis?.x ?? vx;
-
-  // Dataset principal (parábola)
-  const dsParabola = {
-    label: 'Parábola',
-    data: ys,
-    borderWidth: 2,
-    pointRadius: 0
-  };
-
-  // Vértice
-  const vertIdx = xs.findIndex(x => Math.abs(x - vx) < step/2) ?? 0;
-  const dsVertice = {
-    type: 'scatter',
-    label: 'Vértice',
-    data: [{ x: vx, y: vy }],
-    pointRadius: 5
-  };
-
-  // Corte con eje y (x=0)
-  const dsCorteY = {
-    type: 'scatter',
-    label: 'Corte con eje y',
-    data: [{ x: 0, y: c }],
-    pointStyle: 'circle',
-    pointRadius: 4
-  };
-
-  // Raíces reales (si existen)
-  const dsRaices = {
-    type: 'scatter',
-    label: 'Raíces reales',
-    data: (roots || []).map(r => ({ x: r, y: 0 })),
-    pointStyle: 'cross',
-    pointRadius: 5
-  };
-
-  // Eje de simetría (línea vertical punteada)
-  const dsEje = {
-    label: 'Eje de simetría',
-    data: xs.map(() => null),
-    borderDash: [6, 6],
-    pointRadius: 0
-  };
-
-  // Construimos el gráfico
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: xs,
-      datasets: [dsParabola, dsEje, dsVertice, dsCorteY, dsRaices]
+      datasets: [{ label: 'y = ax² + bx + c', data: ys }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      parsing: false, // usamos valores ya calculados
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } }
-      },
       scales: {
-        x: { title:{display:true,text:'x'}, grid:{ color:'rgba(0,0,0,.06)' } },
-        y: { title:{display:true,text:'y'}, grid:{ color:'rgba(0,0,0,.06)' } }
+        x: { title:{display:true,text:'x'} },
+        y: { title:{display:true,text:'y'} }
       }
-    },
-    plugins: [{
-      // Dibuja la línea vertical del eje de simetría en x = axisX
-      id: 'axisLine',
-      afterDraw(c){
-        const xScale = c.scales.x, yScale = c.scales.y;
-        if (!xScale || !yScale) return;
-        const xPix = xScale.getPixelForValue(axisX);
-        const ctx2 = c.ctx;
-        ctx2.save();
-        ctx2.setLineDash([6,6]);
-        ctx2.beginPath();
-        ctx2.moveTo(xPix, yScale.top);
-        ctx2.lineTo(xPix, yScale.bottom);
-        ctx2.stroke();
-        ctx2.restore();
-      }
-    }]
+    }
   });
 }
 
-/* =========================== Filtros =========================== */
+/* Selects */
 function initFilters(){
   const temaSel = document.getElementById('tema');
   const subtemaSel = document.getElementById('subtema');
@@ -193,13 +79,12 @@ function initFilters(){
     const tipos = (OPTIONS[t] && OPTIONS[t][s]) || [];
     tipoSel.innerHTML = tipos.map(opt => `<option value="${opt.id}">${opt.label}</option>`).join('');
   }
-
   temaSel.addEventListener('change', refreshSubtemas);
   subtemaSel.addEventListener('change', refreshTipos);
   refreshSubtemas();
 }
 
-/* =========================== Acciones =========================== */
+/* Acciones */
 async function nuevoEjercicio(){
   try{
     const tema = document.getElementById('tema')?.value || 'Álgebra';
@@ -209,10 +94,10 @@ async function nuevoEjercicio(){
     const data = await fetchPlayground({ tema, subtema, tipo });
     lastExercise = data;
 
-    renderMath(data.latex_enunciado || '', IDS.enunciado);
-    // limpiamos salidas
-    renderMath('', IDS.solFunc);
-    if (IDS.solGraph) renderMath('', IDS.solGraph);
+    renderMath(data.latex_enunciado || '', 'enunciado');
+    renderMath('', 'sol-func');      // limpiamos análisis función
+    renderMath('', 'sol-graph');     // limpiamos análisis gráfico/leyendas
+
     if (chart){ chart.destroy(); chart = null; }
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
@@ -225,23 +110,24 @@ async function mostrarRespuesta(){
       await nuevoEjercicio();
       if(!lastExercise) return;
     }
+    // Escribimos la solución en la tarjeta de función
+    renderMath(lastExercise.latex_solucion || '', 'sol-func');
 
-    // Por ahora la API trae una sola solución LaTeX.
-    // La mostramos en la tarjeta “Análisis de la función”.
-    renderMath(lastExercise.latex_solucion || '', IDS.solFunc);
-
-    // Y el gráfico en la otra tarjeta.
-    if (lastExercise.chart){
-      dibujarGraficoDesdeChartObj(lastExercise.chart);
-    } else if (lastExercise.graph && lastExercise.coeffs){
+    // El gráfico va en la segunda tarjeta
+    if (lastExercise.graph && lastExercise.coeffs){
       dibujarGraficoCuadratica(lastExercise);
+      // opcional: texto breve bajo el gráfico
+      const info = String.raw`\textit{Nota:}~La línea punteada marca el eje de simetría; el vértice se muestra como punto destacado.`;
+      renderMath(info, 'sol-graph');
+    }else{
+      renderMath(String.raw`\text{No hay datos de gráfico}`, 'sol-graph');
     }
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
   }
 }
 
-/* =================== Sidebar e iconos (igual que antes) =================== */
+/* Sidebar + header icon (igual que antes) */
 const SUBJECT_ICONS = {
   matematicas: `
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -309,12 +195,10 @@ function renderSubjectTitle(){
   span.textContent = name;
 }
 
-/* ================= Sidebar + toggle (igual) ================= */
 function initSubjectsSidebar(){
   const list = document.getElementById('subjects');
   if (!list) return;
   const items = Array.from(list.querySelectorAll('.subjects__item'));
-
   function setActive(item){
     if (item.getAttribute('aria-disabled') === 'true') return;
     items.forEach(i => i.removeAttribute('aria-current'));
@@ -332,6 +216,7 @@ function initSubjectsSidebar(){
     item.addEventListener('keydown', handleActivate);
   });
 }
+
 function initSidebarToggle(){
   const btn = document.getElementById('toggle-subjects');
   const sidebar = document.getElementById('sidebar');
@@ -339,8 +224,13 @@ function initSidebarToggle(){
   if (!btn || !sidebar || !list) return;
 
   function setOpen(open){
-    if (open){ sidebar.classList.add('is-open'); btn.setAttribute('aria-expanded', 'true'); }
-    else { sidebar.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); }
+    if (open){
+      sidebar.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+    }else{
+      sidebar.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
   }
   btn.addEventListener('click', ()=>{
     const isOpen = sidebar.classList.contains('is-open');
@@ -349,7 +239,9 @@ function initSidebarToggle(){
   list.addEventListener('click', (e)=>{
     const item = e.target.closest('.subjects__item');
     if (!item) return;
-    if (window.matchMedia('(max-width: 768px)').matches){ setOpen(false); }
+    if (window.matchMedia('(max-width: 768px)').matches){
+      setOpen(false);
+    }
   });
   document.addEventListener('click', (e)=>{
     if (!window.matchMedia('(max-width: 768px)').matches) return;
@@ -358,7 +250,7 @@ function initSidebarToggle(){
   });
 }
 
-/* =============================== Boot =============================== */
+/* Boot */
 window.addEventListener('DOMContentLoaded', ()=>{
   initSubjectsSidebar();
   initSidebarToggle();
@@ -368,8 +260,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
   renderSubjectTitle();
   renderHeaderIcon();
 
-  const btnNuevo = document.getElementById('btn-nuevo');
-  const btnMostrar = document.getElementById('btn-mostrar');
-  if (btnNuevo) btnNuevo.addEventListener('click', nuevoEjercicio);
-  if (btnMostrar) btnMostrar.addEventListener('click', mostrarRespuesta);
+  document.getElementById('btn-nuevo')?.addEventListener('click', nuevoEjercicio);
+  document.getElementById('btn-mostrar')?.addEventListener('click', mostrarRespuesta);
 });

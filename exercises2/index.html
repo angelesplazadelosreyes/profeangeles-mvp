@@ -110,15 +110,21 @@
             <div id="enunciado" class="mathjax"></div>
           </div>
 
-          <div class="answer-grid">
-            <div class="math-block">
-              <h3>Solución</h3>
-              <div id="solucion" class="mathjax"></div>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="grafico" height="260" class="chart"></canvas>
-            </div>
-          </div>
+          <!-- Tarjetas de análisis -->
+          <section class="solution-cards">
+            <article class="solution-card">
+              <h3>Análisis de la función</h3>
+              <div id="sol-func" class="mathjax"></div>
+            </article>
+
+            <article class="solution-card">
+              <h3>Análisis del gráfico</h3>
+              <div class="chart-wrap">
+                <canvas id="grafico" height="300" class="chart"></canvas>
+              </div>
+              <div id="sol-graph" class="mathjax" aria-live="polite"></div>
+            </article>
+          </section>
         </section>
       </div>
     </div>
@@ -128,10 +134,10 @@
   <div data-include="footer"></div>
 
   <!-- Scripts locales (solo una vez) -->
-  <script type="module" src="/scripts/partials.js"></script>
+  <script type="module" src="/scripts/partials.js?v=2"></script>
 
   <!-- ► Playground (exercises2) -->
-  <script type="module" src="/scripts/api2.js"></script>
-  <script type="module" src="/scripts/main2.js"></script>
+  <script type="module" src="/scripts/api2.js?v=2"></script>
+  <script type="module" src="/scripts/main2.js?v=3"></script>
 </body>
 </html>
