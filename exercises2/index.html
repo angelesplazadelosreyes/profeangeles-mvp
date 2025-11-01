@@ -6,7 +6,6 @@
   <meta name="robots" content="noindex, nofollow"/>
   <title>Profe Ángeles · Ejercicios (playground)</title>
 
-  <!-- Favicon -->
   <link rel="icon" href="/favicon.ico"/>
 
   <!-- Fuentes -->
@@ -18,7 +17,7 @@
   <link rel="stylesheet" href="/styles/styles.css"/>
   <link rel="stylesheet" href="/styles/exercises.css"/>
 
-  <!-- Scripts externos -->
+  <!-- Libs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -78,7 +77,7 @@
 
       <!-- Panel derecho -->
       <div class="panel">
-        <!-- Tarjeta 1: encabezado -->
+        <!-- Tarjeta: encabezado -->
         <section class="card-header" aria-live="polite">
           <span class="subject-icon-header" aria-hidden="true"></span>
           <h2 id="exercise-title">
@@ -86,7 +85,7 @@
           </h2>
         </section>
 
-        <!-- Tarjeta 2: filtros, acciones y contenido -->
+        <!-- Tarjeta: filtros y contenido -->
         <section class="card-block">
           <div class="filters">
             <label>Tema:
@@ -110,13 +109,8 @@
             <div id="enunciado" class="mathjax"></div>
           </div>
 
-          <!-- Tarjetas de análisis -->
+          <!-- Fila 1 (1: gráfico / 2: análisis general de la función) -->
           <section class="solution-cards">
-            <article class="solution-card">
-              <h3>Análisis de la función</h3>
-              <div id="sol-func" class="mathjax"></div>
-            </article>
-
             <article class="solution-card">
               <h3>Análisis del gráfico</h3>
               <div class="chart-wrap">
@@ -124,7 +118,36 @@
               </div>
               <div id="sol-graph" class="mathjax" aria-live="polite"></div>
             </article>
+
+            <article class="solution-card">
+              <h3>Análisis de la función</h3>
+              <div id="sol-func" class="mathjax"></div>
+            </article>
           </section>
+
+          <!-- Fila 2 (3: dominio/recorrido / 4: formas) -->
+          <section class="solution-cards solution-cards--secondary">
+            <article class="solution-card solution-card--compact">
+              <h3>Dominio y recorrido</h3>
+              <div id="sol-domain" class="mathjax"></div>
+            </article>
+
+            <article class="solution-card solution-card--compact">
+              <h3>Formas</h3>
+              <div id="sol-forms" class="mathjax"></div>
+            </article>
+          </section>
+
+          <!-- (opcional) Fila 3: inversa -->
+          <!--
+          <section class="solution-cards solution-cards--secondary">
+            <article class="solution-card solution-card--compact">
+              <h3>Función inversa</h3>
+              <div id="sol-inverse" class="mathjax"></div>
+              <div id="sol-inverse-notes" class="mathjax"></div>
+            </article>
+          </section>
+          -->
         </section>
       </div>
     </div>
@@ -133,11 +156,9 @@
   <!-- Footer (parcial) -->
   <div data-include="footer"></div>
 
-  <!-- Scripts locales (solo una vez) -->
-  <script type="module" src="/scripts/partials.js?v=2"></script>
-
-  <!-- ► Playground (exercises2) -->
-  <script type="module" src="/scripts/api2.js?v=2"></script>
-  <script type="module" src="/scripts/main2.js?v=3"></script>
+  <!-- Scripts locales -->
+  <script type="module" src="/scripts/partials.js?v=3"></script>
+  <script type="module" src="/scripts/api2.js?v=3"></script>
+  <script type="module" src="/scripts/main2.js?v=4"></script>
 </body>
 </html>
