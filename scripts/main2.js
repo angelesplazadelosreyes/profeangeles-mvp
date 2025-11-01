@@ -5,9 +5,15 @@ import { fetchPlayground } from './api2.js';
 let lastExercise = null;
 let chart = null;
 
-/* ===========================
-   Opciones (extensible)
-   =========================== */
+/* ============ Config (detecta ids nuevos si existen) ============ */
+const IDS = {
+  enunciado: 'enunciado',
+  solFunc: document.getElementById('sol-func') ? 'sol-func' : 'solucion',
+  solGraph: document.getElementById('sol-graph') ? 'sol-graph' : null,
+  grafico: 'grafico'
+};
+
+/* ========================= Opciones (extensible) ========================= */
 const OPTIONS = {
   "Álgebra": {
     "Función cuadrática": [
@@ -16,9 +22,7 @@ const OPTIONS = {
   }
 };
 
-/* ===========================
-   Utils
-   =========================== */
+/* ================================ Utils ================================ */
 function renderMath(latex, elId){
   const el = document.getElementById(elId);
   if (!el) return;
@@ -28,17 +32,14 @@ function renderMath(latex, elId){
   }
 }
 
-// Si el playground devuelve {chart:{labels, values}} (formato simple)
+/* ================== Gráfico (formato simple genérico) ================== */
 function dibujarGraficoDesdeChartObj(chartObj){
-  const canvas = document.getElementById('grafico');
+  const canvas = document.getElementById(IDS.grafico);
   if (!canvas || !chartObj) return;
   const ctx = canvas.getContext('2d');
 
   const labels = chartObj.labels || chartObj.data?.labels || [];
-  const values =
-    chartObj.values
-    || chartObj.data?.datasets?.[0]?.data
-    || [];
+  const values = chartObj.values || chartObj.data?.datasets?.[0]?.data || [];
 
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
@@ -47,62 +48,134 @@ function dibujarGraficoDesdeChartObj(chartObj){
       labels,
       datasets: [{
         label: chartObj.label || chartObj.data?.datasets?.[0]?.label || 'f(x)',
-        data: values
+        data: values,
+        borderWidth: 2,
+        pointRadius: 0
       }]
     },
     options: chartObj.options || {
       responsive: true,
       maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } }
+      },
       scales: {
-        x: { title:{display:true,text:'x'} },
-        y: { title:{display:true,text:'y'} }
+        x: { title:{display:true,text:'x'}, grid:{color:'rgba(0,0,0,.06)'} },
+        y: { title:{display:true,text:'y'}, grid:{color:'rgba(0,0,0,.06)'} }
       }
     }
   });
 }
 
-// Si el playground conserva el formato prod (coeffs + graph)
+/* =========== Gráfico cuadrática con anotaciones útiles =========== */
 function dibujarGraficoCuadratica(data){
-  const canvas = document.getElementById('grafico');
+  const canvas = document.getElementById(IDS.grafico);
   if (!canvas || !data?.graph || !data?.coeffs) return;
   const ctx = canvas.getContext('2d');
 
-  const { x_min, x_max, step } = data.graph;
+  const { x_min, x_max, step, vertex, roots = [], axis, y_intercept } = data.graph;
   const { a, b, c } = data.coeffs;
 
   const xs = [];
   const ys = [];
-  for(let x = x_min; x <= x_max; x += step){
+  for(let x = x_min; x <= x_max + 1e-9; x += step){
     xs.push(Number(x.toFixed(2)));
     ys.push(a*x*x + b*x + c);
   }
 
+  // Datos auxiliares
+  const vx = vertex?.x ?? (-(b)/(2*a));
+  const vy = vertex?.y ?? (a*vx*vx + b*vx + c);
+  const axisX = axis?.x ?? vx;
+
+  // Dataset principal (parábola)
+  const dsParabola = {
+    label: 'Parábola',
+    data: ys,
+    borderWidth: 2,
+    pointRadius: 0
+  };
+
+  // Vértice
+  const vertIdx = xs.findIndex(x => Math.abs(x - vx) < step/2) ?? 0;
+  const dsVertice = {
+    type: 'scatter',
+    label: 'Vértice',
+    data: [{ x: vx, y: vy }],
+    pointRadius: 5
+  };
+
+  // Corte con eje y (x=0)
+  const dsCorteY = {
+    type: 'scatter',
+    label: 'Corte con eje y',
+    data: [{ x: 0, y: c }],
+    pointStyle: 'circle',
+    pointRadius: 4
+  };
+
+  // Raíces reales (si existen)
+  const dsRaices = {
+    type: 'scatter',
+    label: 'Raíces reales',
+    data: (roots || []).map(r => ({ x: r, y: 0 })),
+    pointStyle: 'cross',
+    pointRadius: 5
+  };
+
+  // Eje de simetría (línea vertical punteada)
+  const dsEje = {
+    label: 'Eje de simetría',
+    data: xs.map(() => null),
+    borderDash: [6, 6],
+    pointRadius: 0
+  };
+
+  // Construimos el gráfico
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: xs,
-      datasets: [{ label: 'y = ax² + bx + c', data: ys }]
+      datasets: [dsParabola, dsEje, dsVertice, dsCorteY, dsRaices]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      parsing: false, // usamos valores ya calculados
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true } }
+      },
       scales: {
-        x: { title:{display:true,text:'x'} },
-        y: { title:{display:true,text:'y'} }
+        x: { title:{display:true,text:'x'}, grid:{ color:'rgba(0,0,0,.06)' } },
+        y: { title:{display:true,text:'y'}, grid:{ color:'rgba(0,0,0,.06)' } }
       }
-    }
+    },
+    plugins: [{
+      // Dibuja la línea vertical del eje de simetría en x = axisX
+      id: 'axisLine',
+      afterDraw(c){
+        const xScale = c.scales.x, yScale = c.scales.y;
+        if (!xScale || !yScale) return;
+        const xPix = xScale.getPixelForValue(axisX);
+        const ctx2 = c.ctx;
+        ctx2.save();
+        ctx2.setLineDash([6,6]);
+        ctx2.beginPath();
+        ctx2.moveTo(xPix, yScale.top);
+        ctx2.lineTo(xPix, yScale.bottom);
+        ctx2.stroke();
+        ctx2.restore();
+      }
+    }]
   });
 }
 
-/* ===========================
-   Filtros (poblar selects)
-   =========================== */
+/* =========================== Filtros =========================== */
 function initFilters(){
   const temaSel = document.getElementById('tema');
   const subtemaSel = document.getElementById('subtema');
   const tipoSel = document.getElementById('tipo');
-
   if (!temaSel || !subtemaSel || !tipoSel) return;
 
   temaSel.innerHTML = Object.keys(OPTIONS)
@@ -114,7 +187,6 @@ function initFilters(){
     subtemaSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
     refreshTipos();
   }
-
   function refreshTipos(){
     const t = temaSel.value;
     const s = subtemaSel.value;
@@ -124,14 +196,10 @@ function initFilters(){
 
   temaSel.addEventListener('change', refreshSubtemas);
   subtemaSel.addEventListener('change', refreshTipos);
-
-  // Primera carga
   refreshSubtemas();
 }
 
-/* ===========================
-   Acciones
-   =========================== */
+/* =========================== Acciones =========================== */
 async function nuevoEjercicio(){
   try{
     const tema = document.getElementById('tema')?.value || 'Álgebra';
@@ -141,9 +209,10 @@ async function nuevoEjercicio(){
     const data = await fetchPlayground({ tema, subtema, tipo });
     lastExercise = data;
 
-    renderMath(data.latex_enunciado || '', 'enunciado');
-    renderMath('', 'solucion');
-
+    renderMath(data.latex_enunciado || '', IDS.enunciado);
+    // limpiamos salidas
+    renderMath('', IDS.solFunc);
+    if (IDS.solGraph) renderMath('', IDS.solGraph);
     if (chart){ chart.destroy(); chart = null; }
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
@@ -156,8 +225,12 @@ async function mostrarRespuesta(){
       await nuevoEjercicio();
       if(!lastExercise) return;
     }
-    renderMath(lastExercise.latex_solucion || '', 'solucion');
 
+    // Por ahora la API trae una sola solución LaTeX.
+    // La mostramos en la tarjeta “Análisis de la función”.
+    renderMath(lastExercise.latex_solucion || '', IDS.solFunc);
+
+    // Y el gráfico en la otra tarjeta.
     if (lastExercise.chart){
       dibujarGraficoDesdeChartObj(lastExercise.chart);
     } else if (lastExercise.graph && lastExercise.coeffs){
@@ -168,9 +241,7 @@ async function mostrarRespuesta(){
   }
 }
 
-/* ===========================
-   Íconos por materia (SVG) — mismo look que main.js
-   =========================== */
+/* =================== Sidebar e iconos (igual que antes) =================== */
 const SUBJECT_ICONS = {
   matematicas: `
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -216,7 +287,6 @@ function getCurrentSubjectKey(){
   const name = active?.getAttribute('data-subject') || active?.textContent || '';
   return subjectKeyFromText(name);
 }
-
 function applySidebarIcons(){
   document.querySelectorAll('.subjects__item').forEach(li=>{
     const name = li.getAttribute('data-subject') || li.textContent || '';
@@ -225,7 +295,6 @@ function applySidebarIcons(){
     if (box && SUBJECT_ICONS[key]) box.innerHTML = SUBJECT_ICONS[key];
   });
 }
-
 function renderHeaderIcon(){
   const holder = document.querySelector('.subject-icon-header');
   if (!holder) return;
@@ -240,13 +309,10 @@ function renderSubjectTitle(){
   span.textContent = name;
 }
 
-/* ===========================
-   Sidebar: activo + título dinámico
-   =========================== */
+/* ================= Sidebar + toggle (igual) ================= */
 function initSubjectsSidebar(){
   const list = document.getElementById('subjects');
   if (!list) return;
-
   const items = Array.from(list.querySelectorAll('.subjects__item'));
 
   function setActive(item){
@@ -256,22 +322,16 @@ function initSubjectsSidebar(){
     renderSubjectTitle();
     renderHeaderIcon();
   }
-
   function handleActivate(e){
     if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ')) return;
     e.preventDefault();
     setActive(e.currentTarget);
   }
-
   items.forEach(item => {
     item.addEventListener('click', handleActivate);
     item.addEventListener('keydown', handleActivate);
   });
 }
-
-/* ===========================
-   Sidebar colapsable en móvil
-   =========================== */
 function initSidebarToggle(){
   const btn = document.getElementById('toggle-subjects');
   const sidebar = document.getElementById('sidebar');
@@ -279,28 +339,18 @@ function initSidebarToggle(){
   if (!btn || !sidebar || !list) return;
 
   function setOpen(open){
-    if (open){
-      sidebar.classList.add('is-open');
-      btn.setAttribute('aria-expanded', 'true');
-    }else{
-      sidebar.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-    }
+    if (open){ sidebar.classList.add('is-open'); btn.setAttribute('aria-expanded', 'true'); }
+    else { sidebar.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); }
   }
-
   btn.addEventListener('click', ()=>{
     const isOpen = sidebar.classList.contains('is-open');
     setOpen(!isOpen);
   });
-
   list.addEventListener('click', (e)=>{
     const item = e.target.closest('.subjects__item');
     if (!item) return;
-    if (window.matchMedia('(max-width: 768px)').matches){
-      setOpen(false);
-    }
+    if (window.matchMedia('(max-width: 768px)').matches){ setOpen(false); }
   });
-
   document.addEventListener('click', (e)=>{
     if (!window.matchMedia('(max-width: 768px)').matches) return;
     const clickedInside = sidebar.contains(e.target) || btn.contains(e.target);
@@ -308,9 +358,7 @@ function initSidebarToggle(){
   });
 }
 
-/* ===========================
-   Boot
-   =========================== */
+/* =============================== Boot =============================== */
 window.addEventListener('DOMContentLoaded', ()=>{
   initSubjectsSidebar();
   initSidebarToggle();
