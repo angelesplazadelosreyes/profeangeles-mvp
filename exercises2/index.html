@@ -7,21 +7,16 @@
   <title>Profe Ángeles · Ejercicios (playground)</title>
 
   <link rel="icon" href="/favicon.ico"/>
-
-  <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
 
-  <!-- CSS global + página -->
   <link rel="stylesheet" href="/styles/styles.css"/>
   <link rel="stylesheet" href="/styles/exercises.css"/>
 
-  <!-- Libs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- OG -->
   <meta property="og:title" content="ProfeÁngeles - Ejercicios"/>
   <meta property="og:description" content="Genera ejercicios y revisa soluciones guiadas."/>
   <meta property="og:image" content="/og-image.png"/>
@@ -29,74 +24,45 @@
 </head>
 
 <body>
-  <!-- Header (parcial) -->
   <div data-include="header"></div>
 
   <main class="container" id="main-content">
-    <!-- Botón móvil: abre/cierra la barra lateral -->
-    <button class="sidebar-toggle" id="toggle-subjects"
-            aria-controls="subjects"
-            aria-expanded="false">
-      Materias
-    </button>
+    <button class="sidebar-toggle" id="toggle-subjects" aria-controls="subjects" aria-expanded="false">Materias</button>
 
     <div class="exercises-layout">
-      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar" aria-label="Materias">
         <div class="sidebar-header">MATERIAS</div>
         <ul class="subjects" id="subjects">
           <li class="subjects__item" tabindex="0" aria-current="page" data-subject="Matemáticas">
-            <span class="subjects__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-            </span>
+            <span class="subjects__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span>
             <span class="subjects__label">Matemáticas</span>
           </li>
-
           <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente" data-subject="Química">
-            <span class="subjects__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-            </span>
+            <span class="subjects__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span>
             <span class="subjects__label">Química <span class="subjects__soon">(próximamente)</span></span>
           </li>
-
           <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente" data-subject="Biología">
-            <span class="subjects__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-            </span>
+            <span class="subjects__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span>
             <span class="subjects__label">Biología <span class="subjects__soon">(próximamente)</span></span>
           </li>
-
           <li class="subjects__item" tabindex="0" aria-disabled="true" title="Próximamente" data-subject="Física">
-            <span class="subjects__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-            </span>
+            <span class="subjects__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span>
             <span class="subjects__label">Física <span class="subjects__soon">(próximamente)</span></span>
           </li>
         </ul>
       </aside>
 
-      <!-- Panel derecho -->
       <div class="panel">
-        <!-- Tarjeta: encabezado -->
         <section class="card-header" aria-live="polite">
           <span class="subject-icon-header" aria-hidden="true"></span>
-          <h2 id="exercise-title">
-            Generador de ejercicios de <span id="subject-name">Matemáticas</span>
-          </h2>
+          <h2 id="exercise-title">Generador de ejercicios de <span id="subject-name">Matemáticas</span></h2>
         </section>
 
-        <!-- Tarjeta: filtros y contenido -->
         <section class="card-block">
           <div class="filters">
-            <label>Tema:
-              <select id="tema"></select>
-            </label>
-            <label>Subtema:
-              <select id="subtema"></select>
-            </label>
-            <label>Tipo:
-              <select id="tipo"></select>
-            </label>
+            <label>Tema: <select id="tema"></select></label>
+            <label>Subtema: <select id="subtema"></select></label>
+            <label>Tipo: <select id="tipo"></select></label>
           </div>
 
           <div class="actions">
@@ -109,54 +75,55 @@
             <div id="enunciado" class="mathjax"></div>
           </div>
 
-          <!-- Fila 1 (1: gráfico / 2: análisis general de la función) -->
-          <section class="solution-cards">
-            <article class="solution-card">
-              <h3>Análisis del gráfico</h3>
-              <div class="chart-wrap">
-                <canvas id="grafico" height="300" class="chart"></canvas>
+          <!-- ======= SOLUCIÓN (contenedor rojo conceptual) ======= -->
+          <section class="solution-wrapper">
+            <h3 class="solution-title">Solución</h3>
+
+            <!-- Bloque A (celeste): gráfico + análisis principal -->
+            <div class="solution-row">
+              <div class="solution-col">
+                <h4 class="solution-subtitle">Análisis del gráfico</h4>
+                <div class="chart-wrap">
+                  <canvas id="grafico" class="chart" height="300"></canvas>
+                </div>
+                <div id="sol-graph-note" class="mathjax"></div>
               </div>
-              <div id="sol-graph" class="mathjax" aria-live="polite"></div>
-            </article>
 
-            <article class="solution-card">
-              <h3>Análisis de la función</h3>
-              <div id="sol-func" class="mathjax"></div>
-            </article>
+              <div class="solution-col">
+                <h4 class="solution-subtitle">Análisis de la función</h4>
+                <div id="sol-primaria" class="mathjax"></div>
+              </div>
+            </div>
+
+            <!-- Bloque B (celeste): dominio/recorrido + formas -->
+            <div class="solution-row">
+              <div class="solution-col">
+                <h4 class="solution-subtitle">Dominio y Recorrido</h4>
+                <div id="sol-domran" class="mathjax"></div>
+              </div>
+
+              <div class="solution-col">
+                <h4 class="solution-subtitle">Formas</h4>
+                <div id="sol-formas" class="mathjax"></div>
+              </div>
+            </div>
+
+            <!-- Bloque C (opcional): inversa -->
+            <div class="solution-row optional" id="inverse-block" hidden>
+              <div class="solution-col">
+                <h4 class="solution-subtitle">Función inversa</h4>
+                <div id="sol-inversa" class="mathjax"></div>
+              </div>
+            </div>
+
           </section>
-
-          <!-- Fila 2 (3: dominio/recorrido / 4: formas) -->
-          <section class="solution-cards solution-cards--secondary">
-            <article class="solution-card solution-card--compact">
-              <h3>Dominio y recorrido</h3>
-              <div id="sol-domain" class="mathjax"></div>
-            </article>
-
-            <article class="solution-card solution-card--compact">
-              <h3>Formas</h3>
-              <div id="sol-forms" class="mathjax"></div>
-            </article>
-          </section>
-
-          <!-- (opcional) Fila 3: inversa -->
-          <!--
-          <section class="solution-cards solution-cards--secondary">
-            <article class="solution-card solution-card--compact">
-              <h3>Función inversa</h3>
-              <div id="sol-inverse" class="mathjax"></div>
-              <div id="sol-inverse-notes" class="mathjax"></div>
-            </article>
-          </section>
-          -->
         </section>
       </div>
     </div>
   </main>
 
-  <!-- Footer (parcial) -->
   <div data-include="footer"></div>
 
-  <!-- Scripts locales -->
   <script type="module" src="/scripts/partials.js?v=3"></script>
   <script type="module" src="/scripts/api2.js?v=3"></script>
   <script type="module" src="/scripts/main2.js?v=4"></script>
