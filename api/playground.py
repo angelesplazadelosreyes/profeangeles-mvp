@@ -58,6 +58,76 @@ def quadratic_traits(a, b, c):
     return D, h, k, roots, c  # c = intersección en y
 
 def latex_solution(a, b, c, D, h, k, roots):
+    # --- piezas para la forma canónica ---
+    # a: ocultar 1, mostrar solo el signo si es -1
+    if a == 1:
+        a_str = ""
+    elif a == -1:
+        a_str = "-"
+    else:
+        a_str = f"{a}"
+
+    # (x - h)^2 con signos correctos (y sin paréntesis extra si h≈0)
+    if abs(h) < 1e-9:
+        x_minus_h = "x"
+    elif h > 0:
+        x_minus_h = f"(x - {h:.2f})"
+    else:
+        x_minus_h = f"(x + {abs(h):.2f})"
+
+    # "+ k" o "- |k|"
+    k_term = f"+ {k:.2f}" if k >= 0 else f"- {abs(k):.2f}"
+
+    # --- líneas LaTeX ---
+    concav = (
+        r"\textbf{Concavidad:}~"
+        + (r"\text{cóncava hacia arriba } \color{green}{\smile}"
+           if a > 0 else
+           r"\text{cóncava hacia abajo } \color{red}{\frown}")
+    )
+    linea_datos = rf"\textbf{{Coeficientes:}}~a={a},~b={b},~c={c}"
+    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta=b^2-4ac={D}"
+    linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
+    linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
+    linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"
+    linea_dom   = rf"\textbf{{Dominio:}}~\mathbb{{R}}"
+    if a > 0:
+        linea_rec = rf"\textbf{{Recorrido:}}~\left[{k:.2f},\, \infty\right)"
+    else:
+        linea_rec = rf"\textbf{{Recorrido:}}~\left(-\infty,\, {k:.2f}\right]"
+    linea_canon = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2~{k_term}"
+
+    # Raíces y forma factorizada (solo si hay reales)
+    if len(roots) == 2:
+        r1, r2 = roots
+        linea_raices = rf"\textbf{{Raíces:}}~x_1={r1:.2f},~x_2={r2:.2f}"
+        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{r1:.2f})(x-{r2:.2f})"
+    elif len(roots) == 1:
+        r0 = roots[0]
+        linea_raices = rf"\textbf{{Raíz doble:}}~x={r0:.2f}"
+        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{r0:.2f})^2"
+    else:
+        linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
+        linea_fact = r"\textbf{Forma factorizada:}~\text{No aplica en } \mathbb{R}"
+
+    # Ensamblaje con saltos uniformes
+    partes = [
+        concav,
+        linea_datos,
+        linea_disc,
+        linea_raices,
+        linea_eje,
+        linea_vert,
+        linea_y,
+        linea_dom,
+        linea_rec,
+        linea_canon,
+        linea_fact,
+    ]
+    cuerpo = r" \\[6pt] ".join(partes)
+
+    return r"\begin{aligned}" + cuerpo + r"\end{aligned}"
+
     # a como prefactor: "", "-", o el número
     if a == 1:
         a_str = ""
@@ -99,10 +169,13 @@ def latex_solution(a, b, c, D, h, k, roots):
 
     if len(roots) == 2:
         linea_raices = rf"\textbf{{Raíces:}}~x_1={roots[0]:.2f},~x_2={roots[1]:.2f}"
+        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{roots[0]:.2f})(x-{roots[1]:.2f})"
     elif len(roots) == 1:
         linea_raices = rf"\textbf{{Raíz doble:}}~x={roots[0]:.2f}"
+        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{roots[0]:.2f})^2"
     else:
         linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
+        linea_fact = r"\textbf{{Forma factorizada:}}~\text{No se puede expresar de forma factorizada}"
 
     return (
         r"\begin{aligned}"
@@ -115,7 +188,8 @@ def latex_solution(a, b, c, D, h, k, roots):
         rf"{linea_y} \\[6pt]"
         rf"{linea_dom} \\[6pt]"
         rf"{linea_rec} \\[6pt]"
-        rf"{linea_stand}"
+        rf"{linea_stand} \\[6pt]"
+        rf"{linea_fact}"
         r"\end{aligned}"
     )
 
