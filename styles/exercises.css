@@ -1,81 +1,219 @@
+/* === Tokens específicos de la página Ejercicios === */
 :root{
-  --ex-sidebar:#1F7A8C;
-  --ex-sidebar-title:#176171;
-  --ex-item-hover:rgba(255,255,255,.10);
-  --ex-cta:#2475EB;
-  --ex-cta-border:#1F5BD0;
-  --ex-focus:#CFE0FF;
-  --ex-card-bg:#FFFFFF;
-  --ex-card-border:#E5E7EB;
-  --ex-shadow:0 12px 32px rgba(15,23,42,.10);
-  --ex-radius:14px;
-  --ex-accent-yellow:#F59E0B;
+  /* Colores base */
+  --ex-sidebar:        #1F7A8C;   /* teal principal sidebar */
+  --ex-sidebar-title:  #176171;   /* header "MATERIAS" */
+  --ex-item-hover:     rgba(255,255,255,.10);
 
-  /* compat */
-  --pa-sidebar:var(--ex-sidebar);
-  --pa-sidebar-title:var(--ex-sidebar-title);
-  --pa-hover:var(--ex-item-hover);
-  --pa-card-bg:var(--ex-card-bg);
-  --pa-card-shadow:var(--ex-shadow);
-  --pa-radius:var(--ex-radius);
+  /* CTA indigo */
+  --ex-cta:            #2475EB;
+  --ex-cta-border:     #1F5BD0;
+  --ex-focus:          #CFE0FF;
+
+  /* Tarjetas */
+  --ex-card-bg:        #FFFFFF;
+  --ex-card-border:    #E5E7EB;
+  --ex-shadow:         0 12px 32px rgba(15,23,42,.10);
+  --ex-radius:         14px;
+
+  /* Accentos */
+  --ex-accent-yellow:  #F59E0B;
+
+  /* Compat (por si algo del HTML espera estos nombres) */
+  --pa-sidebar:        var(--ex-sidebar);
+  --pa-sidebar-title:  var(--ex-sidebar-title);
+  --pa-hover:          var(--ex-item-hover);
+  --pa-card-bg:        var(--ex-card-bg);
+  --pa-card-shadow:    var(--ex-shadow);
+  --pa-radius:         var(--ex-radius);
 }
 
-/* Layout general ya existente … */
-.exercises-layout{ display:grid; grid-template-columns:240px 1fr; gap:1rem; margin:1rem 0; }
-@media (max-width:900px){ .exercises-layout{ grid-template-columns:1fr; } }
-
-/* Sidebar */
-.sidebar{ background:var(--ex-sidebar); color:#fff; border-radius:var(--ex-radius); box-shadow:var(--ex-shadow); overflow:hidden; }
-.sidebar-header{ background:var(--ex-sidebar-title); padding:.75rem 1rem; font-weight:800; letter-spacing:.5px; }
-.subjects{ list-style:none; margin:0; padding:.5rem; display:flex; flex-direction:column; gap:.5rem; }
-.subjects__item{ display:flex; align-items:center; gap:.5rem; padding:.6rem; border-radius:10px; cursor:pointer; transition:background-color .15s; }
-.subjects__item:hover{ background:var(--ex-item-hover); }
-.subjects__item[aria-current="page"]{ background:rgba(255,255,255,.18); font-weight:700; }
-.subjects__icon{ width:18px; height:18px; color:var(--ex-accent-yellow); }
-.subjects__label{ display:inline-flex; gap:.25rem; align-items:baseline; }
-.subjects__soon{ font-size:.78rem; opacity:.9; }
-
-/* Panel */
-.panel{ display:grid; gap:1rem; }
-.card-header, .card-block{ background:var(--ex-card-bg); border:1px solid var(--ex-card-border); border-radius:var(--ex-radius); box-shadow:var(--ex-shadow); padding:1rem; }
-.card-header h2{ margin:0; font-size:1.25rem; }
-
-/* Botones */
-#btn-nuevo,#btn-mostrar{
-  background:linear-gradient(180deg,#48A7FF 0%, var(--ex-cta) 70%);
-  color:#fff; border:1px solid var(--ex-cta-border);
-  border-radius:calc(var(--ex-radius) - 4px);
-  font-weight:600; padding:.75rem 1rem;
-}
-#btn-nuevo:hover,#btn-mostrar:hover{ filter:brightness(.96); }
-
-/* Filtros */
-.filters select{ border:1px solid var(--ex-card-border); border-radius:8px; padding:.5rem .6rem; }
-
-/* Solución – contenedor (rojo conceptual) */
-.solution-wrapper{
-  margin-top:1rem;
-  border-radius:20px; /* grande, como el boceto */
-  padding:1rem .9rem .75rem;
-  border:1.5px solid rgba(255,0,0,0); /* sin rojo real en prod */
+/* === Layout de dos columnas (sidebar + contenido) === */
+.exercises-layout{
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
 }
 
-/* Bloques celestes */
-.solution-row{
-  border:1.5px solid #84C5F4;       /* celeste */
-  background:#F6FBFF;                /* suave */
-  border-radius:16px;
-  padding:1rem;
-  display:grid; grid-template-columns:1fr 1fr; gap:1rem;
-  margin-bottom:1rem;
+@media (max-width: 900px){
+  .exercises-layout{ grid-template-columns: 1fr; }
 }
-@media (max-width:1024px){ .solution-row{ grid-template-columns:1fr; } }
 
-.solution-col{ background:#fff; border-radius:14px; padding:1rem; border:1px solid #CFE8FF; }
-.solution-title{ margin:.25rem 0 1rem; font-size:1.15rem; }
-.solution-subtitle{ margin:.25rem 0 .75rem; font-size:1.05rem; }
+/* === Sidebar de materias === */
+.sidebar{
+  background: var(--ex-sidebar);
+  color: #fff;
+  border-radius: var(--ex-radius);
+  box-shadow: var(--ex-shadow);
+  overflow: hidden; /* respeta el redondeo del header */
+}
 
-.mathjax{ text-align:left; }
+.sidebar-header{
+  background: var(--ex-sidebar-title);
+  padding: .75rem 1rem;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
 
-/* Gráfico */
-.chart-wrap{ background:#fff; border:1px solid var(--ex-card-border); border-radius:12px; padding:.5rem; }
+.subjects{
+  list-style: none;
+  margin: 0;
+  padding: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.subjects__item{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .6rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .05s ease;
+}
+.subjects__item:hover{ background: var(--ex-item-hover); }
+.subjects__item[aria-current="page"]{
+  background: rgba(255,255,255,.18);
+  font-weight: 700;
+}
+
+.subjects__icon{
+  width: 18px; height: 18px;
+  flex: 0 0 18px;
+  display: inline-block;
+  color: var(--ex-accent-yellow);
+}
+
+.subjects__label{
+  display: inline-flex;
+  gap: .25rem;
+  align-items: baseline;
+}
+.subjects__soon{
+  font-size: .78rem;
+  opacity: .9;
+}
+
+/* === Panel derecho (tarjetas) === */
+.panel{ display: grid; gap: 1rem; }
+
+.card-header{
+  background: var(--ex-card-bg);
+  border: 1px solid var(--ex-card-border);
+  border-radius: var(--ex-radius);
+  box-shadow: var(--ex-shadow);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.card-header h2{ margin: 0; font-size: 1.25rem; }
+
+.header-icon{
+  width: 22px; height: 22px;
+  color: var(--ex-accent-yellow);
+}
+
+.card-block{
+  background: var(--ex-card-bg);
+  border: 1px solid var(--ex-card-border);
+  border-radius: var(--ex-radius);
+  box-shadow: var(--ex-shadow);
+  padding: 1rem;
+}
+
+/* Reutilizamos tu grid de respuesta dentro del bloque */
+.card-block .answer-grid{
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 900px){
+  .card-block .answer-grid{ grid-template-columns: 1fr; }
+}
+
+/* === Botones: CTAs indigo unificados === */
+#btn-nuevo,
+#btn-mostrar{
+  background: linear-gradient(180deg, #48A7FF 0%, var(--ex-cta) 70%);
+  color: #fff;
+  border: 1px solid var(--ex-cta-border);
+  border-radius: calc(var(--ex-radius) - 4px);
+  font-weight: 600;
+  padding: .75rem 1rem;
+}
+#btn-nuevo:hover,
+#btn-mostrar:hover{ filter: brightness(.96); }
+
+/* Filtros: bordes un poco más visibles sin romper estilos globales */
+.filters select{
+  border: 1px solid var(--ex-card-border);
+  border-radius: 8px;
+  padding: .5rem .6rem;
+}
+
+/* Accesibilidad: foco visible */
+.subjects__item:focus-visible,
+#btn-nuevo:focus-visible,
+#btn-mostrar:focus-visible,
+select:focus-visible{
+  outline: 3px solid var(--ex-focus);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* ===== Sidebar colapsable en móvil ===== */
+.sidebar-toggle{ display:none; }
+
+@media (max-width: 768px){
+  .sidebar-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+    padding:.6rem .9rem;
+    border:0;
+    border-radius: 999px;
+    background: var(--ex-sidebar);
+    color:#fff;
+    font-weight:700;
+    box-shadow: var(--ex-shadow);
+    margin: 1rem 0 .25rem;
+    cursor:pointer;
+  }
+  .sidebar-toggle:focus-visible{
+    outline:3px solid var(--ex-focus);
+    outline-offset:2px;
+  }
+
+  .sidebar{ display:none; }
+  .sidebar.is-open{
+    display:block;
+    animation: sidebarIn .12s ease-out;
+  }
+  @keyframes sidebarIn{
+    from{ transform:translateY(-4px); opacity:.92; }
+    to{ transform:none; opacity:1; }
+  }
+}
+
+/* (opcional) Las materias “próximamente” no son clicables */
+.subjects__item[aria-disabled="true"]{
+  opacity:.75;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+
+/* ===== Ícono dinámico en el título ===== */
+.subject-icon-header{
+  display:inline-flex;
+  width:20px;
+  height:20px;
+  margin-right:.5rem;
+  vertical-align:-3px;
+}
+.subject-icon-header svg{ width:20px; height:20px; }
