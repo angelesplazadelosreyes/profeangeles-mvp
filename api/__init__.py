@@ -3,7 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 
 # Importa la app ya existente de prod
-from generate_exercise import app as legacy_app
+from .generate_exercise import app as legacy_app
 
 def create_app():
     # Usamos la app de producción como base
@@ -13,7 +13,7 @@ def create_app():
     CORS(app)
 
     # Registra el playground como blueprint adicional (prefijo definido en playground.py)
-    from playground import playground_bp  # mismo directorio
+    from .playground import playground_bp  # mismo directorio
     app.register_blueprint(playground_bp)
 
     return app

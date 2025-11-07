@@ -1,5 +1,5 @@
 // /scripts/main2.js
-// Lógica de exercises2 usando la API de playground (arquitectura con renderers)
+// Lógica de exercises2 usando la API de playground (renderers con importación dinámica)
 import { fetchPlayground } from './api2.js';
 
 let lastExercise = null;
@@ -31,124 +31,71 @@ function renderMathInto(el, latex){
 let __uid = 0;
 function uid(prefix="id"){ __uid += 1; return `${prefix}-${__uid}`; }
 
-/* ===========================
-   Renderers (soluciones ad-hoc)
-   =========================== */
+/* ===================================================
+   Resolución del renderer y CARGA DINÁMICA del módulo
+   =================================================== */
 
-// 1) Texto/LaTeX en una columna (biología, química, u otros sin gráfico)
-function renderTextOnly(root, data){
-  clear(root);
-  const col = document.createElement('div');
-  col.className = 'sol-col';
-  const math = document.createElement('div');
-  math.className = 'mathjax';
-  col.appendChild(math);
-  root.appendChild(col);
-
-  const latex = data?.latex_solucion || '';
-  renderMathInto(math, latex);
-}
-
-// 2) Cuadrática: 2 columnas (análisis LaTeX + gráfico)
-function renderMathQuadraticAnalysis(root, data){
-  clear(root);
-
-  const grid = document.createElement('div');
-  grid.className = 'sol-grid';
-
-  // Columna izquierda: análisis
-  const left = document.createElement('div');
-  left.className = 'sol-col';
-  const math = document.createElement('div');
-  math.className = 'mathjax';
-  left.appendChild(math);
-
-  // Columna derecha: gráfico
-  const right = document.createElement('div');
-  right.className = 'sol-col';
-  const canvas = document.createElement('canvas');
-  canvas.id = uid('grafico');
-  canvas.className = 'sol-chart';
-  right.appendChild(canvas);
-
-  grid.appendChild(left);
-  grid.appendChild(right);
-  root.appendChild(grid);
-
-  // Pintar LaTeX
-  renderMathInto(math, data?.latex_solucion || '');
-
-  // Pintar gráfico (acepta dos formatos: chart simple o coeffs+graph)
-  const ctx = canvas.getContext('2d');
-  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-
-  if (data?.chart){
-    const labels = data.chart.labels || data.chart.data?.labels || [];
-    const values = data.chart.values || data.chart.data?.datasets?.[0]?.data || [];
-    chartInstance = new Chart(ctx, {
-      type: data.chart.type || 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: data.chart.label || data.chart.data?.datasets?.[0]?.label || 'f(x)',
-          data: values
-        }]
-      },
-      options: data.chart.options || { responsive:true, maintainAspectRatio:false }
-    });
-  } else if (data?.graph && data?.coeffs){
-    const { x_min, x_max, step } = data.graph;
-    const { a, b, c } = data.coeffs;
-    const xs = [], ys = [];
-    for (let x=x_min; x<=x_max; x+=step){
-      const xr = Number(x.toFixed(2));
-      xs.push(xr);
-      ys.push(a*xr*xr + b*xr + c);
-    }
-    chartInstance = new Chart(ctx, {
-      type: 'line',
-      data: { labels: xs, datasets: [{ label: 'y = ax² + bx + c', data: ys }] },
-      options: { responsive:true, maintainAspectRatio:false }
-    });
-  }
-}
-
-// 3) Fallback: detecta si es cuadrática; si no, texto
-function renderFallback(root, data){
-  if (data?.graph && data?.coeffs) return renderMathQuadraticAnalysis(root, data);
-  return renderTextOnly(root, data);
-}
-
-// Registry de renderers
-const RENDERERS = {
-  'math:funcion_cuadratica:analisis_completo': renderMathQuadraticAnalysis,
-  'text:default': renderTextOnly,
-  'fallback': renderFallback
-};
-
-// Resolución del renderer a usar
+// Claves canónicas (subject:type:subtype) o layouts explícitos
 function selectRendererKey(data){
   const meta = data?.meta || {};
-  // Si backend manda layout explícito
-  if (meta.layout === 'two-column') return 'math:funcion_cuadratica:analisis_completo';
+
+  // Preferir layout explícito si viene del backend
+  if (meta.layout === 'two-column')   return 'math:funcion_cuadratica:analisis_completo';
   if (meta.layout === 'single-column') return 'text:default';
 
-  // Si manda subject/type/subtype
+  // Si especifica subject/type/subtype
   if (meta.subject && meta.type && meta.subtype){
     return `${meta.subject}:${meta.type}:${meta.subtype}`.toLowerCase();
   }
 
-  // Compatibilidad por estructura de datos
+  // Compatibilidad por estructura de datos (cuadrática)
   if (data?.graph && data?.coeffs) return 'math:funcion_cuadratica:analisis_completo';
+
+  // Texto por defecto
   return 'text:default';
 }
 
-function mountSolution(data){
+// Resuelve ruta del módulo y nombre de export en base a la key elegida
+function resolveModuleInfo(rendererKey){
+  // Puedes ampliar este switch con más tipos a futuro
+  switch (rendererKey){
+    case 'math:funcion_cuadratica:analisis_completo':
+      return { path: './renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
+    case 'text:default':
+    default:
+      return { path: './renderers/text.default.js',    exportName: 'renderTextOnly' };
+  }
+}
+
+// Carga el módulo solo cuando hace falta
+async function loadRenderer(rendererKey){
+  const { path, exportName } = resolveModuleInfo(rendererKey);
+  const mod = await import(path);
+  const fn = mod[exportName];
+  if (typeof fn !== 'function'){
+    throw new Error(`Renderer "${rendererKey}" no exporta función ${exportName}`);
+  }
+  return fn;
+}
+
+async function mountSolution(data){
   const root = byId('solution-root');
   if (!root) return;
+
   const key = selectRendererKey(data);
-  const renderer = RENDERERS[key] || RENDERERS['fallback'];
-  renderer(root, data);
+  const renderFn = await loadRenderer(key);
+
+  // Los renderers usan window.__chartInstance; limpiamos si existe
+  if (chartInstance){ chartInstance.destroy(); chartInstance = null; }
+  // Exponemos una referencia global compartida para evitar múltiples instancias
+  Object.defineProperty(window, '__chartInstance', {
+    get(){ return chartInstance; },
+    set(v){ chartInstance = v; },
+    configurable: true
+  });
+
+  // Monta
+  renderFn(root, data);
 }
 
 /* ===========================
@@ -210,10 +157,10 @@ async function nuevoEjercicio(){
 async function mostrarRespuesta(){
   try{
     if (!lastExercise){
-      await nuevoEjercicio();       // nuevoEjercicio asigna lastExercise
+      await nuevoEjercicio();
       if (!lastExercise) return;
     }
-    mountSolution(lastExercise);     // decide layout y renderiza
+    await mountSolution(lastExercise); // 👈 ahora es async porque importa dinámicamente
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
   }
@@ -290,7 +237,7 @@ function renderSubjectTitle(){
 }
 
 /* ===========================
-   Sidebar: activo + título
+   Sidebar y boot
    =========================== */
 function initSubjectsSidebar(){
   const list = byId('subjects');
@@ -314,10 +261,6 @@ function initSubjectsSidebar(){
     item.addEventListener('keydown', handleActivate);
   });
 }
-
-/* ===========================
-   Sidebar colapsable en móvil
-   =========================== */
 function initSidebarToggle(){
   const btn = byId('toggle-subjects');
   const sidebar = byId('sidebar');
@@ -333,12 +276,10 @@ function initSidebarToggle(){
       btn.setAttribute('aria-expanded', 'false');
     }
   }
-
   btn.addEventListener('click', ()=>{
     const isOpen = sidebar.classList.contains('is-open');
     setOpen(!isOpen);
   });
-
   list.addEventListener('click', (e)=>{
     const item = e.target.closest('.subjects__item');
     if (!item) return;
@@ -346,7 +287,6 @@ function initSidebarToggle(){
       setOpen(false);
     }
   });
-
   document.addEventListener('click', (e)=>{
     if (!window.matchMedia('(max-width: 768px)').matches) return;
     const clickedInside = sidebar.contains(e.target) || btn.contains(e.target);
@@ -354,9 +294,6 @@ function initSidebarToggle(){
   });
 }
 
-/* ===========================
-   Boot
-   =========================== */
 window.addEventListener('DOMContentLoaded', ()=>{
   initSubjectsSidebar();
   initSidebarToggle();
