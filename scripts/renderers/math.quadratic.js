@@ -14,6 +14,51 @@ function renderMathInto(el, latex){
   }
 }
 
+// === Helpers: decimales -> fracciones LaTeX ===
+function decimalToFraction(x, maxDen = 12) {
+  // enteros tal cual
+  if (!Number.isFinite(x)) return null;
+  if (Math.abs(x - Math.round(x)) < 1e-12) return { num: Math.round(x), den: 1 };
+
+  const sign = x < 0 ? -1 : 1;
+  let a = Math.abs(x);
+
+  // búsqueda de mejor fracción con denominador acotado
+  let best = { num: Math.round(a), den: 1, err: Math.abs(a - Math.round(a)) };
+  for (let den = 2; den <= maxDen; den++) {
+    const num = Math.round(a * den);
+    const val = num / den;
+    const err = Math.abs(a - val);
+    if (err < best.err - 1e-12) best = { num, den, err };
+  }
+  best.num *= sign;
+  return { num: best.num, den: best.den };
+}
+
+function toLatexFraction(num, den) {
+  if (den === 1) return String(num);
+  // maneja signo en el numerador
+  return `\\frac{${num}}{${den}}`;
+}
+
+function replaceDecimalsInLatex(latex, { maxDen = 12 } = {}) {
+  if (!latex) return latex;
+
+  // Reemplaza tokens tipo -12.5, 0.333..., 2.75, etc.
+  // Evita tocar números pegados a comandos (\sin0.5), variables (x0.5) o dentro de \frac{...}{...}
+  return latex.replace(/-?\d+\.\d+/g, (m, idx) => {
+    // No reemplazar si viene justo después de una letra o una barra invertida
+    const prev = idx > 0 ? latex[idx - 1] : '';
+    if ((prev >= 'a' && prev <= 'z') || (prev >= 'A' && prev <= 'Z') || prev === '\\') return m;
+
+    const val = parseFloat(m);
+    const frac = decimalToFraction(val, maxDen);
+    if (!frac) return m;
+    return toLatexFraction(frac.num, frac.den);
+  });
+}
+
+
 export function renderMathQuadraticAnalysis(root, data){
   if (!root) return;
   root.innerHTML = "";
@@ -41,7 +86,9 @@ export function renderMathQuadraticAnalysis(root, data){
   root.appendChild(grid);
 
   // Pintar LaTeX (ahora queda a la izquierda por CSS)
-  renderMathInto(math, data?.latex_solucion || "");
+  const _latex = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
+  renderMathInto(math, _latex);
+
 
   // Preferimos PNG (Matplotlib) si viene del backend
   const pngB64 =
