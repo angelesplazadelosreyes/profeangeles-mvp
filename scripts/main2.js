@@ -1,9 +1,9 @@
 // /scripts/main2.js
-// Lógica de exercises2 usando la API de playground
+// Lógica de exercises2 usando la API de playground (arquitectura con renderers)
 import { fetchPlayground } from './api2.js';
 
 let lastExercise = null;
-let chart = null;
+let chartInstance = null;
 
 /* ===========================
    Opciones (extensible)
@@ -17,103 +17,151 @@ const OPTIONS = {
 };
 
 /* ===========================
-   Utils
+   Helpers DOM / MathJax
    =========================== */
-function renderMath(latex, elId){
-  const el = document.getElementById(elId);
+function byId(id){ return document.getElementById(id); }
+function clear(el){ if (el) el.innerHTML = ""; }
+function renderMathInto(el, latex){
   if (!el) return;
   el.innerHTML = latex ? `$$${latex}$$` : "";
   if (window.MathJax?.typesetPromise){
     window.MathJax.typesetPromise([el]);
   }
 }
+let __uid = 0;
+function uid(prefix="id"){ __uid += 1; return `${prefix}-${__uid}`; }
 
-// Si el playground devuelve {chart:{labels, values}} (formato simple)
-function dibujarGraficoDesdeChartObj(chartObj){
-  const canvas = document.getElementById('grafico');
-  if (!canvas || !chartObj) return;
-  const ctx = canvas.getContext('2d');
+/* ===========================
+   Renderers (soluciones ad-hoc)
+   =========================== */
 
-  const labels = chartObj.labels || chartObj.data?.labels || [];
-  const values =
-    chartObj.values
-    || chartObj.data?.datasets?.[0]?.data
-    || [];
+// 1) Texto/LaTeX en una columna (biología, química, u otros sin gráfico)
+function renderTextOnly(root, data){
+  clear(root);
+  const col = document.createElement('div');
+  col.className = 'sol-col';
+  const math = document.createElement('div');
+  math.className = 'mathjax';
+  col.appendChild(math);
+  root.appendChild(col);
 
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: chartObj.type || 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: chartObj.label || chartObj.data?.datasets?.[0]?.label || 'f(x)',
-        data: values
-      }]
-    },
-    options: chartObj.options || {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: { title:{display:true,text:'x'} },
-        y: { title:{display:true,text:'y'} }
-      }
-    }
-  });
+  const latex = data?.latex_solucion || '';
+  renderMathInto(math, latex);
 }
 
-// Si el playground conserva el formato prod (coeffs + graph)
-function dibujarGraficoCuadratica(data){
-  const canvas = document.getElementById('grafico');
-  if (!canvas || !data?.graph || !data?.coeffs) return;
+// 2) Cuadrática: 2 columnas (análisis LaTeX + gráfico)
+function renderMathQuadraticAnalysis(root, data){
+  clear(root);
+
+  const grid = document.createElement('div');
+  grid.className = 'sol-grid';
+
+  // Columna izquierda: análisis
+  const left = document.createElement('div');
+  left.className = 'sol-col';
+  const math = document.createElement('div');
+  math.className = 'mathjax';
+  left.appendChild(math);
+
+  // Columna derecha: gráfico
+  const right = document.createElement('div');
+  right.className = 'sol-col';
+  const canvas = document.createElement('canvas');
+  canvas.id = uid('grafico');
+  canvas.className = 'sol-chart';
+  right.appendChild(canvas);
+
+  grid.appendChild(left);
+  grid.appendChild(right);
+  root.appendChild(grid);
+
+  // Pintar LaTeX
+  renderMathInto(math, data?.latex_solucion || '');
+
+  // Pintar gráfico (acepta dos formatos: chart simple o coeffs+graph)
   const ctx = canvas.getContext('2d');
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 
-  const { x_min, x_max, step } = data.graph;
-  const { a, b, c } = data.coeffs;
+  if (data?.chart){
+    const labels = data.chart.labels || data.chart.data?.labels || [];
+    const values = data.chart.values || data.chart.data?.datasets?.[0]?.data || [];
+    chartInstance = new Chart(ctx, {
+      type: data.chart.type || 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: data.chart.label || data.chart.data?.datasets?.[0]?.label || 'f(x)',
+          data: values
+        }]
+      },
+      options: data.chart.options || { responsive:true, maintainAspectRatio:false }
+    });
+  } else if (data?.graph && data?.coeffs){
+    const { x_min, x_max, step } = data.graph;
+    const { a, b, c } = data.coeffs;
+    const xs = [], ys = [];
+    for (let x=x_min; x<=x_max; x+=step){
+      const xr = Number(x.toFixed(2));
+      xs.push(xr);
+      ys.push(a*xr*xr + b*xr + c);
+    }
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: { labels: xs, datasets: [{ label: 'y = ax² + bx + c', data: ys }] },
+      options: { responsive:true, maintainAspectRatio:false }
+    });
+  }
+}
 
-  const xs = [];
-  const ys = [];
-  for(let x = x_min; x <= x_max; x += step){
-    xs.push(Number(x.toFixed(2)));
-    ys.push(a*x*x + b*x + c);
+// 3) Fallback: detecta si es cuadrática; si no, texto
+function renderFallback(root, data){
+  if (data?.graph && data?.coeffs) return renderMathQuadraticAnalysis(root, data);
+  return renderTextOnly(root, data);
+}
+
+// Registry de renderers
+const RENDERERS = {
+  'math:funcion_cuadratica:analisis_completo': renderMathQuadraticAnalysis,
+  'text:default': renderTextOnly,
+  'fallback': renderFallback
+};
+
+// Resolución del renderer a usar
+function selectRendererKey(data){
+  const meta = data?.meta || {};
+  // Si backend manda layout explícito
+  if (meta.layout === 'two-column') return 'math:funcion_cuadratica:analisis_completo';
+  if (meta.layout === 'single-column') return 'text:default';
+
+  // Si manda subject/type/subtype
+  if (meta.subject && meta.type && meta.subtype){
+    return `${meta.subject}:${meta.type}:${meta.subtype}`.toLowerCase();
   }
 
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: xs,
-      datasets: [{ label: 'y = ax² + bx + c', data: ys }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: { title:{display:true,text:'x'} },
-        y: { title:{display:true,text:'y'} }
-      }
-    }
-  });
+  // Compatibilidad por estructura de datos
+  if (data?.graph && data?.coeffs) return 'math:funcion_cuadratica:analisis_completo';
+  return 'text:default';
+}
+
+function mountSolution(data){
+  const root = byId('solution-root');
+  if (!root) return;
+  const key = selectRendererKey(data);
+  const renderer = RENDERERS[key] || RENDERERS['fallback'];
+  renderer(root, data);
 }
 
 /* ===========================
    Filtros (poblar selects)
    =========================== */
 function initFilters(){
-  const temaSel = document.getElementById('tema');
-  const subtemaSel = document.getElementById('subtema');
-  const tipoSel = document.getElementById('tipo');
-
+  const temaSel = byId('tema');
+  const subtemaSel = byId('subtema');
+  const tipoSel = byId('tipo');
   if (!temaSel || !subtemaSel || !tipoSel) return;
 
   temaSel.innerHTML = Object.keys(OPTIONS)
     .map(t => `<option value="${t}">${t}</option>`).join('');
-
-  function refreshSubtemas(){
-    const t = temaSel.value;
-    const subs = Object.keys(OPTIONS[t] || {});
-    subtemaSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
-    refreshTipos();
-  }
 
   function refreshTipos(){
     const t = temaSel.value;
@@ -122,29 +170,38 @@ function initFilters(){
     tipoSel.innerHTML = tipos.map(opt => `<option value="${opt.id}">${opt.label}</option>`).join('');
   }
 
+  function refreshSubtemas(){
+    const t = temaSel.value;
+    const subs = Object.keys(OPTIONS[t] || {});
+    subtemaSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+    refreshTipos();
+  }
+
   temaSel.addEventListener('change', refreshSubtemas);
   subtemaSel.addEventListener('change', refreshTipos);
-
-  // Primera carga
-  refreshSubtemas();
+  refreshSubtemas(); // primera carga
 }
 
 /* ===========================
-   Acciones
+   Acciones (fetch + render)
    =========================== */
 async function nuevoEjercicio(){
   try{
-    const tema = document.getElementById('tema')?.value || 'Álgebra';
-    const subtema = document.getElementById('subtema')?.value || 'Función cuadrática';
-    const tipo = document.getElementById('tipo')?.value || 'analisis_completo';
+    const tema = byId('tema')?.value || 'Álgebra';
+    const subtema = byId('subtema')?.value || 'Función cuadrática';
+    const tipo = byId('tipo')?.value || 'analisis_completo';
 
     const data = await fetchPlayground({ tema, subtema, tipo });
     lastExercise = data;
 
-    renderMath(data.latex_enunciado || '', 'enunciado');
-    renderMath('', 'solucion');
+    // Enunciado
+    const enEl = byId('enunciado');
+    renderMathInto(enEl, data.latex_enunciado || '');
 
-    if (chart){ chart.destroy(); chart = null; }
+    // Limpia solución y gráfico
+    const root = byId('solution-root');
+    clear(root);
+    if (chartInstance){ chartInstance.destroy(); chartInstance = null; }
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
   }
@@ -152,17 +209,11 @@ async function nuevoEjercicio(){
 
 async function mostrarRespuesta(){
   try{
-    if(!lastExercise){
-      await nuevoEjercicio();
-      if(!lastExercise) return;
+    if (!lastExercise){
+      await nuevoEjercicio();       // nuevoEjercicio asigna lastExercise
+      if (!lastExercise) return;
     }
-    renderMath(lastExercise.latex_solucion || '', 'solucion');
-
-    if (lastExercise.chart){
-      dibujarGraficoDesdeChartObj(lastExercise.chart);
-    } else if (lastExercise.graph && lastExercise.coeffs){
-      dibujarGraficoCuadratica(lastExercise);
-    }
+    mountSolution(lastExercise);     // decide layout y renderiza
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
   }
@@ -216,7 +267,6 @@ function getCurrentSubjectKey(){
   const name = active?.getAttribute('data-subject') || active?.textContent || '';
   return subjectKeyFromText(name);
 }
-
 function applySidebarIcons(){
   document.querySelectorAll('.subjects__item').forEach(li=>{
     const name = li.getAttribute('data-subject') || li.textContent || '';
@@ -225,7 +275,6 @@ function applySidebarIcons(){
     if (box && SUBJECT_ICONS[key]) box.innerHTML = SUBJECT_ICONS[key];
   });
 }
-
 function renderHeaderIcon(){
   const holder = document.querySelector('.subject-icon-header');
   if (!holder) return;
@@ -233,7 +282,7 @@ function renderHeaderIcon(){
   holder.innerHTML = SUBJECT_ICONS[key] || '';
 }
 function renderSubjectTitle(){
-  const span = document.getElementById('subject-name');
+  const span = byId('subject-name');
   if (!span) return;
   const active = document.querySelector('.subjects__item[aria-current="page"]');
   const name = active?.getAttribute('data-subject') || active?.textContent?.trim() || 'Matemáticas';
@@ -241,12 +290,11 @@ function renderSubjectTitle(){
 }
 
 /* ===========================
-   Sidebar: activo + título dinámico
+   Sidebar: activo + título
    =========================== */
 function initSubjectsSidebar(){
-  const list = document.getElementById('subjects');
+  const list = byId('subjects');
   if (!list) return;
-
   const items = Array.from(list.querySelectorAll('.subjects__item'));
 
   function setActive(item){
@@ -256,13 +304,11 @@ function initSubjectsSidebar(){
     renderSubjectTitle();
     renderHeaderIcon();
   }
-
   function handleActivate(e){
     if (e.type === 'keydown' && !(e.key === 'Enter' || e.key === ' ')) return;
     e.preventDefault();
     setActive(e.currentTarget);
   }
-
   items.forEach(item => {
     item.addEventListener('click', handleActivate);
     item.addEventListener('keydown', handleActivate);
@@ -273,9 +319,9 @@ function initSubjectsSidebar(){
    Sidebar colapsable en móvil
    =========================== */
 function initSidebarToggle(){
-  const btn = document.getElementById('toggle-subjects');
-  const sidebar = document.getElementById('sidebar');
-  const list = document.getElementById('subjects');
+  const btn = byId('toggle-subjects');
+  const sidebar = byId('sidebar');
+  const list = byId('subjects');
   if (!btn || !sidebar || !list) return;
 
   function setOpen(open){
@@ -320,8 +366,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
   renderSubjectTitle();
   renderHeaderIcon();
 
-  const btnNuevo = document.getElementById('btn-nuevo');
-  const btnMostrar = document.getElementById('btn-mostrar');
+  const btnNuevo = byId('btn-nuevo');
+  const btnMostrar = byId('btn-mostrar');
   if (btnNuevo) btnNuevo.addEventListener('click', nuevoEjercicio);
   if (btnMostrar) btnMostrar.addEventListener('click', mostrarRespuesta);
 });
