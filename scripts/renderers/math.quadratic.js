@@ -98,7 +98,7 @@ export function renderMathQuadraticAnalysis(root, data){
 
   // Pintar LaTeX (ahora queda a la izquierda por CSS)
   const _latex = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
-  renderMathInto(math, _latex);
+  renderMathInto(math, _latex, { raw: true });
 
 
   // Preferimos PNG (Matplotlib) si viene del backend
