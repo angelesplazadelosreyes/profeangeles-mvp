@@ -57,15 +57,15 @@ function selectRendererKey(data){
 
 // Resuelve ruta del módulo y nombre de export en base a la key elegida
 function resolveModuleInfo(rendererKey){
-  // Puedes ampliar este switch con más tipos a futuro
   switch (rendererKey){
     case 'math:funcion_cuadratica:analisis_completo':
-      return { path: './renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
+      return { path: '/assets/renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
     case 'text:default':
     default:
-      return { path: './renderers/text.default.js',    exportName: 'renderTextOnly' };
+      return { path: '/assets/renderers/text.default.js',    exportName: 'renderTextOnly' };
   }
 }
+
 
 // Carga el módulo solo cuando hace falta
 async function loadRenderer(rendererKey){
