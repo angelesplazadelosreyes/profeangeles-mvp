@@ -35,7 +35,6 @@
   gap: 1rem;
   margin: 1rem 0;
 }
-
 @media (max-width: 900px){
   .exercises-layout{ grid-template-columns: 1fr; }
 }
@@ -48,14 +47,12 @@
   box-shadow: var(--ex-shadow);
   overflow: hidden; /* respeta el redondeo del header */
 }
-
 .sidebar-header{
   background: var(--ex-sidebar-title);
   padding: .75rem 1rem;
   font-weight: 800;
   letter-spacing: .5px;
 }
-
 .subjects{
   list-style: none;
   margin: 0;
@@ -64,7 +61,6 @@
   flex-direction: column;
   gap: .5rem;
 }
-
 .subjects__item{
   display: flex;
   align-items: center;
@@ -79,14 +75,12 @@
   background: rgba(255,255,255,.18);
   font-weight: 700;
 }
-
 .subjects__icon{
   width: 18px; height: 18px;
   flex: 0 0 18px;
   display: inline-block;
   color: var(--ex-accent-yellow);
 }
-
 .subjects__label{
   display: inline-flex;
   gap: .25rem;
@@ -111,11 +105,13 @@
   gap: .5rem;
 }
 .card-header h2{ margin: 0; font-size: 1.25rem; }
-
-.header-icon{
-  width: 22px; height: 22px;
-  color: var(--ex-accent-yellow);
+.subject-icon-header{
+  display:inline-flex;
+  width:20px; height:20px;
+  margin-right:.5rem;
+  vertical-align:-3px;
 }
+.subject-icon-header svg{ width:20px; height:20px; }
 
 .card-block{
   background: var(--ex-card-bg);
@@ -125,7 +121,7 @@
   padding: 1rem;
 }
 
-/* Reutilizamos tu grid de respuesta dentro del bloque */
+/* (legacy) grid de respuesta antiguo — ya no se usa, pero lo dejamos por compat */
 .card-block .answer-grid{
   display: grid;
   grid-template-columns: 1.1fr .9fr;
@@ -149,7 +145,7 @@
 #btn-nuevo:hover,
 #btn-mostrar:hover{ filter: brightness(.96); }
 
-/* Filtros: bordes un poco más visibles sin romper estilos globales */
+/* Filtros */
 .filters select{
   border: 1px solid var(--ex-card-border);
   border-radius: 8px;
@@ -168,7 +164,6 @@ select:focus-visible{
 
 /* ===== Sidebar colapsable en móvil ===== */
 .sidebar-toggle{ display:none; }
-
 @media (max-width: 768px){
   .sidebar-toggle{
     display:inline-flex;
@@ -189,7 +184,6 @@ select:focus-visible{
     outline:3px solid var(--ex-focus);
     outline-offset:2px;
   }
-
   .sidebar{ display:none; }
   .sidebar.is-open{
     display:block;
@@ -200,7 +194,6 @@ select:focus-visible{
     to{ transform:none; opacity:1; }
   }
 }
-
 /* (opcional) Las materias “próximamente” no son clicables */
 .subjects__item[aria-disabled="true"]{
   opacity:.75;
@@ -208,12 +201,36 @@ select:focus-visible{
   pointer-events:none;
 }
 
-/* ===== Ícono dinámico en el título ===== */
-.subject-icon-header{
-  display:inline-flex;
-  width:20px;
-  height:20px;
-  margin-right:.5rem;
-  vertical-align:-3px;
+/* ====== Solución (nuevo sistema) ====== */
+
+/* Título “Solución” con un poco de aire */
+.solution-wrapper .math-block h3{
+  margin: .25rem 0 .75rem;
 }
-.subject-icon-header svg{ width:20px; height:20px; }
+
+/* Utilidades de layout para soluciones dinámicas */
+.sol-grid{
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.sol-col{ min-width: 0; }
+
+/* Colapso a 1 columna en pantallas medianas/pequeñas */
+@media (max-width: 1024px){
+  .sol-grid{ grid-template-columns: minmax(0,1fr); }
+}
+
+/* Canvas fluido para Chart.js */
+.sol-chart{
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
+/* MathJax: evitar desbordes por fórmulas largas */
+.mathjax{
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
