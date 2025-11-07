@@ -254,3 +254,7 @@ select:focus-visible{
   height: auto;
   display: block;
 }
+
+.solution-math mjx-container[display="true"] { 
+  text-align: left !important;
+}

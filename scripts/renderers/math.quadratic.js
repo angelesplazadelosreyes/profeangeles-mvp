@@ -6,13 +6,24 @@
 let __id = 0;
 const uid = (p = "grafico") => `${p}-${++__id}`;
 
-function renderMathInto(el, latex){
+function renderMathInto(el, latex, opts = {}){
   if (!el) return;
-  el.innerHTML = latex ? `$$${latex}$$` : "";
+
+  const { raw = false, wrapClass = "", display = true } = opts;
+
+  // Si raw=false, agregamos delimitadores; si raw=true, asumimos que el string ya viene con \[...\] o \(...\)
+  let body = "";
+  if (latex) {
+    body = raw ? latex : (display ? `\\[${latex}\\]` : `\\(${latex}\\)`);
+  }
+
+  el.innerHTML = wrapClass ? `<div class="${wrapClass}">${body}</div>` : body;
+
   if (window.MathJax?.typesetPromise){
-    window.MathJax.typesetPromise([el]);
+    return MathJax.typesetPromise([el]);
   }
 }
+
 
 // === Helpers: decimales -> fracciones LaTeX ===
 function decimalToFraction(x, maxDen = 12) {
@@ -71,7 +82,7 @@ export function renderMathQuadraticAnalysis(root, data){
   const left = document.createElement("div");
   left.className = "sol-col";
   const math = document.createElement("div");
-  math.className = "mathjax";
+  math.className = "solution-math";
   left.appendChild(math);
 
   // Columna derecha: figura acotada
