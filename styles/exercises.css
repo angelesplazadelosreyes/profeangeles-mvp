@@ -211,8 +211,8 @@ select:focus-visible{
 /* Utilidades de layout para soluciones dinámicas */
 .sol-grid{
   display: grid;
-  grid-template-columns: 1fr minmax(320px, 460px); /* 👈 derecha más angosta */
-  gap: clamp(.75rem, 1.5vw, 1.75rem);             /* 👈 separación responsive */
+  grid-template-columns: 1fr minmax(380px, 520px); 
+  gap: clamp(1rem, 2vw, 2rem);             
   align-items: start;
 }
 
@@ -246,12 +246,22 @@ select:focus-visible{
   justify-self: end;
 }
 
+/* La figura no puede desbordar su columna */
+.sol-figure{
+  width: min(520px, 100%);
+  justify-self: end;
+  overflow: hidden;                  /* 👈 recorta cualquier desborde del canvas */
+}
+
+/* El canvas debe ajustarse SIEMPRE al ancho disponible, sobreescribiendo estilos inline de Chart.js */
 .sol-figure img,
 .sol-figure canvas{
-  width: 100%;
-  height: auto;
+  width: 100% !important;            /* 👈 domina al style inline de Chart.js */
+  height: auto !important;
   display: block;
+  max-width: 100%;
 }
+
 
 /* Las fórmulas no pueden ser más anchas que su columna */
 .solution-math mjx-container[display="true"]{

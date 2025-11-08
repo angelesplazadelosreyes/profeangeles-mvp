@@ -103,14 +103,17 @@ export function renderMathQuadraticAnalysis(root, data){
 
     // 1) quitar \[ ... \] si vienen
     let s = latexRaw.trim()
-      .replace(/^\\\[((?:.|\n)*)\\\]$/,'$1');
+      .replace(/^\\\[((?:.|\n)*)\\\]$/,'$1')
+      .replace(/\\begin\{aligned\}/g,'')
+      .replace(/\\end\{aligned\}/g,'');
 
     // 2) quitar \begin{aligned} ... \end{aligned}
-    s = s.replace(/\\begin\{aligned\}/g,'')
-        .replace(/\\end\{aligned\}/g,'');
+    s = s
+      .replace(/\\\]\s*/g, '\n')   
+      .replace(/\s*\\\[/g, '\n');
 
     // 3) separar por los saltos \\[6pt] (tolerante a espacios)
-    const parts = s.split(/\\\\\s*\[\s*6pt\s*\]/g)
+    const parts = s.split(/(?:\\\\\s*(?:\[\s*6pt\s*\])?|\n)+/g)
                   .map(t => t.trim())
                   .filter(Boolean);
 
@@ -147,6 +150,7 @@ export function renderMathQuadraticAnalysis(root, data){
   // Fallback a Chart.js si no hay PNG
   const canvas = document.createElement("canvas");
   canvas.id = uid();
+  canvas.className = "sol-chart"; 
   fig.appendChild(canvas);
 
   // Evitar múltiples instancias globales
