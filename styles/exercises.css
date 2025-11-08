@@ -1,4 +1,15 @@
-/* === Tokens específicos de la página Ejercicios === */
+/* =========================================================
+   Ejercicios — Hoja de estilos
+   - Tokens (CSS variables)
+   - Layout principal (sidebar + panel)
+   - Sidebar de materias
+   - Tarjetas/panel derecho
+   - Botones, filtros, accesibilidad
+   - Sidebar colapsable (móvil)
+   - Solución (layout 50/50, MathJax y gráficos)
+   ========================================================= */
+
+/* === 1) TOKENS (variables de diseño) ==================== */
 :root{
   /* Colores base */
   --ex-sidebar:        #1F7A8C;   /* teal principal sidebar */
@@ -16,19 +27,22 @@
   --ex-shadow:         0 12px 32px rgba(15,23,42,.10);
   --ex-radius:         14px;
 
-  /* Accentos */
+  /* Acentos */
   --ex-accent-yellow:  #F59E0B;
 
-  /* Compat (por si algo del HTML espera estos nombres) */
+  /* Compat (por si el HTML espera estos nombres) */
   --pa-sidebar:        var(--ex-sidebar);
   --pa-sidebar-title:  var(--ex-sidebar-title);
   --pa-hover:          var(--ex-item-hover);
   --pa-card-bg:        var(--ex-card-bg);
   --pa-card-shadow:    var(--ex-shadow);
   --pa-radius:         var(--ex-radius);
+
+  /* Gap entre columnas de la SOLUCIÓN (ajustable) */
+  --sol-gap: clamp(1rem, 2.5vw, 2rem);
 }
 
-/* === Layout de dos columnas (sidebar + contenido) === */
+/* === 2) LAYOUT PRINCIPAL: sidebar + contenido ============ */
 .exercises-layout{
   display: grid;
   grid-template-columns: 240px 1fr;
@@ -39,7 +53,7 @@
   .exercises-layout{ grid-template-columns: 1fr; }
 }
 
-/* === Sidebar de materias === */
+/* === 3) SIDEBAR DE MATERIAS ============================== */
 .sidebar{
   background: var(--ex-sidebar);
   color: #fff;
@@ -91,7 +105,7 @@
   opacity: .9;
 }
 
-/* === Panel derecho (tarjetas) === */
+/* === 4) PANEL DERECHO (tarjetas) ========================= */
 .panel{ display: grid; gap: 1rem; }
 
 .card-header{
@@ -121,7 +135,7 @@
   padding: 1rem;
 }
 
-/* (legacy) grid de respuesta antiguo — ya no se usa, pero lo dejamos por compat */
+/* (legacy) grid de respuesta antiguo — compatibilidad */
 .card-block .answer-grid{
   display: grid;
   grid-template-columns: 1.1fr .9fr;
@@ -132,7 +146,7 @@
   .card-block .answer-grid{ grid-template-columns: 1fr; }
 }
 
-/* === Botones: CTAs indigo unificados === */
+/* === 5) BOTONES / FILTROS / ACCESIBILIDAD ================ */
 #btn-nuevo,
 #btn-mostrar{
   background: linear-gradient(180deg, #48A7FF 0%, var(--ex-cta) 70%);
@@ -145,7 +159,6 @@
 #btn-nuevo:hover,
 #btn-mostrar:hover{ filter: brightness(.96); }
 
-/* Filtros */
 .filters select{
   border: 1px solid var(--ex-card-border);
   border-radius: 8px;
@@ -162,7 +175,7 @@ select:focus-visible{
   border-radius: 10px;
 }
 
-/* ===== Sidebar colapsable en móvil ===== */
+/* === 6) SIDEBAR COLAPSABLE (móvil) ======================= */
 .sidebar-toggle{ display:none; }
 @media (max-width: 768px){
   .sidebar-toggle{
@@ -194,34 +207,38 @@ select:focus-visible{
     to{ transform:none; opacity:1; }
   }
 }
-/* (opcional) Las materias “próximamente” no son clicables */
+/* materias “próximamente” no clicables */
 .subjects__item[aria-disabled="true"]{
   opacity:.75;
   cursor:not-allowed;
   pointer-events:none;
 }
 
-/* ====== Solución (nuevo sistema) ====== */
+/* === 7) SOLUCIÓN (layout 50/50 + MathJax + gráficos) ===== */
 
-/* Título “Solución” con un poco de aire */
+/* Título “Solución” con aire */
 .solution-wrapper .math-block h3{
   margin: .25rem 0 .75rem;
 }
 
-/* Utilidades de layout para soluciones dinámicas */
+/* Grid 50/50 con gap controlado por token */
 .sol-grid{
   display: grid;
-  grid-template-columns: 1fr minmax(380px, 520px); 
-  gap: clamp(1rem, 2vw, 2rem);             
+  grid-template-columns: 1fr 1fr; /* 50% / 50% (el gap se descuenta solo) */
+  gap: var(--sol-gap);
   align-items: start;
 }
 
-.sol-col{ min-width: 0; }
+/* Cada columna puede usar container queries (cqi) */
+.sol-col{
+  min-width: 0;
+  container-type: inline-size; /* habilita cqi/cqw dentro de la columna */
+}
 
-/* Un pelín de aire entre texto y gráfico */
+/* Un poco de aire entre texto y gráfico (lado izquierdo) */
 .sol-col:first-child{ padding-right: .25rem; }
 
-
+/* Responsivo: una sola columna en pantallas medianas/pequeñas */
 @media (max-width: 1200px){
   .sol-grid{ grid-template-columns: 1fr; }
   .sol-figure{ justify-self: start; width: 100%; }
@@ -234,68 +251,58 @@ select:focus-visible{
   display: block;
 }
 
-/* MathJax: evitar desbordes por fórmulas largas */
+/* MathJax genérico: evitar desbordes por fórmulas largas */
 .mathjax{
   overflow-wrap: anywhere;
   white-space: normal;
 }
 
-/* Contenedor de figura acotada */
+/* Contenedor de la figura: ocupa su columna y evita desbordes */
 .sol-figure{
-  width: min(460px, 100%);   /* 👈 acompasa la columna derecha */
-  justify-self: end;
+  width: 100%;
+  justify-self: end;      /* mantiene la figura alineada a la derecha */
+  overflow: hidden;       /* evita desbordes del canvas/imagen */
 }
 
-/* La figura no puede desbordar su columna */
-.sol-figure{
-  width: min(520px, 100%);
-  justify-self: end;
-  overflow: hidden;                  /* 👈 recorta cualquier desborde del canvas */
-}
-
-/* El canvas debe ajustarse SIEMPRE al ancho disponible, sobreescribiendo estilos inline de Chart.js */
+/* Imagen/canvas: siempre al 100% del contenedor */
 .sol-figure img,
 .sol-figure canvas{
-  width: 100% !important;            /* 👈 domina al style inline de Chart.js */
+  width: 100% !important; /* domina estilos inline de Chart.js */
   height: auto !important;
-  display: block;
   max-width: 100%;
+  display: block;
 }
-
 
 /* Las fórmulas no pueden ser más anchas que su columna */
 .solution-math mjx-container[display="true"]{
   max-width: 100% !important;
-  overflow-x: auto;          /* si algo es MUY ancho, scroll horizontal en vez de superponerse */
+  overflow-x: auto; /* si algo es MUY ancho, scroll horizontal local */
 }
-
 .solution-math mjx-container[display="true"] > mjx-math{
   margin-left: 0 !important;
   margin-right: auto !important;
 }
 
-/* En la columna de SOLUCIÓN, todo texto a la izquierda por si acaso */
+/* Texto de la solución: tipografía fluida + alineación */
 .solution-math{
   overflow-wrap: anywhere;
   white-space: normal;
   text-align: left;
 }
-
-/* MathJax dentro del bloque de solución: tamaño y márgenes responsivos */
+/* Tipografía display MathJax: escala con el ancho de la columna (cqi) */
 .solution-math > mjx-container[display="true"]{
   text-align: left !important;
-  margin: .25rem 0 .6rem !important;              
-  font-size: clamp(0.95rem, 1.1vw + .55rem, 1.15rem);
+  margin: .25rem 0 .6rem !important;
+  font-size: clamp(0.95rem, 1.2cqi + 0.5rem, 1.25rem);
   line-height: 1.45;
 }
-
-/* (opcional) inline math \(...\) dentro de la solución */
+/* Tipografía inline MathJax (\(...\)) */
 .solution-math mjx-container[display="false"]{
-  font-size: clamp(0.95rem, 1vw + .5rem, 1.1rem);
+  font-size: clamp(0.9rem, 1cqi + 0.45rem, 1.1rem);
   line-height: 1.45;
 }
 
-
+/* Enunciado centrado (solo display MathJax) */
 #enunciado mjx-container[jax="CHTML"][display="true"] {
   text-align: center !important;
 }
@@ -303,5 +310,3 @@ select:focus-visible{
   margin-left: auto !important;
   margin-right: auto !important;
 }
-
-

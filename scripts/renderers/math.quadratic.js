@@ -118,15 +118,20 @@ export function renderMathQuadraticAnalysis(root, data){
                   .filter(Boolean);
 
     // 4) limpiar y pintar cada línea como display independiente
+    // 4) limpiar y pintar cada línea como display independiente
     container.innerHTML = "";
-    for (const part of parts){
+    for (let part of parts){             // 👈 antes decía const
+      part = part.replace(/^\\\[/, "").replace(/\\\]$/, "").trim();
+
       const line = document.createElement("div");
       line.className = "solution-math";
       container.appendChild(line);
+
       // le pasamos ya envuelto en display; raw:true para no re-envolver
       renderMathInto(line, `\\[${part}\\]`, { raw:true });
     }
   }
+
 
   const _latex = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
   renderSolutionLines(math, _latex);
