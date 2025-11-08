@@ -235,14 +235,6 @@ select:focus-visible{
   white-space: normal;
 }
 
-
-/* === Alinear MathJax a la izquierda === */
-.mjx-container[display="true"]{
-  text-align: left !important;        /* override centrado de MathJax */
-  justify-content: flex-start !important;
-  margin: .25rem 0;
-}
-
 /* === Contenedor de figura acotada === */
 .sol-figure{
   max-width: 520px;                    /* límite de ancho del gráfico */
@@ -255,6 +247,16 @@ select:focus-visible{
   display: block;
 }
 
+
+/* bloque de SOLUCIÓN: texto base a la izquierda */
+.solution-math{
+  overflow-wrap: anywhere;
+  white-space: normal;
+  text-align: left;
+}
+
 .solution-math mjx-container[display="true"] { 
   text-align: left !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
 }
