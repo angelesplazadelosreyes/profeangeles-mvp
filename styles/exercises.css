@@ -211,8 +211,8 @@ select:focus-visible{
 /* Utilidades de layout para soluciones dinámicas */
 .sol-grid{
   display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0,1fr) minmax(360px, 520px);
+  gap: 1.5rem;
   align-items: start;
 }
 .sol-col{ min-width: 0; }
@@ -237,8 +237,8 @@ select:focus-visible{
 
 /* === Contenedor de figura acotada === */
 .sol-figure{
-  max-width: 520px;                    /* límite de ancho del gráfico */
-  width: 100%;
+  width: min(520px, 100%);                   
+  justify-self: end;
 }
 .sol-figure img,
 .sol-figure canvas{
@@ -247,16 +247,42 @@ select:focus-visible{
   display: block;
 }
 
+/* Alinear SIEMPRE el display math de la columna de SOLUCIÓN */
+.solution-math mjx-container[display="true"]{
+  text-align: left !important;
+}
+.solution-math mjx-container[display="true"] > mjx-math{
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
 
-/* bloque de SOLUCIÓN: texto base a la izquierda */
+/* En la columna de SOLUCIÓN, todo texto a la izquierda por si acaso */
 .solution-math{
   overflow-wrap: anywhere;
   white-space: normal;
   text-align: left;
 }
 
-.solution-math mjx-container[display="true"] { 
+/* MathJax dentro del bloque de solución: tamaño y márgenes responsivos */
+.solution-math > mjx-container[display="true"]{
   text-align: left !important;
-  margin-left: 0 !important;
+  margin: .25rem 0 .6rem !important;              
+  font-size: clamp(0.95rem, 1.1vw + .55rem, 1.15rem);
+  line-height: 1.45;
+}
+
+/* (opcional) inline math \(...\) dentro de la solución */
+.solution-math mjx-container[display="false"]{
+  font-size: clamp(0.95rem, 1vw + .5rem, 1.1rem);
+  line-height: 1.45;
+}
+
+
+#enunciado mjx-container[jax="CHTML"][display="true"] {
+  text-align: center !important;
+}
+#enunciado mjx-container[jax="CHTML"][display="true"] > mjx-math {
+  margin-left: auto !important;
   margin-right: auto !important;
 }
+

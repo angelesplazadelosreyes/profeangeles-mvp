@@ -128,7 +128,7 @@ def latex_solution(a, b, c, D, h, k, roots):
         linea_fact,
     ]
     cuerpo = r" \\[6pt] ".join(partes)
-    return r"\begin{aligned}" + cuerpo + r"\end{aligned}"
+    return r"\[\begin{aligned}" + cuerpo + r"\end{aligned}\]"
 
 def plot_quadratic_png(a, b, c):
     """Devuelve un PNG base64 (bytes) de la parábola y elementos destacados."""

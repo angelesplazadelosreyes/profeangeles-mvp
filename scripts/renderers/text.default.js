@@ -17,7 +17,7 @@ export function renderTextOnly(root, data){
   col.className = "sol-col";
 
   const math = document.createElement("div");
-  math.className = "mathjax";
+  math.className = "solution-math";
 
   col.appendChild(math);
   root.appendChild(col);
