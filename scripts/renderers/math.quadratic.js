@@ -97,8 +97,37 @@ export function renderMathQuadraticAnalysis(root, data){
   root.appendChild(grid);
 
   // Pintar LaTeX (ahora queda a la izquierda por CSS)
+  function renderSolutionLines(container, latexRaw){
+    if (!container) return;
+    if (!latexRaw) { container.innerHTML = ""; return; }
+
+    // 1) quitar \[ ... \] si vienen
+    let s = latexRaw.trim()
+      .replace(/^\\\[((?:.|\n)*)\\\]$/,'$1');
+
+    // 2) quitar \begin{aligned} ... \end{aligned}
+    s = s.replace(/\\begin\{aligned\}/g,'')
+        .replace(/\\end\{aligned\}/g,'');
+
+    // 3) separar por los saltos \\[6pt] (tolerante a espacios)
+    const parts = s.split(/\\\\\s*\[\s*6pt\s*\]/g)
+                  .map(t => t.trim())
+                  .filter(Boolean);
+
+    // 4) limpiar y pintar cada línea como display independiente
+    container.innerHTML = "";
+    for (const part of parts){
+      const line = document.createElement("div");
+      line.className = "solution-math";
+      container.appendChild(line);
+      // le pasamos ya envuelto en display; raw:true para no re-envolver
+      renderMathInto(line, `\\[${part}\\]`, { raw:true });
+    }
+  }
+
   const _latex = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
-  renderMathInto(math, _latex, { raw: true });
+  renderSolutionLines(math, _latex);
+
 
 
   // Preferimos PNG (Matplotlib) si viene del backend
