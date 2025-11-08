@@ -211,15 +211,20 @@ select:focus-visible{
 /* Utilidades de layout para soluciones dinámicas */
 .sol-grid{
   display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(360px, 520px);
-  gap: 1.5rem;
+  grid-template-columns: 1fr minmax(320px, 460px); /* 👈 derecha más angosta */
+  gap: clamp(.75rem, 1.5vw, 1.75rem);             /* 👈 separación responsive */
   align-items: start;
 }
+
 .sol-col{ min-width: 0; }
 
-/* Colapso a 1 columna en pantallas medianas/pequeñas */
-@media (max-width: 1024px){
-  .sol-grid{ grid-template-columns: minmax(0,1fr); }
+/* Un pelín de aire entre texto y gráfico */
+.sol-col:first-child{ padding-right: .25rem; }
+
+
+@media (max-width: 1200px){
+  .sol-grid{ grid-template-columns: 1fr; }
+  .sol-figure{ justify-self: start; width: 100%; }
 }
 
 /* Canvas fluido para Chart.js */
@@ -235,11 +240,12 @@ select:focus-visible{
   white-space: normal;
 }
 
-/* === Contenedor de figura acotada === */
+/* Contenedor de figura acotada */
 .sol-figure{
-  width: min(520px, 100%);                   
+  width: min(460px, 100%);   /* 👈 acompasa la columna derecha */
   justify-self: end;
 }
+
 .sol-figure img,
 .sol-figure canvas{
   width: 100%;
@@ -247,10 +253,12 @@ select:focus-visible{
   display: block;
 }
 
-/* Alinear SIEMPRE el display math de la columna de SOLUCIÓN */
+/* Las fórmulas no pueden ser más anchas que su columna */
 .solution-math mjx-container[display="true"]{
-  text-align: left !important;
+  max-width: 100% !important;
+  overflow-x: auto;          /* si algo es MUY ancho, scroll horizontal en vez de superponerse */
 }
+
 .solution-math mjx-container[display="true"] > mjx-math{
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -285,4 +293,5 @@ select:focus-visible{
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
 
