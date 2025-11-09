@@ -59,13 +59,13 @@ function selectRendererKey(data){
 function resolveModuleInfo(rendererKey){
   switch (rendererKey){
     case 'math:funcion_cuadratica:analisis_completo':
-      // ⬇️ Importa el renderer desde /scripts/ (el archivo que editaste)
-      return { path: '/scripts/renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
+      return { path: '/assets/renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
     case 'text:default':
     default:
-      return { path: '/scripts/renderers/text.default.js',    exportName: 'renderTextOnly' };
+      return { path: '/assets/renderers/text.default.js', exportName: 'renderTextOnly' };
   }
 }
+
 
 // Carga el módulo solo cuando hace falta
 async function loadRenderer(rendererKey){
