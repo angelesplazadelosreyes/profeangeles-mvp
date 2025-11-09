@@ -59,13 +59,13 @@ function selectRendererKey(data){
 function resolveModuleInfo(rendererKey){
   switch (rendererKey){
     case 'math:funcion_cuadratica:analisis_completo':
-      return { path: '/assets/renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
+      // ⬇️ Importa el renderer desde /scripts/ (el archivo que editaste)
+      return { path: '/scripts/renderers/math.quadratic.js', exportName: 'renderMathQuadraticAnalysis' };
     case 'text:default':
     default:
-      return { path: '/assets/renderers/text.default.js',    exportName: 'renderTextOnly' };
+      return { path: '/scripts/renderers/text.default.js',    exportName: 'renderTextOnly' };
   }
 }
-
 
 // Carga el módulo solo cuando hace falta
 async function loadRenderer(rendererKey){
@@ -160,14 +160,14 @@ async function mostrarRespuesta(){
       await nuevoEjercicio();
       if (!lastExercise) return;
     }
-    await mountSolution(lastExercise); // 👈 ahora es async porque importa dinámicamente
+    await mountSolution(lastExercise); // import dinámico del renderer
   }catch(err){
     alert(err.message || 'Failed to fetch (playground)');
   }
 }
 
 /* ===========================
-   Íconos por materia (SVG) — mismo look que main.js
+   Íconos por materia (SVG)
    =========================== */
 const SUBJECT_ICONS = {
   matematicas: `
