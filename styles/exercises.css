@@ -221,13 +221,46 @@ select:focus-visible{
   margin: .25rem 0 .75rem;
 }
 
-/* Grid 50/50 con gap controlado por token */
+/* Grid con 2 columnas y 3 filas; la tercera ocupa todo el ancho */
 .sol-grid{
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 50% / 50% (el gap se descuenta solo) */
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "left1  right1"
+    "left2  right2"
+    "full   full";
   gap: var(--sol-gap);
   align-items: start;
 }
+
+/* Áreas nombradas */
+.area-left1  { grid-area: left1; }
+.area-right1 { grid-area: right1; }
+.area-left2  { grid-area: left2; }
+.area-right2 { grid-area: right2; }
+.area-full   { grid-area: full;  }
+
+/* La figura sigue ajustándose a su celda */
+.sol-figure{
+  width: 100%;
+  justify-self: end;
+  overflow: hidden;
+}
+
+/* Responsivo: una sola columna en pantallas medianas/pequeñas */
+@media (max-width: 1200px){
+  .sol-grid{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left1"
+      "right1"
+      "left2"
+      "right2"
+      "full";
+  }
+  .sol-figure{ justify-self: start; }
+}
+
 
 /* Cada columna puede usar container queries (cqi) */
 .sol-col{
@@ -237,12 +270,6 @@ select:focus-visible{
 
 /* Un poco de aire entre texto y gráfico (lado izquierdo) */
 .sol-col:first-child{ padding-right: .25rem; }
-
-/* Responsivo: una sola columna en pantallas medianas/pequeñas */
-@media (max-width: 1200px){
-  .sol-grid{ grid-template-columns: 1fr; }
-  .sol-figure{ justify-self: start; width: 100%; }
-}
 
 /* Canvas fluido para Chart.js */
 .sol-chart{
