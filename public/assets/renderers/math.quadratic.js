@@ -58,6 +58,12 @@ function replaceDecimalsInLatex(latex, { maxDen = 12 } = {}) {
   });
 }
 
+function stripDisplayBrackets(latex){
+  if (!latex) return latex;
+  // Elimina secuencias \[ y \]
+  return latex.replace(/\\\[|\\\]/g, '');
+}
+
 
 export function renderMathQuadraticAnalysis(root, data){
   if (!root) return;
@@ -86,7 +92,9 @@ export function renderMathQuadraticAnalysis(root, data){
   root.appendChild(grid);
 
   // Pintar LaTeX (ahora queda a la izquierda por CSS)
-  const _latex = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
+  const rawLatex = data?.latex_solucion || "";
+  const cleanedLatex = stripDisplayBrackets(rawLatex);
+  const _latex = replaceDecimalsInLatex(cleanedLatex, { maxDen: 12 });
   renderMathInto(math, _latex);
 
 

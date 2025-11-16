@@ -1,26 +1,26 @@
-// scripts/renderers/text.default.js
-// Renderer 1-columna: solo LaTeX/texto
+// // scripts/renderers/text.default.js
+// // Renderer 1-columna: solo LaTeX/texto
 
-function renderMathInto(el, latex){
-  if (!el) return;
-  el.innerHTML = latex ? `$$${latex}$$` : "";
-  if (window.MathJax?.typesetPromise){
-    window.MathJax.typesetPromise([el]);
-  }
-}
+// function renderMathInto(el, latex){
+//   if (!el) return;
+//   el.innerHTML = latex ? `$$${latex}$$` : "";
+//   if (window.MathJax?.typesetPromise){
+//     window.MathJax.typesetPromise([el]);
+//   }
+// }
 
-export function renderTextOnly(root, data){
-  if (!root) return;
-  root.innerHTML = "";
+// export function renderTextOnly(root, data){
+//   if (!root) return;
+//   root.innerHTML = "";
 
-  const col = document.createElement("div");
-  col.className = "sol-col";
+//   const col = document.createElement("div");
+//   col.className = "sol-col";
 
-  const math = document.createElement("div");
-  math.className = "solution-math";
+//   const math = document.createElement("div");
+//   math.className = "solution-math";
 
-  col.appendChild(math);
-  root.appendChild(col);
+//   col.appendChild(math);
+//   root.appendChild(col);
 
-  renderMathInto(math, data?.latex_solucion || "");
-}
+//   renderMathInto(math, data?.latex_solucion || "");
+// }
