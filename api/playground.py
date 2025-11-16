@@ -97,9 +97,11 @@ def latex_solution(a, b, c, D, h, k, roots):
     linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
     linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"
     linea_dom   = rf"\textbf{{Dominio:}}~\mathbb{{R}}"
-    linea_rec   = (rf"\textbf{{Recorrido:}}~\left[{k:.2f},\, \infty\right)"
-                   if a > 0 else
-                   rf"\textbf{{Recorrido:}}~\left(-\infty,\, {k:.2f}\right]")
+    linea_rec   = (
+        rf"\textbf{{Recorrido:}}~\left[{k:.2f},\, \infty\right)"
+        if a > 0 else
+        rf"\textbf{{Recorrido:}}~\left(-\infty,\, {k:.2f}\right]"
+    )
     linea_canon = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2~{k_term}"
 
     if len(roots) == 2:
@@ -127,8 +129,12 @@ def latex_solution(a, b, c, D, h, k, roots):
         linea_canon,
         linea_fact,
     ]
+
+    # Saltos con espacio vertical entre líneas (igual espíritu que la primera función)
     cuerpo = r" \\[6pt] ".join(partes)
-    return r"\[\begin{aligned}" + cuerpo + r"\end{aligned}\]"
+
+    # Igual que la primera: SOLO entorno aligned, sin \[ \]
+    return r"\begin{aligned}" + cuerpo + r"\end{aligned}"
 
 def plot_quadratic_png(a, b, c):
     """Devuelve un PNG base64 (bytes) de la parábola y elementos destacados."""
