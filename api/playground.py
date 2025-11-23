@@ -72,6 +72,67 @@ def quadratic_traits(a, b, c):
         roots = [r]
     return D, h, k, roots, c  # c = intersección en y
 
+def _build_quadratic_lines(a, b, c, D, h, k, roots):
+    """Devuelve la lista de líneas LaTeX para la solución de la cuadrática."""
+    # a como prefactor: "", "-", o el número
+    a_str = "" if a == 1 else ("-" if a == -1 else f"{a}")
+    # (x - h)^2 con signos correctos (y sin paréntesis extra si h≈0)
+    if abs(h) < 1e-9:
+        x_minus_h = "x"
+    elif h > 0:
+        x_minus_h = f"(x - {h:.2f})"
+    else:
+        x_minus_h = f"(x + {abs(h):.2f})"
+    # "+ k" o "- |k|"
+    k_term = f"+ {k:.2f}" if k >= 0 else f"- {abs(k):.2f}"
+
+    concav = (
+        r"\textbf{Concavidad:}~"
+        + (r"\text{cóncava hacia arriba } \color{green}{\smile}"
+           if a > 0 else
+           r"\text{cóncava hacia abajo } \color{red}{\frown}")
+    )
+    linea_datos = rf"\textbf{{Coeficientes:}}~a={a},~b={b},~c={c}"
+    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta={D}"
+    linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
+    linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
+    linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"
+    linea_dom   = rf"\textbf{{Dominio:}}~\mathbb{{R}}"
+    linea_rec   = (
+        rf"\textbf{{Recorrido:}}~\left[{k:.2f},\, \infty\right)"
+        if a > 0 else
+        rf"\textbf{{Recorrido:}}~\left(-\infty,\, {k:.2f}\right]"
+    )
+    linea_canon = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2~{k_term}"
+
+    if len(roots) == 2:
+        r1, r2 = roots
+        linea_raices = rf"\textbf{{Raíces:}}~x_1={r1:.2f},~x_2={r2:.2f}"
+        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{r1:.2f})(x-{r2:.2f})"
+    elif len(roots) == 1:
+        r0 = roots[0]
+        linea_raices = rf"\textbf{{Raíz doble:}}~x={r0:.2f}"
+        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{r0:.2f})^2"
+    else:
+        linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
+        linea_fact = r"\textbf{Forma factorizada:}~\text{No aplica en } \mathbb{R}"
+
+    partes = [
+        concav,
+        linea_datos,
+        linea_disc,
+        linea_raices,
+        linea_eje,
+        linea_vert,
+        linea_y,
+        linea_dom,
+        linea_rec,
+        linea_canon,
+        linea_fact,
+    ]
+    return partes
+
+
 def latex_solution(a, b, c, D, h, k, roots):
     # a como prefactor: "", "-", o el número
     a_str = "" if a == 1 else ("-" if a == -1 else f"{a}")
@@ -92,7 +153,7 @@ def latex_solution(a, b, c, D, h, k, roots):
            r"\text{cóncava hacia abajo } \color{red}{\frown}")
     )
     linea_datos = rf"\textbf{{Coeficientes:}}~a={a},~b={b},~c={c}"
-    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta=b^2-4ac={D}"
+    linea_disc  = rf"\textbf{{Discriminante:}}~\Delta={D}"
     linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
     linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
     linea_y     = rf"\textbf{{Intersección con eje y:}}~(0, {c})"

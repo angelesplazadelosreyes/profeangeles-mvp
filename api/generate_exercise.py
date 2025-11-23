@@ -2,14 +2,24 @@ import json
 import math
 import random
 import time
+
+import io
+import base64
+
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")  # backend sin display
+import matplotlib.pyplot as plt
+
 from flask import Flask, Response, request, jsonify
+
 
 app = Flask(__name__)
 
 # --------------------- CORS ---------------------
 @app.after_request
 def add_cors_headers(response):
-    # Para MVP dejamos *; si quieres, reemplaza por tus dominios de Vercel y tu dominio:
+    # Para MVP dejamos *; OJO, después reemplazas por los dominios de Vercel y mi dominio:
     #   "https://profeangeles.cl", "https://profeangeles-*.vercel.app"
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET,OPTIONS"
@@ -95,6 +105,52 @@ def latex_solution(a, b, c, D, h, k, roots):
         r"\end{aligned}"
     )
 
+
+def plot_quadratic_png(a, b, c):
+    """Devuelve un PNG base64 (bytes) de la parábola y elementos destacados."""
+    vx = -b / (2 * a)
+    vy = a * vx * vx + b * vx + c
+    disc = b * b - 4 * a * c
+    roots = []
+    if disc >= 0:
+        r = disc ** 0.5
+        roots = [(-b + r) / (2 * a), (-b - r) / (2 * a)]
+
+    # Rango x centrado en el vértice (autoajustable)
+    span = 10 if abs(a) < 1.5 else 6
+    xs = np.linspace(vx - span, vx + span, 600)
+    ys = a * xs**2 + b * xs + c
+
+    fig = plt.figure(figsize=(5.5, 3.8), dpi=110)
+    ax = fig.add_subplot(111)
+    ax.plot(xs, ys, label="Parábola")
+    ax.scatter([vx], [vy], s=40, zorder=3, label="Vértice")
+    ax.axvline(vx, linestyle="--", alpha=0.6, label="Eje de simetría")
+    ax.scatter([0], [c], s=30, zorder=3, label="Corte con eje y")
+    if roots:
+        ax.scatter(roots, [0]*len(roots), marker="x", s=60, zorder=3, label="Raíces reales")
+
+    ax.axhline(0, color="k", lw=0.6, alpha=0.6)
+    ax.axvline(0, color="k", lw=0.6, alpha=0.6)
+    ax.grid(alpha=0.25)
+    ax.set_title(f"y = {a}x² {('+' if b>=0 else '')}{b}x {('+' if c>=0 else '')}{c}")
+    ax.set_xlabel("x"); ax.set_ylabel("y")
+    ax.legend(loc="best", fontsize=9)
+
+    ymin, ymax = float(np.min(ys)), float(np.max(ys))
+    pad = 0.1 * (ymax - ymin + 1)
+    ax.set_ylim(ymin - pad, ymax + pad)
+
+    fig.tight_layout()
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+    b64 = base64.b64encode(buf.read()).decode("ascii")
+    return b64
+
+
 @app.route("/api/generate-exercise", methods=["GET"])
 def generate_exercise():
     a, b, c = rand_coeff()
@@ -103,6 +159,9 @@ def generate_exercise():
     latex_eq = format_latex_quadratic(a, b, c)
     latex_enunciado = rf"\text{{Analiza la función cuadrática: }}~ {latex_eq}"
     latex_solucion = latex_solution(a, b, c, D, h, k, roots)
+
+    # NUEVO: generar PNG con Matplotlib
+    png_b64 = plot_quadratic_png(a, b, c)
 
     topic = request.args.get("topic", "Álgebra")
     subtopic = request.args.get("subtopic", "Función cuadrática")
@@ -118,6 +177,13 @@ def generate_exercise():
             "roots": roots,
             "axis": {"x": h},
             "y_intercept": y_intercept
+        },
+        # NUEVO: mismo formato que playground.py
+        "plot": {
+            "png": png_b64,
+            "engine": "matplotlib",
+            "size": [5.5, 3.8],
+            "dpi": 110,
         },
         "meta": {
             "exercise_id": f"q_{int(time.time()*1000)}",
