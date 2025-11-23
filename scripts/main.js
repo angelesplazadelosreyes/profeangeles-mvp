@@ -124,21 +124,50 @@ async function mostrarRespuesta(){
 }
 
 function dibujarGrafico(data){
-  const canvas = document.getElementById('grafico');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  // Contenedor donde vive el gráfico
+  const wrap = document.querySelector('.chart-wrap');
+  if (!wrap) return;
 
+  // Si había un Chart.js previo, destrúyelo
+  if (chart) {
+    chart.destroy();
+    chart = null;
+  }
+
+  // Limpia el contenido anterior (canvas o imagen)
+  wrap.innerHTML = '';
+
+  // 1) Si viene PNG de Matplotlib, lo usamos
+  const pngB64 = data?.plot?.png;
+  if (pngB64) {
+    const img = document.createElement('img');
+    img.alt = 'Gráfico de la función cuadrática';
+    img.src = `data:image/png;base64,${pngB64}`;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'contain';
+    wrap.appendChild(img);
+    return; // No seguimos, ya mostramos la imagen
+  }
+
+  // 2) Fallback: si NO hay PNG, usamos Chart.js como antes
+  const canvas = document.createElement('canvas');
+  canvas.id = 'grafico';
+  canvas.height = 260;
+  canvas.className = 'chart';
+  wrap.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
   const { x_min, x_max, step } = data.graph;
   const { coeffs } = data;
 
   const xs = [];
   const ys = [];
-  for(let x = x_min; x <= x_max; x += step){
+  for (let x = x_min; x <= x_max; x += step) {
     xs.push(Number(x.toFixed(2)));
-    ys.push(coeffs.a*x*x + coeffs.b*x + coeffs.c);
+    ys.push(coeffs.a * x * x + coeffs.b * x + coeffs.c);
   }
 
-  if(chart) chart.destroy();
   chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -149,12 +178,13 @@ function dibujarGrafico(data){
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: { title:{display:true,text:'x'} },
-        y: { title:{display:true,text:'y'} }
+        x: { title: { display: true, text: 'x' } },
+        y: { title: { display: true, text: 'y' } }
       }
     }
   });
 }
+
 
 /* ===========================
    Filtros
