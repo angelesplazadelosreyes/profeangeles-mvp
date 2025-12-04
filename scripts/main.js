@@ -7,7 +7,8 @@ let chart = null;
 const OPTIONS = {
   "Álgebra": {
     "Función cuadrática": [
-      { id: "analisis_completo", label: "Análisis completo (raíces, vértice, etc.)" }
+      { id: "analisis_completo", label: "Análisis completo (raíces, vértice, etc.)" },
+      { id: "solo_solucion", label: "Solo solución (test despliegue)" }
     ]
   }
 };
