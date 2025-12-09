@@ -1,0 +1,354 @@
+Listado de rutas de carpetas para el volumen OS
+El n·mero de serie del volumen es A8B4-3F2D
+C:.
+|   +---Include
+|   +---Lib
+|   |   \---site-packages
+|   |       +---blinker
+|   |       +---click
+|   |       |   \---licenses
+|   |       +---colorama
+|   |       |   +---tests
+|   |       |   \---licenses
+|   |       +---contourpy
+|   |       |   +---util
+|   |       +---cycler
+|   |       +---dateutil
+|   |       |   +---parser
+|   |       |   +---tz
+|   |       |   +---zoneinfo
+|   |       +---flask
+|   |       |   +---json
+|   |       |   +---sansio
+|   |       +---flask_cors
+|   |       +---fontTools
+|   |       |   +---cffLib
+|   |       |   +---colorLib
+|   |       |   +---config
+|   |       |   +---cu2qu
+|   |       |   +---designspaceLib
+|   |       |   +---encodings
+|   |       |   +---feaLib
+|   |       |   +---merge
+|   |       |   +---misc
+|   |       |   |   +---filesystem
+|   |       |   |   +---plistlib
+|   |       |   +---mtiLib
+|   |       |   +---otlLib
+|   |       |   |   +---optimize
+|   |       |   +---pens
+|   |       |   +---qu2cu
+|   |       |   +---subset
+|   |       |   +---svgLib
+|   |       |   |   +---path
+|   |       |   +---t1Lib
+|   |       |   +---ttLib
+|   |       |   |   +---tables
+|   |       |   +---ufoLib
+|   |       |   +---unicodedata
+|   |       |   +---varLib
+|   |       |   |   +---avar
+|   |       |   |   +---instancer
+|   |       |   +---voltLib
+|   |       |   \---licenses
+|   |       +---gunicorn
+|   |       |   +---app
+|   |       |   +---http
+|   |       |   +---instrument
+|   |       |   +---workers
+|   |       +---itsdangerous
+|   |       +---jinja2
+|   |       |   \---licenses
+|   |       +---kiwisolver
+|   |       |   \---licenses
+|   |       +---markupsafe
+|   |       |   \---licenses
+|   |       +---matplotlib
+|   |       |   +---axes
+|   |       |   +---backends
+|   |       |   |   +---qt_editor
+|   |       |   |   +---web_backend
+|   |       |   |   |   +---css
+|   |       |   |   |   \---js
+|   |       |   +---mpl-data
+|   |       |   |   +---fonts
+|   |       |   |   |   +---afm
+|   |       |   |   |   +---pdfcorefonts
+|   |       |   |   |   \---ttf
+|   |       |   |   +---images
+|   |       |   |   +---plot_directive
+|   |       |   |   +---sample_data
+|   |       |   |   |   \---axes_grid
+|   |       |   |   \---stylelib
+|   |       |   +---projections
+|   |       |   +---sphinxext
+|   |       |   +---style
+|   |       |   +---testing
+|   |       |   |   +---jpl_units
+|   |       |   +---tests
+|   |       |   +---tri
+|   |       |   +---_api
+|   |       +---mpl_toolkits
+|   |       |   +---axes_grid1
+|   |       |   |   +---tests
+|   |       |   +---axisartist
+|   |       |   |   +---tests
+|   |       |   \---mplot3d
+|   |       |       +---tests
+|   |       +---numpy
+|   |       |   +---char
+|   |       |   +---compat
+|   |       |   |   +---tests
+|   |       |   +---core
+|   |       |   |   +---checks
+|   |       |   |   +---command
+|   |       |   |   +---fcompiler
+|   |       |   |   +---mingw
+|   |       |   |   +---tests
+|   |       |   +---doc
+|   |       |   +---f2py
+|   |       |   |   +---src
+|   |       |   |   +---tests
+|   |       |   |   |   +---src
+|   |       |   |   |   |   +---abstract_interface
+|   |       |   |   |   |   +---array_from_pyobj
+|   |       |   |   |   |   +---assumed_shape
+|   |       |   |   |   |   +---block_docstring
+|   |       |   |   |   |   +---callback
+|   |       |   |   |   |   +---cli
+|   |       |   |   |   |   +---common
+|   |       |   |   |   |   +---crackfortran
+|   |       |   |   |   |   +---f2cmap
+|   |       |   |   |   |   +---isocintrin
+|   |       |   |   |   |   +---kind
+|   |       |   |   |   |   +---mixed
+|   |       |   |   |   |   +---modules
+|   |       |   |   |   |   |   +---gh25337
+|   |       |   |   |   |   |   \---gh26920
+|   |       |   |   |   |   +---negative_bounds
+|   |       |   |   |   |   +---parameter
+|   |       |   |   |   |   +---quoted_character
+|   |       |   |   |   |   +---regression
+|   |       |   |   |   |   +---return_character
+|   |       |   |   |   |   +---return_complex
+|   |       |   |   |   |   +---return_integer
+|   |       |   |   |   |   +---return_logical
+|   |       |   |   |   |   +---return_real
+|   |       |   |   |   |   +---routines
+|   |       |   |   |   |   +---size
+|   |       |   |   |   |   +---string
+|   |       |   |   |   |   \---value_attrspec
+|   |       |   |   +---_backends
+|   |       |   +---fft
+|   |       |   |   +---tests
+|   |       |   +---lib
+|   |       |   |   +---tests
+|   |       |   |   |   +---data
+|   |       |   +---linalg
+|   |       |   |   +---tests
+|   |       |   +---ma
+|   |       |   |   +---tests
+|   |       |   +---matrixlib
+|   |       |   |   +---tests
+|   |       |   +---polynomial
+|   |       |   |   +---tests
+|   |       |   +---random
+|   |       |   |   +---lib
+|   |       |   |   +---tests
+|   |       |   |   |   +---data
+|   |       |   |   +---_examples
+|   |       |   |   |   +---cffi
+|   |       |   |   |   +---cython
+|   |       |   |   |   \---numba
+|   |       |   +---rec
+|   |       |   +---strings
+|   |       |   +---testing
+|   |       |   |   +---tests
+|   |       |   |   +---_private
+|   |       |   +---tests
+|   |       |   +---typing
+|   |       |   |   +---tests
+|   |       |   |   |   +---data
+|   |       |   |   |   |   +---fail
+|   |       |   |   |   |   +---misc
+|   |       |   |   |   |   +---pass
+|   |       |   |   |   |   \---reveal
+|   |       |   +---_core
+|   |       |   |   +---include
+|   |       |   |   |   \---numpy
+|   |       |   |   |       \---random
+|   |       |   |   +---lib
+|   |       |   |   |   +---npy-pkg-config
+|   |       |   |   |   \---pkgconfig
+|   |       |   |   +---tests
+|   |       |   |   |   +---data
+|   |       |   |   |   +---examples
+|   |       |   |   |   |   +---cython
+|   |       |   |   |   |   \---limited_api
+|   |       |   +---_pyinstaller
+|   |       |   |   +---tests
+|   |       |   +---_typing
+|   |       |   +---_utils
+|   |       +---numpy.libs
+|   |       +---packaging
+|   |       |   +---licenses
+|   |       |   \---licenses
+|   |       +---PIL
+|   |       |   \---licenses
+|   |       +---pip
+|   |       |   +---_internal
+|   |       |   |   +---cli
+|   |       |   |   +---commands
+|   |       |   |   +---index
+|   |       |   |   +---locations
+|   |       |   |   +---metadata
+|   |       |   |   |   +---importlib
+|   |       |   |   +---models
+|   |       |   |   +---network
+|   |       |   |   +---operations
+|   |       |   |   |   +---install
+|   |       |   |   +---req
+|   |       |   |   +---resolution
+|   |       |   |   |   +---legacy
+|   |       |   |   |   +---resolvelib
+|   |       |   |   +---utils
+|   |       |   |   +---vcs
+|   |       |   +---_vendor
+|   |       |   |   +---cachecontrol
+|   |       |   |   |   +---caches
+|   |       |   |   +---certifi
+|   |       |   |   +---dependency_groups
+|   |       |   |   +---idna
+|   |       |   |   +---msgpack
+|   |       |   |   +---packaging
+|   |       |   |   |   +---licenses
+|   |       |   |   +---pkg_resources
+|   |       |   |   +---platformdirs
+|   |       |   |   +---pygments
+|   |       |   |   |   +---filters
+|   |       |   |   |   +---formatters
+|   |       |   |   |   +---lexers
+|   |       |   |   |   +---styles
+|   |       |   |   +---pyproject_hooks
+|   |       |   |   |   +---_in_process
+|   |       |   |   +---requests
+|   |       |   |   +---resolvelib
+|   |       |   |   |   +---resolvers
+|   |       |   |   +---rich
+|   |       |   |   +---tomli
+|   |       |   |   +---tomli_w
+|   |       |   |   +---truststore
+|   |       |   |   +---urllib3
+|   |       |   |   |   +---contrib
+|   |       |   |   |   |   +---_securetransport
+|   |       |   |   |   +---packages
+|   |       |   |   |   |   +---backports
+|   |       |   |   |   +---util
+|   |       |   \---licenses
+|   |       |       \---src
+|   |       |           \---pip
+|   |       |               \---_vendor
+|   |       |                   +---cachecontrol
+|   |       |                   +---certifi
+|   |       |                   +---dependency_groups
+|   |       |                   +---idna
+|   |       |                   +---msgpack
+|   |       |                   +---packaging
+|   |       |                   +---pkg_resources
+|   |       |                   +---platformdirs
+|   |       |                   +---pygments
+|   |       |                   +---pyproject_hooks
+|   |       |                   +---requests
+|   |       |                   +---resolvelib
+|   |       |                   +---rich
+|   |       |                   +---tomli
+|   |       |                   +---tomli_w
+|   |       |                   +---truststore
+|   |       |                   \---urllib3
+|   |       +---pkg_resources
+|   |       |   +---extern
+|   |       |   +---tests
+|   |       |   |   \---data
+|   |       |   |       \---my-test-package-source
+|   |       |   +---_vendor
+|   |       |   |   +---packaging
+|   |       +---pyparsing
+|   |       |   +---diagram
+|   |       |   +---tools
+|   |       |   \---licenses
+|   |       +---setuptools
+|   |       |   +---command
+|   |       |   +---extern
+|   |       |   |   +---command
+|   |       |   +---_vendor
+|   |       |   |   +---more_itertools
+|   |       |   |   +---packaging
+|   |       +---werkzeug
+|   |       |   +---datastructures
+|   |       |   +---debug
+|   |       |   |   +---shared
+|   |       |   +---middleware
+|   |       |   +---routing
+|   |       |   +---sansio
+|   |       |   +---wrappers
+|   +---Scripts
+|   \---share
+|       \---man
+|           \---man1
++---api
++---assets
+|   \---renderers
+|   +---assets
+|   |   \---renderers
+|   +---exercises2
+|   +---partials
+|   \---scripts
++---exercises2
+|   +---.bin
+|   +---.vite
+|   |   \---deps
+|   +---.vite-temp
+|   |   \---win32-x64
+|   +---@rollup
+|   |   +---rollup-win32-x64-gnu
+|   |   \---rollup-win32-x64-msvc
+|   +---@types
+|   |   \---estree
+|   |   +---bin
+|   |   \---lib
+|   +---fdir
+|   +---nanoid
+|   |   +---async
+|   |   +---bin
+|   |   +---non-secure
+|   |   \---url-alphabet
+|   +---picocolors
+|   +---picomatch
+|   |   \---lib
+|   +---postcss
+|   |   \---lib
+|   +---rollup
+|   |       +---bin
+|   |       +---es
+|   |       |   \---shared
+|   |       \---shared
+|   +---source-map-js
+|   |   \---lib
+|   +---tinyglobby
+|   \---vite
+|       +---bin
+|       |   +---client
+|       |   \---node
+|       |       \---chunks
+|       +---misc
+|       \---types
+|           \---internal
++---public
+|   +---assets
+|   |   \---renderers
+|   +---partials
+|   \---scripts
++---scripts
+|   \---renderers
++---styles
+\---tests
