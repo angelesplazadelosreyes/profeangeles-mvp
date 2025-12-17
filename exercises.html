@@ -23,13 +23,17 @@
 
   <!-- Scripts locales -->
   <script type="module" src="/scripts/partials.js"></script>
-  <script type="module" src="/scripts/main.js"></script>
+  <script type="module" src="/src/pages/exercises.main.js"></script>
+
+
+
 
   <!-- OG -->
   <meta property="og:title" content="ProfeÁngeles - Ejercicios"/>
   <meta property="og:description" content="Genera ejercicios y revisa soluciones guiadas."/>
   <meta property="og:image" content="/og-image.png"/>
   <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://profeangeles.cl/exercises"/>
 </head>
 
 <body>
@@ -107,7 +111,9 @@
             <button class="btn btn-primary" id="btn-nuevo">Nuevo ejercicio</button>
             <button class="btn btn-primary" id="btn-mostrar">Mostrar respuesta</button>
           </div>
-
+                      <!-- Estado (mensajes cortos tipo: “Generando…”, “Listo”, “Error…”) -->
+            <p id="status" class="status" aria-live="polite"></p>
+          
           <div class="math-block">
             <h3>Enunciado</h3>
             <div id="enunciado" class="mathjax"></div>

@@ -11,7 +11,7 @@ export default defineConfig({
         index: 'index.html',
         exercises: 'exercises.html',
         classes: 'classes.html',
-        exercises2: 'exercises2/index.html', // ← añadido
+        exercises2: 'exercises2/index.html',
       },
     },
   },
