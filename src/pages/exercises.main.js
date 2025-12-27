@@ -1,13 +1,11 @@
 // src/pages/exercises.main.js
-// Punto de entrada de la página exercises.html.
-// Lógica principal de la página de ejercicios.
 
 console.log('[exercises.main] cargado');
 
 import { fetchExercise } from '../core/api.client.js';
 import { MATH_OPTIONS } from '../subjects/math/options.js';
 import { renderMath } from '../renderers/math.render.js';
-import { drawQuadraticGraph } from '../renderers/graph.quadratic.render.js';
+import { selectRendererKey, loadRenderer } from '../renderers/registry.js';
 import {
   initSubjectsSidebar,
   initSidebarToggle,
@@ -17,6 +15,12 @@ import {
 } from '../ui/subjects.sidebar.js';
 
 let lastExercise = null;
+let chartInstance = null;
+
+/* ===========================
+   Opciones (extensible)
+   =========================== */
+const OPTIONS = MATH_OPTIONS;
 
 function setStatus(msg) {
   const el = document.getElementById('status');
@@ -31,23 +35,58 @@ function setLoading(isLoading) {
   if (btnNuevo) btnNuevo.disabled = isLoading;
   if (btnMostrar) btnMostrar.disabled = isLoading;
 
-  // Mensaje corto visible
   setStatus(isLoading ? 'Generando…' : '');
 }
 
+/* ===================================================
+   Chart: referencia compartida (compat con renderers)
+   =================================================== */
 
-/* ===========================
-   Opciones (extensible)
-   =========================== */
-const OPTIONS = MATH_OPTIONS;
+function ensureSharedChartRef() {
+  if (Object.getOwnPropertyDescriptor(window, '__chartInstance')) return;
+
+  Object.defineProperty(window, '__chartInstance', {
+    get() { return chartInstance; },
+    set(v) { chartInstance = v; },
+    configurable: true
+  });
+}
+
+function destroyAnyChart() {
+  // (1) nuestro puntero local
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  // (2) renderers tipo exercises2
+  if (window.__chartInstance) { window.__chartInstance.destroy(); window.__chartInstance = null; }
+
+  // (3) legado (por si quedó algo viejo)
+  if (window.currentChart) { window.currentChart.destroy(); window.currentChart = null; }
+}
+
+/* ===================================================
+   Solution mounting (único contenedor: #solution-root)
+   =================================================== */
+
+async function mountSolution(data) {
+  const root = document.getElementById('solution-root');
+  if (!root) return;
+
+  ensureSharedChartRef();
+  destroyAnyChart();
+  root.innerHTML = '';
+
+  const key = selectRendererKey(data);
+  const renderFn = await loadRenderer(key);
+  renderFn(root, data);
+}
 
 /* ===========================
    Acciones de ejercicio
    =========================== */
 
-async function nuevoEjercicio(){
+async function nuevoEjercicio() {
   setLoading(true);
-  try{
+  try {
     const tema = document.getElementById('tema').value;
     const subtema = document.getElementById('subtema').value;
     const tipo = document.getElementById('tipo').value;
@@ -60,30 +99,23 @@ async function nuevoEjercicio(){
 
     lastExercise = data;
 
-    renderMath(data.latex_enunciado, 'enunciado');
-    renderMath("", 'solucion');
+    renderMath(data?.latex_enunciado || '', 'enunciado');
 
-    // Destruir gráfico previo (crítico para evitar lentitud)
-    if (window.currentChart) {
-      window.currentChart.destroy();
-      window.currentChart = null;
-    }
+    const solRoot = document.getElementById('solution-root');
+    if (solRoot) solRoot.innerHTML = '';
 
-    // Limpia contenedor del gráfico
-    const wrap = document.querySelector('.chart-wrap');
-    if (wrap) wrap.innerHTML = '';
-
-  }catch(err){
+    destroyAnyChart();
+  } catch (err) {
     alert(err.message || 'Failed to fetch');
-  }finally{
+  } finally {
     setLoading(false);
   }
 }
 
-async function mostrarRespuesta(){
+async function mostrarRespuesta() {
   setLoading(true);
-  try{
-    if(!lastExercise){
+  try {
+    if (!lastExercise) {
       const tema = document.getElementById('tema').value;
       const subtema = document.getElementById('subtema').value;
       const tipo = document.getElementById('tipo').value;
@@ -95,34 +127,33 @@ async function mostrarRespuesta(){
       });
     }
 
-    renderMath(lastExercise.latex_solucion, 'solucion');
-    drawQuadraticGraph(lastExercise);
-  }catch(err){
+    await mountSolution(lastExercise);
+  } catch (err) {
     alert(err.message || 'Failed to fetch');
-  } finally{
+  } finally {
     setLoading(false);
   }
-  
 }
 
 /* ===========================
    Filtros
    =========================== */
-function initFilters(){
+
+function initFilters() {
   const temaSel = document.getElementById('tema');
   const subtemaSel = document.getElementById('subtema');
   const tipoSel = document.getElementById('tipo');
 
   temaSel.innerHTML = Object.keys(OPTIONS).map(t => `<option value="${t}">${t}</option>`).join('');
 
-  function refreshSubtemas(){
+  function refreshSubtemas() {
     const t = temaSel.value;
     const subs = Object.keys(OPTIONS[t] || {});
     subtemaSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
     refreshTipos();
   }
 
-  function refreshTipos(){
+  function refreshTipos() {
     const t = temaSel.value;
     const s = subtemaSel.value;
     const tipos = (OPTIONS[t] && OPTIONS[t][s]) || [];
@@ -138,12 +169,12 @@ function initFilters(){
 /* ===========================
    Boot
    =========================== */
-window.addEventListener('DOMContentLoaded', ()=>{
+
+window.addEventListener('DOMContentLoaded', () => {
   initSubjectsSidebar();
   initSidebarToggle();
   initFilters();
 
-  // Pintar iconos al cargar y sincronizar encabezado
   applySidebarIcons();
   renderSubjectTitle();
   renderHeaderIcon();

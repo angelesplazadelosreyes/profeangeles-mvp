@@ -1,4 +1,4 @@
-// scripts/renderers/text.default.js
+// src\renderers\text.default.render.js
 // Renderer 1-columna: solo LaTeX/texto
 
 function renderMathInto(el, latex){
@@ -17,7 +17,7 @@ export function renderTextOnly(root, data){
   col.className = "sol-col";
 
   const math = document.createElement("div");
-  math.className = "solution-math";
+  math.className = "mathjax";
 
   col.appendChild(math);
   root.appendChild(col);
