@@ -108,15 +108,27 @@ def latex_solution(a, b, c, D, h, k, roots):
     # Raíces + forma factorizada
     if len(roots) == 2:
         r1, r2 = roots
+
         linea_raices = rf"\textbf{{Raíces:}}~x_1={r1:.2f},~x_2={r2:.2f}"
-        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=\left(x-{r1:.2f}\right)\left(x-{r2:.2f}\right)"
+
+        # Un solo paréntesis por factor (elástico)
+        linea_fact = (
+            rf"\textbf{{Forma factorizada:}}~f(x)="
+            rf"\left(x-{r1:.2f}\right)\left(x-{r2:.2f}\right)"
+        )
+
     elif len(roots) == 1:
         r0 = roots[0]
+
         linea_raices = rf"\textbf{{Raíz doble:}}~x={r0:.2f}"
+
+        # Un solo paréntesis elástico (sin paréntesis extra)
         linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=\left(x-{r0:.2f}\right)^2"
+
     else:
         linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
         linea_fact = r"\textbf{Forma factorizada:}~\text{No aplica en } \mathbb{R}"
+
 
     linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
     linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
