@@ -98,9 +98,9 @@ def latex_solution(a, b, c, D, h, k, roots):
 
     concav = (
         r"\textbf{Concavidad:}~"
-        + (r"\text{cóncava hacia arriba } \color{green}{\smile}"
+        + (r"\text{cóncava hacia arriba } {\color{green}{\smile}}"
            if a > 0 else
-           r"\text{cóncava hacia abajo } \color{red}{\frown}")
+           r"\text{cóncava hacia abajo } {\color{red}{\frown}}")
     )
     linea_datos = rf"\textbf{{Coeficientes:}}~a={a},~b={b},~c={c}"
     linea_disc  = rf"\textbf{{Discriminante:}}~\Delta={D}"

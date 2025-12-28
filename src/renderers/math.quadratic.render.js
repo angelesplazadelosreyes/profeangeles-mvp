@@ -52,6 +52,20 @@ function replaceDecimalsInLatex(latex, { maxDen = 12 } = {}) {
   });
 }
 
+// Quita wrapper aligned si viene incluido y devuelve solo el "cuerpo"
+function stripAlignedWrapper(latex){
+  if (!latex) return "";
+  let s = latex.trim();
+  s = s.replace(/^\\begin\{aligned\}/, "");
+  s = s.replace(/\\end\{aligned\}$/, "");
+  return s.trim();
+}
+
+function wrapAligned(body){
+  const b = (body || "").trim();
+  return `\\begin{aligned}${b}\\end{aligned}`;
+}
+
 export function renderMathQuadraticAnalysis(root, data){
   if (!root) return;
   root.innerHTML = "";
@@ -60,24 +74,42 @@ export function renderMathQuadraticAnalysis(root, data){
   grid.className = "sol-grid";
 
   const left = document.createElement("div");
-  left.className = "sol-col";
+  left.className = "sol-col area-left1";
   const math = document.createElement("div");
   math.className = "solution-math";
   left.appendChild(math);
 
   const right = document.createElement("div");
-  right.className = "sol-col";
+  right.className = "sol-col area-right1";
   const fig = document.createElement("div");
   fig.className = "sol-figure";
   right.appendChild(fig);
 
+  const full = document.createElement("div");
+  full.className = "sol-col area-full";
+
   grid.appendChild(left);
   grid.appendChild(right);
+  grid.appendChild(full);
   root.appendChild(grid);
 
-  const _latex = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
-  renderMathInto(math, _latex);
+  // --- LaTeX: split seguro (sin romper begin/end aligned) ---
+  const latexRaw = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
+  const body = stripAlignedWrapper(latexRaw);
 
+  // Separar las últimas 2 líneas: Forma canónica + Forma factorizada
+  const parts = body.split('\\\\[6pt]');
+  const mainBody = parts.slice(0, -2).join('\\\\[6pt]');
+  const tailBody = parts.slice(-2).join('\\\\[6pt]');
+
+  renderMathInto(math, wrapAligned(mainBody));
+
+  const fullMath = document.createElement("div");
+  fullMath.className = "solution-math";
+  full.appendChild(fullMath);
+  renderMathInto(fullMath, wrapAligned(tailBody));
+
+  // --- Gráfico: PNG base64 primero ---
   const pngB64 = data?.plot?.png || data?.chart_png || null;
 
   if (pngB64){
@@ -88,10 +120,10 @@ export function renderMathQuadraticAnalysis(root, data){
     return;
   }
 
-  // Fallback a Chart.js si no hay PNG
+  // --- Fallback a Chart.js si no hay PNG ---
   const canvas = document.createElement("canvas");
   canvas.id = uid();
-  canvas.className = "sol-chart"; // ✅ AQUÍ va el cambio
+  canvas.className = "sol-chart";
   fig.appendChild(canvas);
 
   if (window.__chartInstance){
