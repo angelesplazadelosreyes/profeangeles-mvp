@@ -35,7 +35,7 @@ function setLoading(isLoading) {
   if (btnNuevo) btnNuevo.disabled = isLoading;
   if (btnMostrar) btnMostrar.disabled = isLoading;
 
-  setStatus(isLoading ? 'Generando…' : '');
+  setStatus(isLoading ? 'Generando… paciencia, a veces demora un poco en cargar' : '');
 }
 
 /* ===================================================

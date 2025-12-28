@@ -52,6 +52,37 @@ function replaceDecimalsInLatex(latex, { maxDen = 12 } = {}) {
   });
 }
 
+/**
+ * Sanitiza comandos \color mal formados (ej: "\color green", "\colorre")
+ * para que MathJax no muestre texto roto.
+ *
+ * - Convierte "\color green" -> "{\color{green} ... }" (si corresponde)
+ * - Elimina tokens corruptos tipo "\colorre" / "\colorgreen" si quedaron sueltos
+ */
+function sanitizeLatexColors(latex){
+  if (!latex) return latex;
+
+  let s = latex;
+
+  // Caso: "\color green" (con espacio) -> "\color{green}"
+  s = s.replace(/\\color\s+([a-zA-Z]+)\b/g, '\\color{$1}');
+
+  // Caso: "\color{green}" aplicado "en línea" sin llaves de agrupación.
+  // Lo envolvemos en {...} hasta el siguiente salto del aligned o fin.
+  // Ej: "... \color{green}\smile \\[6pt]" -> "... {\color{green}\smile} \\[6pt]"
+  s = s.replace(/\\color\{([a-zA-Z]+)\}([^\n\r]*?)(?=(\\\\\[6pt\]|\\\\|$))/g, (m, color, rest) => {
+    // si ya está agrupado (precedido por { ), no tocamos
+    // ojo: este check es simple, pero evita doble llaves en la mayoría de casos
+    if (m.startsWith("{\\color")) return m;
+    return `{\\color{${color}}${rest}}`;
+  });
+
+  // Caso corrupto: "\colorre" / "\colorgreen" etc -> eliminar el comando
+  s = s.replace(/\\color[a-zA-Z]+/g, "");
+
+  return s;
+}
+
 // Quita wrapper aligned si viene incluido y devuelve solo el "cuerpo"
 function stripAlignedWrapper(latex){
   if (!latex) return "";
@@ -94,7 +125,10 @@ export function renderMathQuadraticAnalysis(root, data){
   root.appendChild(grid);
 
   // --- LaTeX: split seguro (sin romper begin/end aligned) ---
-  const latexRaw = replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 });
+  const latexRaw = sanitizeLatexColors(
+    replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 })
+  );
+
   const body = stripAlignedWrapper(latexRaw);
 
   // Separar las últimas 2 líneas: Forma canónica + Forma factorizada
