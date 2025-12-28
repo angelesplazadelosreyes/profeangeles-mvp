@@ -89,9 +89,10 @@ def latex_solution(a, b, c, D, h, k, roots):
     if abs(h) < 1e-9:
         x_minus_h = "x"
     elif h > 0:
-        x_minus_h = f"(x - {h:.2f})"
+        x_minus_h = f"x - {h:.2f}"
     else:
-        x_minus_h = f"(x + {abs(h):.2f})"
+        x_minus_h = f"x + {abs(h):.2f}"
+
 
     # "+ k" o "- |k|"
     k_term = f"+ {k:.2f}" if k >= 0 else f"- {abs(k):.2f}"
