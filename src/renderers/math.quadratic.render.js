@@ -43,7 +43,10 @@ function replaceDecimalsInLatex(latex, { maxDen = 12 } = {}) {
 
   return latex.replace(/-?\d+\.\d+/g, (m, idx) => {
     const prev = idx > 0 ? latex[idx - 1] : '';
-    if ((prev >= 'a' && prev <= 'z') || (prev >= 'A' && prev <= 'Z') || prev === '\\') return m;
+    const isLetter = /[A-Za-z]/.test(prev);
+    if (prev === '\\') return m;                 // no tocar comandos
+    if (isLetter && !m.startsWith('-')) return m; // si viene "pegado" a texto, pero NO es un -decimal
+
 
     const val = parseFloat(m);
     const frac = decimalToFraction(val, maxDen);
@@ -137,9 +140,12 @@ export function renderMathQuadraticAnalysis(root, data){
   const tailBody = parts.slice(-2).join('\\\\[6pt]');
 
   // Borrar después... OJO
-  console.log("RAW backend:", data?.latex_solucion);
-  console.log("AFTER replace+sanitize (body):", body);
-  console.log("TAIL (full row):", tailBody);
+  if (window.__DEBUG_MATH__) {
+    console.log("RAW backend:", data?.latex_solucion);
+    console.log("AFTER replace+sanitize (body):", body);
+    console.log("TAIL (full row):", tailBody);
+  }
+
 
 
   renderMathInto(math, wrapAligned(mainBody));
