@@ -6,7 +6,7 @@
    - Tarjetas/panel derecho
    - Botones, filtros, accesibilidad
    - Sidebar colapsable (móvil)
-   - Solución (layout 50/50, MathJax y gráficos)
+   - Solución (layout 2 columnas + fila full, MathJax y gráficos)
    ========================================================= */
 
 /* === 1) TOKENS (variables de diseño) ==================== */
@@ -38,7 +38,7 @@
   --pa-card-shadow:    var(--ex-shadow);
   --pa-radius:         var(--ex-radius);
 
-  /* Gap entre columnas de la SOLUCIÓN (ajustable) */
+  /* Gap general entre celdas del grid SOLUCIÓN */
   --sol-gap: clamp(1rem, 2.5vw, 2rem);
 }
 
@@ -214,62 +214,57 @@ select:focus-visible{
   pointer-events:none;
 }
 
-/* === 7) SOLUCIÓN (layout 50/50 + MathJax + gráficos) ===== */
+/* === 7) SOLUCIÓN (layout 2 columnas + fila full) ===== */
 
 /* Título “Solución” con aire */
 .solution-wrapper .math-block h3{
   margin: .25rem 0 .75rem;
 }
 
-/* Grid con 2 columnas y 3 filas; la tercera ocupa todo el ancho */
+/* Grid: 2 columnas en la primera fila + full abajo */
 .sol-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "left1  right1"
-    "left2  right2"
     "full   full";
-  gap: var(--sol-gap);
+
+  /* 👇 separa distancia horizontal vs vertical */
+  column-gap: var(--sol-gap);
+  row-gap: .75rem;
+
   align-items: start;
 }
 
 /* Áreas nombradas */
 .area-left1  { grid-area: left1; }
 .area-right1 { grid-area: right1; }
-.area-left2  { grid-area: left2; }
-.area-right2 { grid-area: right2; }
 .area-full   { grid-area: full;  }
 
-/* La figura sigue ajustándose a su celda */
+/* Cada columna puede usar container queries (cqi) */
+.sol-col{
+  min-width: 0;
+  container-type: inline-size;
+}
+
+/* Un poco de aire entre texto y gráfico (lado izquierdo) */
+.sol-col:first-child{ padding-right: .25rem; }
+
+/* Figura: centrada y sin overflow raro */
 .sol-figure{
   width: 100%;
   justify-self: center;
   overflow: hidden;
 }
 
-/* Responsivo: una sola columna en pantallas medianas/pequeñas */
-@media (max-width: 1200px){
-  .sol-grid{
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "left1"
-      "right1"
-      "left2"
-      "right2"
-      "full";
-  }
-  .sol-figure{ justify-self: start; }
+/* Canvas/imagen siempre al 100% del contenedor */
+.sol-figure img,
+.sol-figure canvas{
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
 }
-
-
-/* Cada columna puede usar container queries (cqi) */
-.sol-col{
-  min-width: 0;
-  container-type: inline-size; /* habilita cqi/cqw dentro de la columna */
-}
-
-/* Un poco de aire entre texto y gráfico (lado izquierdo) */
-.sol-col:first-child{ padding-right: .25rem; }
 
 /* Canvas fluido para Chart.js */
 .sol-chart{
@@ -284,56 +279,117 @@ select:focus-visible{
   white-space: normal;
 }
 
-/* Contenedor de la figura: ocupa su columna y evita desbordes */
-.sol-figure{
-  width: 100%;
-  justify-self: end;      /* mantiene la figura alineada a la derecha */
-  overflow: hidden;       /* evita desbordes del canvas/imagen */
-}
-
-/* Imagen/canvas: siempre al 100% del contenedor */
-.sol-figure img,
-.sol-figure canvas{
-  width: 100% !important; /* domina estilos inline de Chart.js */
-  height: auto !important;
-  max-width: 100%;
-  display: block;
-}
-
-/* Las fórmulas no pueden ser más anchas que su columna */
-.solution-math mjx-container[display="true"]{
-  max-width: 100% !important;
-  overflow-x: auto; /* si algo es MUY ancho, scroll horizontal local */
-}
-.solution-math mjx-container[display="true"] > mjx-math{
-  margin-left: 0 !important;
-  margin-right: auto !important;
-}
-
-/* Texto de la solución: tipografía fluida + alineación */
+/* Texto de la solución */
 .solution-math{
   overflow-wrap: anywhere;
   white-space: normal;
   text-align: left;
 }
-/* Tipografía display MathJax: escala con el ancho de la columna (cqi) */
+
+/* Display MathJax: escala suave */
 .solution-math > mjx-container[display="true"]{
   text-align: left !important;
   margin: .25rem 0 .6rem !important;
   font-size: clamp(0.95rem, 1.2cqi + 0.5rem, 1.25rem);
   line-height: 1.45;
+
+  /* Mantén el scroll HORIZONTAL por defecto */
+  /*overflow-x: auto;*/
+  overflow-y: visible;
+  max-width: 100% !important;
 }
-/* Tipografía inline MathJax (\(...\)) */
+
+/* Inline MathJax */
 .solution-math mjx-container[display="false"]{
   font-size: clamp(0.9rem, 1cqi + 0.45rem, 1.1rem);
   line-height: 1.45;
 }
 
+/* 🔥 FULL ROW: pegarla más arriba y eliminar scroll vertical interno */
+.area-full{
+  /* acerca la fila full a la fila superior */
+  margin-top: -0.35rem;
+  padding-top: 0;
+  padding-bottom: .25rem;
+  overflow: visible;
+}
+
+/* En la fila full: márgenes más compactos */
+.area-full .solution-math > mjx-container[display="true"]{
+  margin: .05rem 0 .15rem !important;
+  line-height: 1.25;
+
+  /* ✅ NO mostrar scrollbar horizontal en full */
+  overflow-x: hidden !important;
+
+  /* ✅ Corta cualquier scroll vertical interno */
+  overflow-y: hidden !important;
+}
+
+/* Asegura que ningún wrapper de MathJax meta overflow-y auto en la full */
+.area-full mjx-container,
+.area-full mjx-container *{
+  overflow-y: hidden !important;
+}
+
+/* Asegura que MathJax no meta overflow raro en full */
+.area-full mjx-container,
+.area-full mjx-container *{
+  overflow-y: hidden !important;
+}
+
+/* Quitar el mini-scroll interno de MathJax en fracciones (denominador) */
+.area-full mjx-dbox{
+  overflow: visible !important;
+}
+
+/* Fila full: subir/centrar fracciones respecto del texto (MathJax CHTML) */
+.area-full mjx-mfrac,
+.area-full mjx-frac{
+  vertical-align: middle !important;
+}
+
+
 /* Enunciado centrado (solo display MathJax) */
-#enunciado mjx-container[jax="CHTML"][display="true"] {
+#enunciado mjx-container[jax="CHTML"][display="true"]{
   text-align: center !important;
 }
-#enunciado mjx-container[jax="CHTML"][display="true"] > mjx-math {
+#enunciado mjx-container[jax="CHTML"][display="true"] > mjx-math{
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+/* Responsivo: una sola columna */
+@media (max-width: 1200px){
+  .sol-grid{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left1"
+      "right1"
+      "full";
+    row-gap: .75rem;
+  }
+  .sol-figure{ justify-self: start; }
+}
+
+/* === FIX: full row debe ocupar TODO el ancho disponible === */
+#solution-root{
+  width: 100%;
+}
+
+.sol-grid{
+  width: 100%;
+  justify-items: stretch; /* cada celda se estira */
+}
+
+/* aunque uses grid-areas, esto asegura el spanning real */
+.area-full{
+  grid-column: 1 / -1;    /* ocupa desde la 1 a la última columna */
+  width: 100%;
+  justify-self: stretch;
+}
+
+/* el contenedor interno también debe estirarse */
+.area-full .solution-math{
+  width: 100%;
 }

@@ -136,6 +136,12 @@ export function renderMathQuadraticAnalysis(root, data){
   const mainBody = parts.slice(0, -2).join('\\\\[6pt]');
   const tailBody = parts.slice(-2).join('\\\\[6pt]');
 
+  // Borrar después... OJO
+  console.log("RAW backend:", data?.latex_solucion);
+  console.log("AFTER replace+sanitize (body):", body);
+  console.log("TAIL (full row):", tailBody);
+
+
   renderMathInto(math, wrapAligned(mainBody));
 
   const fullMath = document.createElement("div");
