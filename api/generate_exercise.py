@@ -109,14 +109,14 @@ def latex_solution(a, b, c, D, h, k, roots):
     if len(roots) == 2:
         r1, r2 = roots
         linea_raices = rf"\textbf{{Raíces:}}~x_1={r1:.2f},~x_2={r2:.2f}"
-        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{r1:.2f})(x-{r2:.2f})"
+        linea_fact = rf"\textbf{{F. factorizada:}}~f(x)=(x-{r1:.2f})(x-{r2:.2f})"
     elif len(roots) == 1:
         r0 = roots[0]
         linea_raices = rf"\textbf{{Raíz doble:}}~x={r0:.2f}"
-        linea_fact = rf"\textbf{{Forma factorizada:}}~f(x)=(x-{r0:.2f})^2"
+        linea_fact = rf"\textbf{{F. factorizada:}}~f(x)=(x-{r0:.2f})^2"
     else:
         linea_raices = r"\textbf{Raíces:}~\text{complejas (no reales)}"
-        linea_fact = r"\textbf{Forma factorizada:}~\text{No aplica en } \mathbb{R}"
+        linea_fact = r"\textbf{F. factorizada:}~\text{No aplica en } \mathbb{R}"
 
     linea_eje   = rf"\textbf{{Eje de simetría:}}~x={h:.2f}"
     linea_vert  = rf"\textbf{{Vértice:}}~\left({h:.2f},{k:.2f}\right)"
@@ -127,7 +127,7 @@ def latex_solution(a, b, c, D, h, k, roots):
         if a > 0 else
         rf"\textbf{{Recorrido:}}~\left(-\infty,\, {k:.2f}\right]"
     )
-    linea_canon = rf"\textbf{{Forma canónica:}}~f(x)={a_str}{x_minus_h}^2~{k_term}"
+    linea_canon = rf"\textbf{{F. canónica:}}~f(x)={a_str}{x_minus_h}^2~{k_term}"
 
     partes = [
         concav,
