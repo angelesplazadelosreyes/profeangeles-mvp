@@ -305,49 +305,50 @@ select:focus-visible{
   line-height: 1.45;
 }
 
-/* 🔥 FULL ROW: pegarla más arriba y eliminar scroll vertical interno */
+/* =========================================================
+   FULL ROW (area-full)
+   Objetivo:
+   - Mantener la fila full “más pegada” a la anterior
+   - Evitar scrolls raros internos de MathJax
+   - NO tocar line-height ni margins del mjx-container (para no desalinear fracciones)
+   ========================================================= */
+
+/* FULL ROW: controla el espacio desde el contenedor (no desde MathJax) */
 .area-full{
-  /* acerca la fila full a la fila superior */
+  width: 100%;
+  justify-self: stretch;
+
+  /* “Acercar” la full a la fila anterior */
   margin-top: -0.35rem;
+
+  /* Ajuste fino de aire interno */
   padding-top: 0;
   padding-bottom: .25rem;
+
+  /* No recortar contenido (evita comportamientos raros) */
   overflow: visible;
 }
 
-/* En la fila full: márgenes más compactos */
-.area-full .solution-math > mjx-container[display="true"]{
-  margin: .05rem 0 .15rem !important;
-  line-height: 1.25;
-
-  /* ✅ NO mostrar scrollbar horizontal en full */
-  overflow-x: hidden !important;
-
-  /* ✅ Corta cualquier scroll vertical interno */
-  overflow-y: hidden !important;
+/* MathJax en full: NO forzar line-height ni márgenes.
+   Solo aseguramos que no aparezca overflow vertical interno. */
+.area-full mjx-container[display="true"]{
+  max-width: 100% !important;
+  overflow-y: visible !important;
 }
 
-/* Asegura que ningún wrapper de MathJax meta overflow-y auto en la full */
-.area-full mjx-container,
-.area-full mjx-container *{
-  overflow-y: hidden !important;
-}
-
-/* Asegura que MathJax no meta overflow raro en full */
-.area-full mjx-container,
-.area-full mjx-container *{
-  overflow-y: hidden !important;
-}
-
-/* Quitar el mini-scroll interno de MathJax en fracciones (denominador) */
+/* El culpable típico del “scrollcito” del denominador es mjx-dbox:
+   lo dejamos visible para que no se cree un scroll interno */
 .area-full mjx-dbox{
   overflow: visible !important;
 }
 
-/* Fila full: subir/centrar fracciones respecto del texto (MathJax CHTML) */
-.area-full mjx-mfrac,
-.area-full mjx-frac{
-  vertical-align: middle !important;
+/* Si algún wrapper mete overflow por herencia/estilos previos, lo neutralizamos
+   sin duplicar reglas y sin tocar X (para no cortar paréntesis elásticos) */
+.area-full mjx-container,
+.area-full mjx-container *{
+  overflow-y: visible !important;
 }
+
 
 
 /* Enunciado centrado (solo display MathJax) */

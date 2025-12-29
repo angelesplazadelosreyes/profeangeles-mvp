@@ -35,7 +35,7 @@ function setLoading(isLoading) {
   if (btnNuevo) btnNuevo.disabled = isLoading;
   if (btnMostrar) btnMostrar.disabled = isLoading;
 
-  setStatus(isLoading ? 'Generando… paciencia, a veces demora un poco en cargar' : '');
+  setStatus(isLoading ? 'Generando… Paciencia, a veces demora un poco en cargar' : '');
 }
 
 /* ===================================================
@@ -63,6 +63,24 @@ function destroyAnyChart() {
   if (window.currentChart) { window.currentChart.destroy(); window.currentChart = null; }
 }
 
+function clearExerciseUI() {
+  // 1) Limpiar enunciado
+  const enunciado = document.getElementById('enunciado');
+  if (enunciado) enunciado.innerHTML = '';
+
+  // 2) Limpiar solución
+  const solRoot = document.getElementById('solution-root');
+  if (solRoot) solRoot.innerHTML = '';
+
+  // 3) Destruir gráficos
+  destroyAnyChart();
+
+  // 4) Limpiar estado (opcional, pero prolijo)
+  setStatus('');
+}
+
+
+
 /* ===================================================
    Solution mounting (único contenedor: #solution-root)
    =================================================== */
@@ -85,6 +103,7 @@ async function mountSolution(data) {
    =========================== */
 
 async function nuevoEjercicio() {
+  clearExerciseUI();
   setLoading(true);
   try {
     const tema = document.getElementById('tema').value;
