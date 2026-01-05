@@ -13,6 +13,10 @@ import matplotlib.pyplot as plt
 
 from flask import Flask, Response, request, jsonify
 
+from api.exercises.quadratic.traits import quadratic_traits
+from api.exercises.quadratic.plot import plot_quadratic_png
+
+
 
 app = Flask(__name__)
 
@@ -66,20 +70,20 @@ def format_latex_quadratic(a, b, c):
         return f"{'+' if c>0 else ''}{c}"
     return rf"{term_x2(a)}{term_x(b)}{term_c(c)} = 0"
 
-def quadratic_traits(a, b, c):
-    D = b*b - 4*a*c
-    h = -b/(2*a)
-    k = a*h*h + b*h + c
-    roots = []
-    if D > 0:
-        sqrtD = math.sqrt(D)
-        r1 = (-b + sqrtD)/(2*a)
-        r2 = (-b - sqrtD)/(2*a)
-        roots = [r1, r2]
-    elif D == 0:
-        r = -b/(2*a)
-        roots = [r]
-    return D, h, k, roots, c  # c = intersección en y
+# def quadratic_traits(a, b, c):
+#     D = b*b - 4*a*c
+#     h = -b/(2*a)
+#     k = a*h*h + b*h + c
+#     roots = []
+#     if D > 0:
+#         sqrtD = math.sqrt(D)
+#         r1 = (-b + sqrtD)/(2*a)
+#         r2 = (-b - sqrtD)/(2*a)
+#         roots = [r1, r2]
+#     elif D == 0:
+#         r = -b/(2*a)
+#         roots = [r]
+#     return D, h, k, roots, c  # c = intersección en y
 
 def latex_solution(a, b, c, D, h, k, roots):
     # a como prefactor: "", "-", o el número
@@ -160,49 +164,49 @@ def latex_solution(a, b, c, D, h, k, roots):
     return r"\begin{aligned}" + cuerpo + r"\end{aligned}"
 
 
-def plot_quadratic_png(a, b, c):
-    """Devuelve un PNG base64 (bytes) de la parábola y elementos destacados."""
-    vx = -b / (2 * a)
-    vy = a * vx * vx + b * vx + c
-    disc = b * b - 4 * a * c
-    roots = []
-    if disc >= 0:
-        r = disc ** 0.5
-        roots = [(-b + r) / (2 * a), (-b - r) / (2 * a)]
+# def plot_quadratic_png(a, b, c):
+#     """Devuelve un PNG base64 (bytes) de la parábola y elementos destacados."""
+#     vx = -b / (2 * a)
+#     vy = a * vx * vx + b * vx + c
+#     disc = b * b - 4 * a * c
+#     roots = []
+#     if disc >= 0:
+#         r = disc ** 0.5
+#         roots = [(-b + r) / (2 * a), (-b - r) / (2 * a)]
 
-    # Rango x centrado en el vértice (autoajustable)
-    span = 10 if abs(a) < 1.5 else 6
-    xs = np.linspace(vx - span, vx + span, 600)
-    ys = a * xs**2 + b * xs + c
+#     # Rango x centrado en el vértice (autoajustable)
+#     span = 10 if abs(a) < 1.5 else 6
+#     xs = np.linspace(vx - span, vx + span, 600)
+#     ys = a * xs**2 + b * xs + c
 
-    fig = plt.figure(figsize=(5.5, 3.8), dpi=110)
-    ax = fig.add_subplot(111)
-    ax.plot(xs, ys, label="Parábola")
-    ax.scatter([vx], [vy], s=40, zorder=3, label="Vértice")
-    ax.axvline(vx, linestyle="--", alpha=0.6, label="Eje de simetría")
-    ax.scatter([0], [c], s=30, zorder=3, label="Corte con eje y")
-    if roots:
-        ax.scatter(roots, [0]*len(roots), marker="x", s=60, zorder=3, label="Raíces reales")
+#     fig = plt.figure(figsize=(5.5, 3.8), dpi=110)
+#     ax = fig.add_subplot(111)
+#     ax.plot(xs, ys, label="Parábola")
+#     ax.scatter([vx], [vy], s=40, zorder=3, label="Vértice")
+#     ax.axvline(vx, linestyle="--", alpha=0.6, label="Eje de simetría")
+#     ax.scatter([0], [c], s=30, zorder=3, label="Corte con eje y")
+#     if roots:
+#         ax.scatter(roots, [0]*len(roots), marker="x", s=60, zorder=3, label="Raíces reales")
 
-    ax.axhline(0, color="k", lw=0.6, alpha=0.6)
-    ax.axvline(0, color="k", lw=0.6, alpha=0.6)
-    ax.grid(alpha=0.25)
-    ax.set_title(f"y = {a}x² {('+' if b>=0 else '')}{b}x {('+' if c>=0 else '')}{c}")
-    ax.set_xlabel("x"); ax.set_ylabel("y")
-    ax.legend(loc="best", fontsize=9)
+#     ax.axhline(0, color="k", lw=0.6, alpha=0.6)
+#     ax.axvline(0, color="k", lw=0.6, alpha=0.6)
+#     ax.grid(alpha=0.25)
+#     ax.set_title(f"y = {a}x² {('+' if b>=0 else '')}{b}x {('+' if c>=0 else '')}{c}")
+#     ax.set_xlabel("x"); ax.set_ylabel("y")
+#     ax.legend(loc="best", fontsize=9)
 
-    ymin, ymax = float(np.min(ys)), float(np.max(ys))
-    pad = 0.1 * (ymax - ymin + 1)
-    ax.set_ylim(ymin - pad, ymax + pad)
+#     ymin, ymax = float(np.min(ys)), float(np.max(ys))
+#     pad = 0.1 * (ymax - ymin + 1)
+#     ax.set_ylim(ymin - pad, ymax + pad)
 
-    fig.tight_layout()
+#     fig.tight_layout()
 
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png")
-    plt.close(fig)
-    buf.seek(0)
-    b64 = base64.b64encode(buf.read()).decode("ascii")
-    return b64
+#     buf = io.BytesIO()
+#     fig.savefig(buf, format="png")
+#     plt.close(fig)
+#     buf.seek(0)
+#     b64 = base64.b64encode(buf.read()).decode("ascii")
+#     return b64
 
 
 @app.route("/api/generate-exercise", methods=["GET"])
