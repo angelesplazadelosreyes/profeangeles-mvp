@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 
 from flask import Flask, Response, request, jsonify
 
-from api.exercises.quadratic.traits import quadratic_traits
-from api.exercises.quadratic.plot import plot_quadratic_png
+from exercises.quadratic.traits import quadratic_traits
+from exercises.quadratic.plot import plot_quadratic_png
 
 
 
