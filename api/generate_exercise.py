@@ -12,6 +12,7 @@ from exercises.quadratic.latex import (
     latex_solution,
     latex_factorized_from_roots,
     latex_canonical_from_vertex,
+    latex_general_function,  # ✅ punto 5
 )
 
 app = Flask(__name__)
@@ -69,16 +70,17 @@ def generate_exercise():
 
     # 3) Enunciado + Solución según tipo
     if etype == "convert_factorizada_a_general_y_canonica":
-        # Enunciado: factorizada
+        # Enunciado: factorizada + ✅ pista (punto 4)
         fx_fact = latex_factorized_from_roots(a, x1, x2)
         latex_enunciado = (
-            r"\text{Convierte la función desde forma factorizada a forma general y canónica: }~"
+            r"\text{Convierte la función desde forma factorizada a forma general y canónica (en ese orden): }~"
             rf"f(x) = {fx_fact}"
+            r" \\[4pt] "
+            r"\textit{Pista: una función cuadrática se puede factorizar en } \mathbb{R} \textit{ si } \Delta \ge 0."
         )
 
         # Solución: general y canónica (orden solicitado)
-        # Nota: format_latex_quadratic devuelve "=0", aquí queremos "ax^2+bx+c"
-        fx_general = format_latex_quadratic(a, b, c).replace("= 0", "").strip()
+        fx_general = latex_general_function(a, b, c)  # ✅ punto 5
         fx_canon = latex_canonical_from_vertex(a, h, k)
 
         latex_solucion = (

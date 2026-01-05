@@ -1,4 +1,6 @@
 import math
+from utils.format import fmt_num
+
 
 def format_latex_quadratic(a, b, c):
     """LaTeX compacto con signos y ocultando coeficientes 0."""
@@ -18,6 +20,15 @@ def format_latex_quadratic(a, b, c):
         return f"{'+' if c>0 else ''}{c}"
 
     return rf"{term_x2(a)}{term_x(b)}{term_c(c)} = 0"
+
+
+def latex_general_function(a, b, c):
+    """
+    Devuelve la forma general como función:
+    f(x) = ax^2 + bx + c
+    """
+    return format_latex_quadratic(a, b, c).replace("= 0", "").strip()
+
 
 
 def latex_solution(a, b, c, D, h, k, roots):
@@ -90,32 +101,35 @@ def latex_solution(a, b, c, D, h, k, roots):
     return r"\begin{aligned}" + cuerpo + r"\end{aligned}"
 
 
+
 def latex_factorized_from_roots(a, x1, x2):
-    """f(x)=a(x-x1)(x-x2) en LaTeX, con signos correctos."""
-    def factor(x):
-        # (x - 3) o (x + 3) o (x)
-        if x == 0:
-            return r"(x)"
-        if x > 0:
-            return rf"(x - {x})"
-        return rf"(x + {abs(x)})"
+    def factor_from_root(r):
+        # r es raíz, factor es (x - r)
+        if abs(r) < 1e-9:
+            return "x"
+        if r > 0:
+            return rf"\left(x - {fmt_num(r)}\right)"
+        return rf"\left(x + {fmt_num(abs(r))}\right)"
 
     a_str = "" if a == 1 else ("-" if a == -1 else str(a))
-    return rf"{a_str}{factor(x1)}{factor(x2)}"
+    f1 = factor_from_root(x1)
+    f2 = factor_from_root(x2)
+
+    # Si a_str es "", devolvemos "x(...)" o "(...)(...)"
+    return rf"{a_str}{f1}{f2}"
 
 
 def latex_canonical_from_vertex(a, h, k):
-    """f(x)=a(x-h)^2+k en LaTeX, con signos correctos (h,k pueden ser decimales)."""
     a_str = "" if a == 1 else ("-" if a == -1 else str(a))
 
     # (x - h)
     if abs(h) < 1e-9:
         inside = "x"
     elif h > 0:
-        inside = rf"x - {h:.2f}"
+        inside = rf"x - {fmt_num(h)}"
     else:
-        inside = rf"x + {abs(h):.2f}"
+        inside = rf"x + {fmt_num(abs(h))}"
 
     # +k / -k
-    k_term = rf"+ {k:.2f}" if k >= 0 else rf"- {abs(k):.2f}"
+    k_term = rf"+ {fmt_num(k)}" if k >= 0 else rf"- {fmt_num(abs(k))}"
     return rf"{a_str}\left({inside}\right)^2 {k_term}"
