@@ -88,3 +88,34 @@ def latex_solution(a, b, c, D, h, k, roots):
 
     cuerpo = r" \\[6pt] ".join(partes)
     return r"\begin{aligned}" + cuerpo + r"\end{aligned}"
+
+
+def latex_factorized_from_roots(a, x1, x2):
+    """f(x)=a(x-x1)(x-x2) en LaTeX, con signos correctos."""
+    def factor(x):
+        # (x - 3) o (x + 3) o (x)
+        if x == 0:
+            return r"(x)"
+        if x > 0:
+            return rf"(x - {x})"
+        return rf"(x + {abs(x)})"
+
+    a_str = "" if a == 1 else ("-" if a == -1 else str(a))
+    return rf"{a_str}{factor(x1)}{factor(x2)}"
+
+
+def latex_canonical_from_vertex(a, h, k):
+    """f(x)=a(x-h)^2+k en LaTeX, con signos correctos (h,k pueden ser decimales)."""
+    a_str = "" if a == 1 else ("-" if a == -1 else str(a))
+
+    # (x - h)
+    if abs(h) < 1e-9:
+        inside = "x"
+    elif h > 0:
+        inside = rf"x - {h:.2f}"
+    else:
+        inside = rf"x + {abs(h):.2f}"
+
+    # +k / -k
+    k_term = rf"+ {k:.2f}" if k >= 0 else rf"- {abs(k):.2f}"
+    return rf"{a_str}\left({inside}\right)^2 {k_term}"
