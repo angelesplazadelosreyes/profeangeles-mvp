@@ -77,7 +77,6 @@ def generate_exercise():
             rf"f(x) = {fx_fact}"
         )
 
-        )
 
         # Solución: general y canónica (orden solicitado)
         fx_general = latex_general_function(a, b, c)  # ✅ punto 5
