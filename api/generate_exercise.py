@@ -75,8 +75,8 @@ def generate_exercise():
         latex_enunciado = (
             r"\text{Convierte la función desde forma factorizada a forma general y canónica (en ese orden): }~"
             rf"f(x) = {fx_fact}"
-            r" \\[4pt] "
-            r"\textit{Pista: una función cuadrática se puede factorizar en } \mathbb{R} \textit{ si } \Delta \ge 0."
+        )
+
         )
 
         # Solución: general y canónica (orden solicitado)
