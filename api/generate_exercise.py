@@ -87,9 +87,13 @@ def generate_exercise():
         # Enunciado: factorizada (sin pista; ya existe por construcción)
         fx_fact = latex_factorized_from_roots(a, x1, x2)
         latex_enunciado = (
-            r"\text{Convierte la función desde forma factorizada a forma general y canónica (en ese orden): }~"
-            rf"f(x) = {fx_fact}"
+            r"\begin{aligned}"
+            r"\text{Convierte la función desde forma factorizada a forma general y canónica (en ese orden):}"
+            r"\\[6pt]"
+            rf"f(x)= {fx_fact}"
+            r"\end{aligned}"
         )
+
 
         # Solución: general y canónica (orden solicitado)
         fx_general = latex_general_function(a, b, c)
@@ -109,12 +113,15 @@ def generate_exercise():
         fx_canon_given = latex_canonical_from_vertex(a, float(h_can), float(k_can))
 
         latex_enunciado = (
+            r"\begin{aligned}"
             r"\text{Convierte la función desde forma canónica a forma general y factorizada (en ese orden):}"
             r"\\[6pt]"
             rf"f(x)= {fx_canon_given}"
             r"\\[6pt]"
             r"\textit{Pista: la forma factorizada existe solo si hay raíces reales }(\Delta \ge 0)."
+            r"\end{aligned}"
         )
+
 
 
         # Forma general (desde a,b,c ya calculados) — aseguramos floats para el formateador
