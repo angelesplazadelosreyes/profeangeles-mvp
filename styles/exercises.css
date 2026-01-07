@@ -378,3 +378,38 @@ select:focus-visible{
   }
   .sol-figure{ justify-self: start; }
 }
+
+
+/* =========================
+   Enunciado centrado (MathJax real)
+   ========================= */
+
+#enunciado{
+  width: 100%;
+  text-align: center;
+}
+
+/* Contenedor MathJax */
+#enunciado mjx-container{
+  display: block !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* El math real (aquí estaba el problema) */
+#enunciado mjx-math{
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Alinear texto generado por \text{} y \textit{} */
+#enunciado mjx-mtext{
+  text-align: center !important;
+}
+
+/* Evitar herencia izquierda desde layout */
+#enunciado mjx-container *{
+  text-align: center !important;
+}
+
