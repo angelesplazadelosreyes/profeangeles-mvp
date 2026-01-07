@@ -1,6 +1,7 @@
 import json
 import random
 import time
+from fractions import Fraction
 
 from flask import Flask, Response, request, jsonify
 
@@ -12,11 +13,17 @@ from exercises.quadratic.latex import (
     latex_solution,
     latex_factorized_from_roots,
     latex_canonical_from_vertex,
-    latex_general_function,  # ✅ punto 5
+    latex_general_function,
 )
 
-
 app = Flask(__name__)
+
+# --------------------- Helpers ---------------------
+def to_json_number(x):
+    """Convierte Fraction -> float, y deja ints/floats tal cual."""
+    if isinstance(x, Fraction):
+        return float(x)
+    return x
 
 # --------------------- CORS ---------------------
 @app.after_request
@@ -72,22 +79,20 @@ def generate_exercise():
     else:
         a, b, c = rand_coeff()
 
-
     # 2) Traits (siempre)
     D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
 
     # 3) Enunciado + Solución según tipo
     if etype == "convert_factorizada_a_general_y_canonica":
-        # Enunciado: factorizada + ✅ pista (punto 4)
+        # Enunciado: factorizada (sin pista; ya existe por construcción)
         fx_fact = latex_factorized_from_roots(a, x1, x2)
         latex_enunciado = (
             r"\text{Convierte la función desde forma factorizada a forma general y canónica (en ese orden): }~"
             rf"f(x) = {fx_fact}"
         )
 
-
         # Solución: general y canónica (orden solicitado)
-        fx_general = latex_general_function(a, b, c)  # ✅ punto 5
+        fx_general = latex_general_function(a, b, c)
         fx_canon = latex_canonical_from_vertex(a, h, k)
 
         latex_solucion = (
@@ -97,8 +102,10 @@ def generate_exercise():
             r"\textbf{Forma canónica:}~ f(x)=" + fx_canon +
             r"\end{aligned}"
         )
+
     elif etype == "convert_canonica_a_general_y_factorizada":
         # Enunciado (3 líneas): consigna + función + pista
+        # OJO: h_can / k_can pueden ser Fraction; para el LaTeX aceptamos float aquí.
         fx_canon_given = latex_canonical_from_vertex(a, float(h_can), float(k_can))
 
         latex_enunciado = (
@@ -109,12 +116,11 @@ def generate_exercise():
             r"\textit{Pista: la forma factorizada existe solo si hay raíces reales }(\Delta \ge 0)."
         )
 
-        # Forma general (desde a,b,c ya calculados)
+        # Forma general (desde a,b,c ya calculados) — aseguramos floats para el formateador
         fx_general = format_latex_quadratic(float(a), float(b), float(c)).replace("= 0", "").strip()
 
         # Forma factorizada: solo si raíces reales
         if len(roots) == 2:
-            # usamos las raíces reales calculadas por traits
             r1, r2 = roots[0], roots[1]
             fx_fact = latex_factorized_from_roots(float(a), r1, r2)
             fact_line = rf"\textbf{{Forma factorizada:}}~ f(x)= {fx_fact}"
@@ -139,20 +145,26 @@ def generate_exercise():
         latex_enunciado = rf"\text{{Analiza la función cuadrática: }}~ {latex_eq}"
         latex_solucion = latex_solution(a, b, c, D, h, k, roots)
 
-    # 4) Plot
-    png_b64 = plot_quadratic_png(a, b, c)
+    # 4) Plot (importante: pasar floats si hay Fraction)
+    png_b64 = plot_quadratic_png(float(a), float(b), float(c))
 
-    # 5) Payload
+    # 5) Payload (convertimos Fraction -> float para evitar 500 en json.dumps)
     payload = {
-        "coeffs": {"a": a, "b": b, "c": c},
+        "coeffs": {
+            "a": to_json_number(a),
+            "b": to_json_number(b),
+            "c": to_json_number(c),
+        },
         "latex_enunciado": latex_enunciado,
         "latex_solucion": latex_solucion,
         "graph": {
-            "x_min": -10, "x_max": 10, "step": 0.25,
-            "vertex": {"x": h, "y": k},
-            "roots": roots,
-            "axis": {"x": h},
-            "y_intercept": y_intercept
+            "x_min": -10,
+            "x_max": 10,
+            "step": 0.25,
+            "vertex": {"x": to_json_number(h), "y": to_json_number(k)},
+            "roots": [to_json_number(r) for r in (roots or [])],
+            "axis": {"x": to_json_number(h)},
+            "y_intercept": to_json_number(y_intercept),
         },
         "plot": {
             "png": png_b64,
@@ -164,7 +176,8 @@ def generate_exercise():
             "exercise_id": f"q_{int(time.time()*1000)}",
             "timestamp": int(time.time()),
             "topic": "funcion_cuadratica",
-            "filters": {"topic": topic, "subtopic": subtopic, "type": etype}
-        }
+            "filters": {"topic": topic, "subtopic": subtopic, "type": etype},
+        },
     }
+
     return Response(json.dumps(payload), mimetype="application/json")
