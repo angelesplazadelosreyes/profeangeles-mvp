@@ -6,7 +6,7 @@ from flask import Flask, Response, request, jsonify
 
 from exercises.quadratic.traits import quadratic_traits
 from exercises.quadratic.plot import plot_quadratic_png
-from exercises.quadratic.generators import rand_coeff_from_roots
+from exercises.quadratic.generators import rand_coeff_from_roots, rand_coeff_canonical
 from exercises.quadratic.latex import (
     format_latex_quadratic,
     latex_solution,
@@ -14,6 +14,7 @@ from exercises.quadratic.latex import (
     latex_canonical_from_vertex,
     latex_general_function,  # ✅ punto 5
 )
+
 
 app = Flask(__name__)
 
@@ -59,11 +60,18 @@ def generate_exercise():
     etype = request.args.get("type", "analisis_completo")
 
     # 1) Generación de coeficientes según tipo
-    x1 = x2 = None  # solo se usan en el tipo factorizado
+    x1 = x2 = None
+    h_can = k_can = None
+
     if etype == "convert_factorizada_a_general_y_canonica":
         (a, b, c), (x1, x2) = rand_coeff_from_roots(allow_double_root=True)
+
+    elif etype == "convert_canonica_a_general_y_factorizada":
+        (a, b, c), (h_can, k_can) = rand_coeff_canonical()
+
     else:
         a, b, c = rand_coeff()
+
 
     # 2) Traits (siempre)
     D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
@@ -89,6 +97,42 @@ def generate_exercise():
             r"\textbf{Forma canónica:}~ f(x)=" + fx_canon +
             r"\end{aligned}"
         )
+    elif etype == "convert_canonica_a_general_y_factorizada":
+        # Enunciado (3 líneas): consigna + función + pista
+        fx_canon_given = latex_canonical_from_vertex(a, float(h_can), float(k_can))
+
+        latex_enunciado = (
+            r"\text{Convierte la función desde forma canónica a forma general y factorizada:}"
+            r"\\[6pt]"
+            rf"\textbf{{Función:}}~ f(x)= {fx_canon_given}"
+            r"\\[6pt]"
+            r"\textit{Pista: la forma factorizada existe solo si hay raíces reales }(\Delta \ge 0)."
+        )
+
+        # Forma general (desde a,b,c ya calculados)
+        fx_general = format_latex_quadratic(float(a), float(b), float(c)).replace("= 0", "").strip()
+
+        # Forma factorizada: solo si raíces reales
+        if len(roots) == 2:
+            # usamos las raíces reales calculadas por traits
+            r1, r2 = roots[0], roots[1]
+            fx_fact = latex_factorized_from_roots(float(a), r1, r2)
+            fact_line = rf"\textbf{{Forma factorizada:}}~ f(x)= {fx_fact}"
+        elif len(roots) == 1:
+            r0 = roots[0]
+            fx_fact = latex_factorized_from_roots(float(a), r0, r0)
+            fact_line = rf"\textbf{{Forma factorizada:}}~ f(x)= {fx_fact}"
+        else:
+            fact_line = r"\textbf{Forma factorizada:}~ \text{No es factorizable en } \mathbb{R}"
+
+        latex_solucion = (
+            r"\begin{aligned}"
+            r"\textbf{Forma general:}~ f(x)=" + fx_general +
+            r" \\[6pt] "
+            + fact_line +
+            r"\end{aligned}"
+        )
+
     else:
         # Tipo actual (análisis completo)
         latex_eq = format_latex_quadratic(a, b, c)

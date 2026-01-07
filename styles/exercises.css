@@ -59,7 +59,7 @@
   color: #fff;
   border-radius: var(--ex-radius);
   box-shadow: var(--ex-shadow);
-  overflow: hidden; /* respeta el redondeo del header */
+  overflow: hidden;
 }
 .sidebar-header{
   background: var(--ex-sidebar-title);
@@ -104,6 +104,11 @@
   font-size: .78rem;
   opacity: .9;
 }
+.subjects__item[aria-disabled="true"]{
+  opacity:.75;
+  cursor:not-allowed;
+  pointer-events:none;
+}
 
 /* === 4) PANEL DERECHO (tarjetas) ========================= */
 .panel{ display: grid; gap: 1rem; }
@@ -135,7 +140,7 @@
   padding: 1rem;
 }
 
-/* (legacy) grid de respuesta antiguo — compatibilidad */
+/* legacy grid (compat) */
 .card-block .answer-grid{
   display: grid;
   grid-template-columns: 1.1fr .9fr;
@@ -165,7 +170,7 @@
   padding: .5rem .6rem;
 }
 
-/* Accesibilidad: foco visible */
+/* foco visible */
 .subjects__item:focus-visible,
 #btn-nuevo:focus-visible,
 #btn-mostrar:focus-visible,
@@ -207,94 +212,74 @@ select:focus-visible{
     to{ transform:none; opacity:1; }
   }
 }
-/* materias “próximamente” no clicables */
-.subjects__item[aria-disabled="true"]{
-  opacity:.75;
-  cursor:not-allowed;
-  pointer-events:none;
-}
 
-/* === 7) SOLUCIÓN (layout 2 columnas + fila full) ===== */
+/* === 7) SOLUCIÓN ======================================== */
 
-/* Título “Solución” con aire */
-.solution-wrapper .math-block h3{
-  margin: .25rem 0 .75rem;
-}
+/* Contenedor general solución */
+#solution-root{ width: 100%; }
 
-/* Grid: 2 columnas en la primera fila + full abajo */
+/* Grid “análisis completo” (default): 2 columnas + 2 filas full */
 .sol-grid{
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "left1  right1"
+    "full   full"
     "full   full";
-
-  /* 👇 separa distancia horizontal vs vertical */
   column-gap: var(--sol-gap);
   row-gap: .75rem;
-
   align-items: start;
+  justify-items: stretch;
 }
 
-/* Áreas nombradas */
+/* ===== Conversión: 1 columna (texto arriba, gráfico abajo) =====
+   IMPORTANTE: NO usar margin-top negativos aquí.
+*/
+.sol-grid.sol-grid--single{
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "convText"
+    "convFig";
+  row-gap: .4rem; /* separación real y estable */
+}
+
+/* Áreas (análisis completo) */
 .area-left1  { grid-area: left1; }
 .area-right1 { grid-area: right1; }
-.area-full   { grid-area: full;  }
 
-/* Cada columna puede usar container queries (cqi) */
+/* Área full base (si alguien la usa) */
+.area-full{
+  width: 100%;
+  justify-self: stretch;
+  grid-column: 1 / -1;
+  overflow: visible;
+}
+
+/* Áreas (conversión) */
+.area-conv-text{ grid-area: convText; }
+.area-conv-fig { grid-area: convFig; }
+
+/* Columnas */
 .sol-col{
   min-width: 0;
   container-type: inline-size;
 }
 
-/* Un poco de aire entre texto y gráfico (lado izquierdo) */
-.sol-col:first-child{ padding-right: .25rem; }
-
-/* Figura: centrada y sin overflow raro */
-.sol-figure{
-  width: 100%;
-  justify-self: center;
-  overflow: hidden;
-}
-
-/* Canvas/imagen siempre al 100% del contenedor */
-.sol-figure img,
-.sol-figure canvas{
-  width: 100% !important;
-  height: auto !important;
-  max-width: 100%;
-  display: block;
-}
-
-/* Canvas fluido para Chart.js */
-.sol-chart{
-  width: 100% !important;
-  height: auto !important;
-  display: block;
-}
-
-/* MathJax genérico: evitar desbordes por fórmulas largas */
-.mathjax{
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-/* Texto de la solución */
+/* Texto Math */
 .solution-math{
+  width: 100%;
   overflow-wrap: anywhere;
   white-space: normal;
   text-align: left;
 }
 
-/* Display MathJax: escala suave */
+/* Display MathJax (solución) */
 .solution-math > mjx-container[display="true"]{
   text-align: left !important;
   margin: .25rem 0 .6rem !important;
   font-size: clamp(0.95rem, 1.2cqi + 0.5rem, 1.25rem);
   line-height: 1.45;
-
-  /* Mantén el scroll HORIZONTAL por defecto */
-  /*overflow-x: auto;*/
   overflow-y: visible;
   max-width: 100% !important;
 }
@@ -305,51 +290,68 @@ select:focus-visible{
   line-height: 1.45;
 }
 
-/* =========================================================
-   FULL ROW (area-full)
-   Objetivo:
-   - Mantener la fila full “más pegada” a la anterior
-   - Evitar scrolls raros internos de MathJax
-   - NO tocar line-height ni margins del mjx-container (para no desalinear fracciones)
-   ========================================================= */
-
-/* FULL ROW: controla el espacio desde el contenedor (no desde MathJax) */
-.area-full{
-  width: 100%;
-  justify-self: stretch;
-
-  /* “Acercar” la full a la fila anterior */
-  margin-top: -0.35rem;
-
-  /* Ajuste fino de aire interno */
-  padding-top: 0;
-  padding-bottom: .25rem;
-
-  /* No recortar contenido (evita comportamientos raros) */
-  overflow: visible;
-}
-
-/* MathJax en full: NO forzar line-height ni márgenes.
-   Solo aseguramos que no aparezca overflow vertical interno. */
+/* Evitar “scrollcito” de fracciones en filas full */
 .area-full mjx-container[display="true"]{
   max-width: 100% !important;
   overflow-y: visible !important;
 }
-
-/* El culpable típico del “scrollcito” del denominador es mjx-dbox:
-   lo dejamos visible para que no se cree un scroll interno */
-.area-full mjx-dbox{
-  overflow: visible !important;
-}
-
-/* Si algún wrapper mete overflow por herencia/estilos previos, lo neutralizamos
-   sin duplicar reglas y sin tocar X (para no cortar paréntesis elásticos) */
+.area-full mjx-dbox{ overflow: visible !important; }
 .area-full mjx-container,
-.area-full mjx-container *{
-  overflow-y: visible !important;
+.area-full mjx-container *{ overflow-y: visible !important; }
+
+/* Figura */
+.sol-figure{
+  width: 100%;
+  justify-self: center;
+  overflow: hidden;
 }
 
+/* Caption (si lo agregas desde el renderer) */
+.sol-figure-title{
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 6px;
+}
 
+/* Canvas/Chart.js */
+.sol-figure canvas,
+.sol-chart{
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
+}
+
+/* PNG (Matplotlib): control en desktop (no gigante) */
+.sol-figure img{
+  display: block;
+  max-width: 100%;
+  height: auto;
+
+  /* Desktop: NO forzar 100% */
+  width: auto;
+  margin: 0 auto;
+
+  max-height: 420px;
+}
+@media (min-width: 1200px){
+  .sol-figure img{ max-height: 360px; }
+}
+@media (max-width: 900px){
+  .sol-figure img{
+    width: 100%;
+    max-height: none;
+  }
+}
+
+/* Conversión: separación específica entre texto y gráfico
+   (si quieres más o menos, toca SOLO este margin-top)
+*/
+.area-conv-fig{
+  margin-top: .35rem;
+  padding-top: 0;
+}
 
 /* Enunciado centrado (solo display MathJax) */
 #enunciado mjx-container[jax="CHTML"][display="true"]{
@@ -360,37 +362,19 @@ select:focus-visible{
   margin-right: auto !important;
 }
 
-/* Responsivo: una sola columna */
+/* Helpers de enunciado */
+.latex-line{ margin-bottom: 6px; }
+
+/* Responsivo: análisis completo a 1 columna */
 @media (max-width: 1200px){
-  .sol-grid{
+  .sol-grid:not(.sol-grid--single){
     grid-template-columns: 1fr;
     grid-template-areas:
       "left1"
       "right1"
+      "full"
       "full";
     row-gap: .75rem;
   }
   .sol-figure{ justify-self: start; }
-}
-
-/* === FIX: full row debe ocupar TODO el ancho disponible === */
-#solution-root{
-  width: 100%;
-}
-
-.sol-grid{
-  width: 100%;
-  justify-items: stretch; /* cada celda se estira */
-}
-
-/* aunque uses grid-areas, esto asegura el spanning real */
-.area-full{
-  grid-column: 1 / -1;    /* ocupa desde la 1 a la última columna */
-  width: 100%;
-  justify-self: stretch;
-}
-
-/* el contenedor interno también debe estirarse */
-.area-full .solution-math{
-  width: 100%;
 }

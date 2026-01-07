@@ -15,10 +15,21 @@
 export const MATH_OPTIONS = {
   "Álgebra": {
     "Función cuadrática": [
-      { id: "analisis_completo", label: "Análisis completo (raíces, vértice, etc.)" },
-      { id: "solo_grafico",      label: "Solo gráfico de la función" },
-      { id: "solo_raices",       label: "Solo raíces de la función" }
+      {
+        id: "analisis_completo",
+        label: "Análisis completo (raíces, vértice, dominio y recorrido)"
+      },
+      {
+        id: "convert_factorizada_a_general_y_canonica",
+        label: "Conversión: factorizada → general → canónica"
+      },
+      { 
+        id: "convert_canonica_a_general_y_factorizada", 
+        label: "Conversión: canónica → general → factorizada" 
+      },
+
     ],
+
     "Ecuaciones lineales": [
       { id: "una_incognita", label: "Ecuaciones de una incógnita" },
       { id: "sistema_2x2",   label: "Sistema 2×2" }

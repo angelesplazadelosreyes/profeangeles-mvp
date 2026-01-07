@@ -104,9 +104,114 @@ export function renderMathQuadraticAnalysis(root, data){
   if (!root) return;
   root.innerHTML = "";
 
-  const grid = document.createElement("div");
-  grid.className = "sol-grid";
+  const etype =
+    data?.meta?.filters?.type ||
+    data?.meta?.type ||
+    data?.type ||
+    "analisis_completo";
 
+  const isConversion = etype === "convert_factorizada_a_general_y_canonica";
+
+  // Contenedor principal
+  const grid = document.createElement("div");
+  grid.className = isConversion ? "sol-grid sol-grid--single" : "sol-grid";
+
+  // --- LaTeX: preparar (replace decimales + sanitize) ---
+  const latexRaw = sanitizeLatexColors(
+    replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 })
+  );
+  const body = stripAlignedWrapper(latexRaw);
+
+  // Partes por línea del aligned (backend usa \\[6pt])
+  const parts = body.split('\\\\[6pt]').map(s => s.trim()).filter(Boolean);
+
+  // Gráfico (PNG base64)
+  const pngB64 = data?.plot?.png || data?.chart_png || null;
+
+  // ========= MODO CONVERSIÓN: 1 columna =========
+  if (isConversion) {
+    // 1) Texto solución (full)
+    const sol = document.createElement("div");
+    sol.className = "sol-col area-conv-text";
+
+    const solMath = document.createElement("div");
+    solMath.className = "solution-math";
+    sol.appendChild(solMath);
+
+    // Mostrar todas las líneas de la solución (general + canónica)
+    // (si en el futuro agregas más, igual se ve bien)
+    renderMathInto(solMath, wrapAligned(parts.join('\\\\[6pt]')));
+
+    // 2) Gráfico (full, al final)
+    const figWrap = document.createElement("div");
+    figWrap.className = "sol-col area-full area-full-figure";
+
+
+    const fig = document.createElement("div");
+    fig.className = "sol-figure sol-figure--below";
+
+    // ✅ AQUÍ va el subtítulo
+    const caption = document.createElement("div");
+    caption.className = "sol-figure-title";
+    caption.textContent = "Gráfico de la función";
+    fig.appendChild(caption);
+
+    figWrap.appendChild(fig);
+
+
+    // montar DOM en el orden didáctico
+    grid.appendChild(sol);
+    grid.appendChild(figWrap);
+    root.appendChild(grid);
+
+    if (pngB64){
+      const img = document.createElement("img");
+      img.alt = "Gráfico de la función cuadrática";
+      img.src = `data:image/png;base64,${pngB64}`;
+      fig.appendChild(img);
+      return;
+    }
+
+    // Fallback Chart.js si no hay PNG
+    const canvas = document.createElement("canvas");
+    canvas.id = uid();
+    canvas.className = "sol-chart";
+    fig.appendChild(canvas);
+
+    if (window.__chartInstance){
+      window.__chartInstance.destroy();
+      window.__chartInstance = null;
+    }
+    const ctx = canvas.getContext("2d");
+
+    if (data?.chart){
+      const labels = data.chart.labels || data.chart.data?.labels || [];
+      const values = data.chart.values || data.chart.data?.datasets?.[0]?.data || [];
+      window.__chartInstance = new Chart(ctx, {
+        type: data.chart.type || "line",
+        data: { labels, datasets: [{ label: data.chart.label || "f(x)", data: values }] },
+        options: data.chart.options || { responsive: true, maintainAspectRatio: false }
+      });
+    } else if (data?.graph && data?.coeffs){
+      const { x_min, x_max, step } = data.graph;
+      const { a, b, c } = data.coeffs;
+      const xs = [], ys = [];
+      for (let x = x_min; x <= x_max; x += step){
+        const xr = Number(x.toFixed(2));
+        xs.push(xr);
+        ys.push(a*xr*xr + b*xr + c);
+      }
+      window.__chartInstance = new Chart(ctx, {
+        type: "line",
+        data: { labels: xs, datasets: [{ label: "y = ax² + bx + c", data: ys }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    return;
+  }
+
+  // ========= MODO ANÁLISIS COMPLETO: layout ORIGINAL 2 columnas =========
   const left = document.createElement("div");
   left.className = "sol-col area-left1";
   const math = document.createElement("div");
@@ -119,6 +224,7 @@ export function renderMathQuadraticAnalysis(root, data){
   fig.className = "sol-figure";
   right.appendChild(fig);
 
+  // Fila full SOLO para las últimas 2 líneas (canónica + factorizada)
   const full = document.createElement("div");
   full.className = "sol-col area-full";
 
@@ -127,26 +233,11 @@ export function renderMathQuadraticAnalysis(root, data){
   grid.appendChild(full);
   root.appendChild(grid);
 
-  // --- LaTeX: split seguro (sin romper begin/end aligned) ---
-  const latexRaw = sanitizeLatexColors(
-    replaceDecimalsInLatex(data?.latex_solucion || "", { maxDen: 12 })
-  );
 
-  const body = stripAlignedWrapper(latexRaw);
 
   // Separar las últimas 2 líneas: Forma canónica + Forma factorizada
-  const parts = body.split('\\\\[6pt]');
   const mainBody = parts.slice(0, -2).join('\\\\[6pt]');
   const tailBody = parts.slice(-2).join('\\\\[6pt]');
-
-  // Borrar después... OJO
-  if (window.__DEBUG_MATH__) {
-    console.log("RAW backend:", data?.latex_solucion);
-    console.log("AFTER replace+sanitize (body):", body);
-    console.log("TAIL (full row):", tailBody);
-  }
-
-
 
   renderMathInto(math, wrapAligned(mainBody));
 
@@ -155,8 +246,6 @@ export function renderMathQuadraticAnalysis(root, data){
   full.appendChild(fullMath);
   renderMathInto(fullMath, wrapAligned(tailBody));
 
-  // --- Gráfico: PNG base64 primero ---
-  const pngB64 = data?.plot?.png || data?.chart_png || null;
 
   if (pngB64){
     const img = document.createElement("img");

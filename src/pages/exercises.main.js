@@ -102,6 +102,53 @@ async function mountSolution(data) {
    Acciones de ejercicio
    =========================== */
 
+function renderLatexBlocks(containerId, blocks) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+
+  el.innerHTML = "";
+
+  for (const latex of blocks) {
+    const line = document.createElement("div");
+    line.className = "latex-line";
+    line.innerHTML = latex ? `$$${latex}$$` : "";
+    el.appendChild(line);
+  }
+
+  if (window.MathJax?.typesetPromise) {
+    window.MathJax.typesetPromise([el]);
+  }
+}
+
+function splitEnunciado3Lines(latexEnunciado) {
+  if (!latexEnunciado) return null;
+
+  // 1) separar pista si viene con \\[4pt]
+  const parts = latexEnunciado.split("\\\\[4pt]");
+  const main = (parts[0] || "").trim();
+  const hint = (parts[1] || "").trim();
+
+  // 2) dentro del main, separar texto vs "f(x) = ..."
+  const marker = "f(x) =";
+  const idx = main.indexOf(marker);
+
+  // si no encontramos el patrón, devolvemos un bloque único
+  if (idx === -1) {
+    return [main, hint].filter(Boolean);
+  }
+
+  const line1 = main.slice(0, idx).trim().replace(/~\s*$/, "");
+  const line2 = main.slice(idx).trim();
+
+  // 3 líneas: texto, función, pista (si existe)
+  const out = [];
+  if (line1) out.push(line1);
+  if (line2) out.push(line2);
+  if (hint) out.push(hint);
+  return out;
+}
+
+
 async function nuevoEjercicio() {
   clearExerciseUI();
   setLoading(true);
@@ -118,7 +165,13 @@ async function nuevoEjercicio() {
 
     lastExercise = data;
 
-    renderMath(data?.latex_enunciado || '', 'enunciado');
+    const blocks = splitEnunciado3Lines(data?.latex_enunciado || "");
+    if (blocks) {
+      renderLatexBlocks("enunciado", blocks);
+    } else {
+      renderMath("", "enunciado");
+    }
+
 
     const solRoot = document.getElementById('solution-root');
     if (solRoot) solRoot.innerHTML = '';
