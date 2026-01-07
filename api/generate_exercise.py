@@ -109,12 +109,13 @@ def generate_exercise():
         fx_canon_given = latex_canonical_from_vertex(a, float(h_can), float(k_can))
 
         latex_enunciado = (
-            r"\text{Convierte la función desde forma canónica a forma general y factorizada:}"
+            r"\text{Convierte la función desde forma canónica a forma general y factorizada (en ese orden):}"
             r"\\[6pt]"
-            rf"\textbf{{Función:}}~ f(x)= {fx_canon_given}"
+            rf"f(x)= {fx_canon_given}"
             r"\\[6pt]"
             r"\textit{Pista: la forma factorizada existe solo si hay raíces reales }(\Delta \ge 0)."
         )
+
 
         # Forma general (desde a,b,c ya calculados) — aseguramos floats para el formateador
         fx_general = format_latex_quadratic(float(a), float(b), float(c)).replace("= 0", "").strip()

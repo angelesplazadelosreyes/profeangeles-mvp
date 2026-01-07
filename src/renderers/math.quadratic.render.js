@@ -110,7 +110,10 @@ export function renderMathQuadraticAnalysis(root, data){
     data?.type ||
     "analisis_completo";
 
-  const isConversion = etype === "convert_factorizada_a_general_y_canonica";
+  const isConversion =
+    etype === "convert_factorizada_a_general_y_canonica" ||
+    etype === "convert_canonica_a_general_y_factorizada";
+
 
   // Contenedor principal
   const grid = document.createElement("div");
