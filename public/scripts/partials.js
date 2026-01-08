@@ -34,27 +34,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   })();
 
-  // 2) Marca activo en el menú según la URL
+  // 2) Marca activo en el menú según la URL (links + dropdown buttons)
   (function markActive() {
     const norm = (p) => {
       if (!p) return '/';
       let x = p.toLowerCase();
+
+      // si viene con query/hash, lo limpiamos
+      x = x.split('?')[0].split('#')[0];
+
       if (x.endsWith('.html')) x = x.slice(0, -5);
       if (x === '/index') x = '/';
       return x;
     };
+
     const current = norm(location.pathname);
 
-    document.querySelectorAll('header .menu a').forEach(a => {
-      const href = a.getAttribute('href') || '';
-      const target = norm(href);
-      if (target === current) {
-        a.classList.add('active');
-        a.setAttribute('aria-current', 'page');
-      } else {
-        a.classList.remove('active');
-        a.removeAttribute('aria-current');
-      }
-    });
+    // Limpia activos previos (links + botones)
+    document.querySelectorAll('header .menu a.active, header .menu .menu-link.active')
+      .forEach(el => el.classList.remove('active'));
+
+    document.querySelectorAll('header .menu a[aria-current="page"]')
+      .forEach(el => el.removeAttribute('aria-current'));
+
+    // 2.1) Activa link exacto si existe (Inicio, o sub-items del dropdown)
+    const links = Array.from(document.querySelectorAll('header .menu a[href]'));
+    const activeLink = links.find(a => norm(a.getAttribute('href')) === current);
+
+    if (activeLink) {
+      activeLink.classList.add('active');
+      activeLink.setAttribute('aria-current', 'page');
+    }
+
+    // 2.2) Activa dropdown padre según ruta (Ejercicios / Servicios)
+    const isExercises = current.startsWith('/exercises') || current.startsWith('/guides');
+    const isServices  = current.startsWith('/classes') || current.startsWith('/services-dev');
+
+    if (isExercises) {
+      document.querySelector('header .menu .menu-link[data-menu="exercises"]')
+        ?.classList.add('active');
+    }
+
+    if (isServices) {
+      document.querySelector('header .menu .menu-link[data-menu="services"]')
+        ?.classList.add('active');
+    }
   })();
+
 });

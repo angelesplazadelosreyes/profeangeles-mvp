@@ -88,7 +88,7 @@ def generate_exercise():
         fx_fact = latex_factorized_from_roots(a, x1, x2)
         latex_enunciado = (
             r"\begin{aligned}"
-            r"\text{Convierte la función desde forma factorizada a forma general y canónica (en ese orden):}"
+            r"\text{Convierte la función desde forma factorizada a forma general y canónica:}"
             r"\\[6pt]"
             rf"f(x)= {fx_fact}"
             r"\end{aligned}"
@@ -114,7 +114,7 @@ def generate_exercise():
 
         latex_enunciado = (
             r"\begin{aligned}"
-            r"\text{Convierte la función desde forma canónica a forma general y factorizada (en ese orden):}"
+            r"\text{Convierte la función desde forma canónica a forma general y factorizada:}"
             r"\\[6pt]"
             rf"f(x)= {fx_canon_given}"
             r"\\[6pt]"

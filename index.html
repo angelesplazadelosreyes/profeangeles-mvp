@@ -83,17 +83,17 @@
     <section class="value-grid container">
       <article class="value-card">
         <h3>Ejercicios interactivos</h3>
-        <p>Genera ejercicios al instante con explicación clara.</p>
+        <p>Genera ejercicios al instante con su respectiva solución.</p>
         <a href="/exercises">Ver más</a>
       </article>
       <article class="value-card">
-        <h3>Clases 1:1</h3>
-        <p>Diagnóstico, plan semanal y seguimiento simple para familias.</p>
+        <h3>Clases individuales y grupales</h3>
+        <p>Clases puntuales y planes de estudio en distintos formatos.</p>
         <a href="/classes">Ver más</a>
       </article>
       <article class="value-card">
         <h3>Recursos PDF</h3>
-        <p>Guías listas para imprimir y usar en clase o estudio.</p>
+        <p>Guías de ejercicios listas para imprimir y usar en clase o estudio.</p>
         <span class="soon">Próximamente</span>
       </article>
 
@@ -105,119 +105,6 @@
 
     </section>
 
-    <!-- Demo rápida (hookeable a tu API) -->
-    <section class="demo container" id="quickDemo">
-      <h2>Prueba en un clic</h2>
-      <form id="demoForm" class="demo-form">
-        <label>Materia
-          <select id="demoSubject">
-            <option value="matematicas">Matemáticas</option>
-            <option value="quimica">Química</option>
-            <option value="biologia">Biología</option>
-            <option value="lenguaje">Lenguaje</option>
-          </select>
-        </label>
-        <label>Tema
-          <select id="demoTopic"></select>
-        </label>
-        <button type="submit" class="btn btn-accent">Generar</button>
-        <a class="demo-link" href="/exercises">Ver todos los temas</a>
-      </form>
-      <div id="demoResult" class="demo-result" aria-live="polite"></div>
-    </section>
-
-    <!-- Rutas por perfil -->
-    <section class="personas container">
-      <article class="persona">
-        <h3>Soy estudiante</h3>
-        <p>Práctica guiada, pasos cortos y feedback inmediato.</p>
-        <a href="/exercises" class="btn btn-light">Practicar</a>
-      </article>
-      <article class="persona">
-        <h3>Soy apoderado/a</h3>
-        <p>Clases online con plan personalizado y reporte simple.</p>
-        <a href="/classes" class="btn btn-light">Ver planes</a>
-      </article>
-      <article class="persona">
-        <h3>Soy profe</h3>
-        <p>Guías PDF y material listo para tu clase.</p>
-        <a href="/resources.html" class="btn btn-light">Recursos</a>
-      </article>
-    </section>
-
-    <!-- Catálogo de materias/temas -->
-    <section class="catalog container">
-      <h2>Explora por materia</h2>
-      <div class="grid" id="subjectGrid">
-        <article class="card" data-subject="matematicas">
-          <h4>Álgebra</h4><p>Ecuaciones, funciones, polinomios.</p>
-          <a href="/exercises#algebra">Practicar</a>
-        </article>
-        <article class="card" data-subject="matematicas">
-          <h4>Geometría</h4><p>Ángulos, triángulos, áreas y volúmenes.</p>
-          <a href="/exercises#geometria">Practicar</a>
-        </article>
-        <article class="card" data-subject="quimica">
-          <h4>Estequiometría</h4><p>Mol, relaciones y reacciones químicas.</p>
-          <a href="/exercises#estequiometria">Practicar</a>
-        </article>
-        <article class="card" data-subject="biologia">
-          <h4>Genética</h4><p>Mendel, cruces y probabilidades.</p>
-          <a href="/exercises#genetica">Practicar</a>
-        </article>
-        <article class="card" data-subject="lenguaje">
-          <h4>Comprensión lectora</h4><p>Estrategias y tipos de preguntas.</p>
-          <a href="/exercises#comprension">Practicar</a>
-        </article>
-      </div>
-    </section>
-
-    <!-- Clases (resumen) -->
-    <section class="classes-brief container">
-      <h2>Clases particulares</h2>
-      <ul class="ticks">
-        <li>Diagnóstico inicial</li>
-        <li>Plan semanal por objetivos</li>
-        <li>Seguimiento simple para familias</li>
-      </ul>
-      <div class="cta-row">
-        <a class="btn btn-accent" href="https://wa.me/56971312255" target="_blank" rel="noopener">Agendar por WhatsApp</a>
-        <a class="btn btn-ghost" href="/classes">Ver detalles</a>
-      </div>
-    </section>
-
-    <!-- Novedades / Roadmap -->
-    <section class="changelog container">
-      <h2>Lo último</h2>
-      <ul class="log">
-        <li><strong>NUEVO</strong>: Materia Química (beta) con estequiometría.</li>
-        <li>Mejoras de accesibilidad y modo oscuro.</li>
-        <li>Juegos 2D: prototipo de “Suma Rápida”.</li>
-      </ul>
-    </section>
-
-    <!-- Testimonios -->
-    <section class="testimonials container">
-      <h2>Lo que dicen</h2>
-      <blockquote>“Por fin entendí funciones. Las explicaciones son claras.” — Antonia, 2º medio</blockquote>
-      <blockquote>“Los PDF me salvaron la clase del viernes.” — Sr. López, profesor</blockquote>
-    </section>
-
-    <!-- Recursos -->
-    <section class="resources container">
-      <h2>Recursos gratis</h2>
-      <div class="grid">
-        <article class="card"><h4>Guía de probabilidades (PDF)</h4><a href="/resources.html">Descargar</a></article>
-        <article class="card"><h4>Plantillas de estudio</h4><a href="/resources.html">Ver</a></article>
-        <article class="card"><h4>Banco de ejercicios</h4><a href="/resources.html">Explorar</a></article>
-      </div>
-    </section>
-
-    <!-- CTA final -->
-    <section class="double-cta container">
-      <div><h3>¿Practicar ahora?</h3><a class="btn btn-accent" href="/exercises">Ir a ejercicios</a></div>
-      <div><h3>¿Agendar una clase?</h3><a class="btn btn-primary" href="https://wa.me/56971312255" target="_blank" rel="noopener">WhatsApp</a></div>
-    </section>
   </main>
 
   <!-- Footer (parcial) -->

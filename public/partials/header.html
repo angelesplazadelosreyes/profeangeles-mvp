@@ -7,8 +7,27 @@
 
     <ul class="menu" role="list">
       <li><a href="/">Inicio</a></li>
-      <li><a href="/exercises.html">Ejercicios</a></li>
-      <li><a href="/classes.html">Clases</a></li>
+
+      <li class="menu-dropdown">
+        <button class="menu-link" type="button" data-menu="exercises" aria-haspopup="true">
+          Ejercicios <span class="caret">▾</span>
+        </button>
+        <ul class="dropdown" role="list">
+          <li><a href="/exercises.html">Generador</a></li>
+          <li><a href="/guides.html">Guías PDF</a></li>
+        </ul>
+      </li>
+
+      <li class="menu-dropdown">
+        <button class="menu-link" type="button" data-menu="services" aria-haspopup="true">
+          Servicios <span class="caret">▾</span>
+        </button>
+        <ul class="dropdown" role="list">
+          <li><a href="/classes.html">Clases</a></li>
+          <li><a href="/services-dev.html">Desarrollo</a></li>
+        </ul>
+      </li>
+
       <li>
         <button class="btn-login" disabled aria-disabled="true" title="Próximamente">
           Inicio sesión
