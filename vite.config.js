@@ -11,6 +11,8 @@ export default defineConfig({
         index: 'index.html',
         exercises: 'exercises.html',
         classes: 'classes.html',
+        guides: 'guides.html',
+        "services-dev":'services-dev.html',
         exercises2: 'exercises2/index.html',
       },
     },
