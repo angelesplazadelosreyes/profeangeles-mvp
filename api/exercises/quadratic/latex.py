@@ -1,5 +1,5 @@
 import math
-from utils.format import fmt_num
+from ...utils.format import fmt_num
 
 
 def format_latex_quadratic(a, b, c):
