@@ -7,10 +7,10 @@ from fractions import Fraction
 
 from flask import Flask, Response, request, jsonify
 
-from exercises.quadratic.traits import quadratic_traits
-from exercises.quadratic.plot import plot_quadratic_png
-from exercises.quadratic.generators import rand_coeff_from_roots, rand_coeff_canonical
-from exercises.quadratic.latex import (
+from .exercises.quadratic.traits import quadratic_traits
+from .exercises.quadratic.plot import plot_quadratic_png
+from .exercises.quadratic.generators import rand_coeff_from_roots, rand_coeff_canonical
+from .exercises.quadratic.latex import (
     format_latex_quadratic,
     latex_solution,
     latex_factorized_from_roots,
