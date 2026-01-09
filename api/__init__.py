@@ -3,7 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 
 # Importa la app ya existente de prod
-from generate_exercise import app as legacy_app
+from .generate_exercise import app as legacy_app
 
 def create_app():
     # Usamos la app de producción como base
