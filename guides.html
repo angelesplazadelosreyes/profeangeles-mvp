@@ -1,44 +1,148 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Profe Ángeles · Guías PDF</title>
+  <meta charset="UTF-8" />
+  <title>Guías descargables | Profe Ángeles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link rel="icon" href="/favicon.ico"/>
-
-  <!-- Fuentes -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="/styles/styles.css"/>
-
-  <!-- OG -->
-  <meta property="og:title" content="ProfeÁngeles - Guías PDF"/>
-  <meta property="og:description" content="Guías PDF listas para imprimir. Próximamente."/>
-  <meta property="og:image" content="/og-image.png"/>
-  <meta property="og:url" content="https://profeangeles.cl/guides"/>
-  <meta property="og:type" content="website"/>
-
-  <!-- Parciales -->
-  <script type="module" src="/scripts/partials.js"></script>
+  <!-- Estilos globales -->
+  <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 
 <body>
+
+  <!-- Header -->
   <div data-include="header"></div>
 
-  <main class="container" style="padding:2rem 0">
-    <h1 style="margin:0 0 .75rem; color:#1e3a8a;">Guías PDF</h1>
+  <main class="container" style="padding: 2rem 0">
 
-    <div class="card" style="max-width:720px;">
-      <p style="margin:.25rem 0 0; color:var(--pa-muted);">
-        <strong>En construcción.</strong> Muy pronto encontrarás guías listas para imprimir y practicar.
-      </p>
-    </div>
+    <h1 style="margin-bottom: .5rem">Guías descargables</h1>
+    <p class="sub" style="max-width: 60ch">
+      Compilado de ejercicios para practicar a partir del generador.
+      Descarga en PDF con ejercicios y solucionario.
+    </p>
+
+    <!-- Card principal -->
+    <section class="card" style="margin-top: 1.5rem">
+
+      <h2 style="margin-top: 0">Configuración de la guía</h2>
+
+      <!-- Selectores base (bloqueados por ahora) -->
+      <div class="filters">
+        <label>
+          Materia
+          <select disabled>
+            <option>Matemáticas</option>
+          </select>
+        </label>
+
+        <label>
+          Tema
+          <select disabled>
+            <option>Función cuadrática</option>
+          </select>
+        </label>
+
+        <label>
+          Número de ejercicios
+          <select disabled>
+            <option>10</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Checklist de habilidades -->
+      <h3 style="margin-top: 1.25rem">Selecciona qué evaluar</h3>
+
+      <div class="skills-grid">
+
+        <label class="skill-item">
+            <input type="checkbox" value="concavity">
+            <span>Concavidad</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="discriminant">
+            <span>Discriminante</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="roots">
+            <span>Raíces</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="axis">
+            <span>Eje de simetría</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="vertex">
+            <span>Vértice</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="y_intercept">
+            <span>Intersección con eje Y</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="domain">
+            <span>Dominio</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="range">
+            <span>Recorrido</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="canonical_form">
+            <span>Forma canónica</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="factorized_form">
+            <span>Forma factorizada</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="graph">
+            <span>Gráfico</span>
+        </label>
+
+        <label class="skill-item">
+            <input type="checkbox" value="inverse">
+            <span>Función inversa</span>
+        </label>
+
+      </div>
+
+      <!-- Preview del enunciado -->
+      <div id="statementPreview" class="card" style="margin-top:1.25rem; display:none">
+        <h3 style="margin-top:0">Enunciado</h3>
+        <p id="statementText" style="white-space:pre-line"></p>
+      </div>
+
+
+      <!-- CTA -->
+      <div style="margin-top: 1.5rem; display:flex; align-items:center; gap:.75rem">
+        <button class="btn btn-accent" id="generateGuideBtn" disabled>
+          Generar guía en PDF
+        </button>
+        <span class="soon">Próximamente</span>
+      </div>
+
+    </section>
+
   </main>
 
+  <!-- Footer -->
   <div data-include="footer"></div>
+
+  <!-- Parciales y guía-->
+  <script src="/scripts/partials.js"></script>
+  <script src="/scripts/guides.js"></script>
+
 </body>
 </html>

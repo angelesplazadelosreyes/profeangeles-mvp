@@ -31,7 +31,7 @@ def add_cors_headers(response):
     # Para MVP dejamos *; OJO, después reemplazas por los dominios de Vercel y mi dominio:
     #   "https://profeangeles.cl", "https://profeangeles-*.vercel.app"
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET,OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
     return response
 
@@ -39,6 +39,11 @@ def add_cors_headers(response):
 @app.route("/api/generate-exercise", methods=["OPTIONS"])
 def generate_exercise_options():
     return ("", 204)
+
+@app.route("/api/generate-guide", methods=["OPTIONS"])
+def generate_guide_options():
+    return ("", 204)
+
 
 # --------------------- Health & Root ---------------------
 @app.route("/", methods=["GET"])
@@ -58,6 +63,60 @@ def rand_coeff():
     if b == 0 and c == 0:
         b = random.randint(1, 5)
     return a, b, c
+
+def latex_range(a, k):
+    # a>0 => [k, +inf), a<0 => (-inf, k]
+    if a > 0:
+        return rf"[{k}, +\infty)"
+    return rf"(-\infty, {k}]"
+
+def roots_to_latex(roots):
+    if len(roots) == 2:
+        return rf"x_1={roots[0]},\; x_2={roots[1]}"
+    if len(roots) == 1:
+        return rf"x_0={roots[0]}"
+    return r"\text{No tiene raíces reales.}"
+
+def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
+    # concavidad
+    concavity = r"\text{Cóncava hacia arriba}" if a > 0 else r"\text{Cóncava hacia abajo}"
+
+    # eje simetría, vértice, etc.
+    axis = rf"x={h}"
+    vertex = rf"({h},{k})"
+    yint = rf"(0,{y_intercept})"
+
+    # formas
+    canon = latex_canonical_from_vertex(float(a), float(h), float(k))
+
+    # factorizada (solo en R si hay raíces reales)
+    if len(roots) == 2:
+        r1, r2 = roots[0], roots[1]
+        fact = latex_factorized_from_roots(float(a), r1, r2)
+        fact_line = fact
+    elif len(roots) == 1:
+        r0 = roots[0]
+        fact = latex_factorized_from_roots(float(a), r0, r0)
+        fact_line = fact
+    else:
+        fact_line = r"\text{No es factorizable en } \mathbb{R}"
+
+    parts = {
+        "concavity": concavity,
+        "discriminant": rf"\Delta={D}",
+        "roots": roots_to_latex(roots),
+        "axis": axis,
+        "vertex": vertex,
+        "y_intercept": yint,
+        "domain": r"\mathbb{R}",
+        "range": latex_range(a, k),
+        "canonical_form": canon,
+        "factorized_form": fact_line,
+        # graph se maneja aparte (png)
+        "inverse": None,  # placeholder (cuando lo implementemos)
+    }
+    return parts
+
 
 @app.route("/api/generate-exercise", methods=["GET"])
 def generate_exercise():
@@ -189,3 +248,82 @@ def generate_exercise():
     }
 
     return Response(json.dumps(payload), mimetype="application/json")
+
+
+@app.route("/api/generate-guide", methods=["POST"])
+def generate_guide():
+    """
+    Batch generator para guías:
+    - recibe count y skills
+    - genera N ejercicios
+    - devuelve lista con coeffs + solution_parts + (plot.png si graph fue pedido)
+    """
+    try:
+        body = request.get_json(force=True) or {}
+    except Exception:
+        body = {}
+
+    count = int(body.get("count", 10))
+    count = max(1, min(count, 30))  # límite simple para no matar payload
+
+    skills = body.get("skills", []) or []
+    skills = [s for s in skills if isinstance(s, str)]
+    want_graph = "graph" in skills
+
+    # Por ahora: mismo tipo que el generador
+    etype = body.get("type", "analisis_completo")
+
+    exercises = []
+
+    for _ in range(count):
+        # 1) coeficientes (misma lógica)
+        x1 = x2 = None
+        h_can = k_can = None
+
+        if etype == "convert_factorizada_a_general_y_canonica":
+            (a, b, c), (x1, x2) = rand_coeff_from_roots(allow_double_root=True)
+        elif etype == "convert_canonica_a_general_y_factorizada":
+            (a, b, c), (h_can, k_can) = rand_coeff_canonical()
+        else:
+            a, b, c = rand_coeff()
+
+        # 2) traits
+        D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
+
+        # 3) parts para solucionario
+        solution_parts = build_solution_parts(a, b, c, D, h, k, roots, y_intercept)
+
+        # 4) plot solo si se pidió graph
+        plot_obj = None
+        if want_graph:
+            png_b64 = plot_quadratic_png(float(a), float(b), float(c))
+            plot_obj = {
+                "png": png_b64,
+                "engine": "matplotlib",
+                "size": [5.5, 3.8],
+                "dpi": 110,
+            }
+
+        exercises.append({
+            "coeffs": {
+                "a": to_json_number(a),
+                "b": to_json_number(b),
+                "c": to_json_number(c),
+            },
+            "solution_parts": solution_parts,
+            "plot": plot_obj,
+            "graph_meta": {
+                "vertex": {"x": to_json_number(h), "y": to_json_number(k)},
+                "roots": [to_json_number(r) for r in (roots or [])],
+                "axis": {"x": to_json_number(h)},
+                "y_intercept": to_json_number(y_intercept),
+            }
+        })
+
+    return jsonify({
+        "count": count,
+        "skills": skills,
+        "type": etype,
+        "topic": "funcion_cuadratica",
+        "exercises": exercises,
+    }), 200

@@ -573,3 +573,43 @@ html,body{
    Utilidades
    =========================== */
 #inicio, #ejercicios, #clases{ scroll-margin-top:80px; }
+
+/* ===========================
+   Skills checklist (guides)
+   =========================== */
+
+.skills-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .5rem .75rem;
+  margin-top: .75rem;
+}
+
+.skill-item{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem .55rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  background: #f8fafc;
+  border: 1px solid var(--pa-border);
+  font-weight: 500;
+}
+
+.skill-item:hover{
+  background: #eaf6fb;
+}
+
+.skill-item input{
+  accent-color: var(--pa-primary);
+}
+
+button:disabled{
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+button:not(:disabled){
+  cursor: pointer;
+}
