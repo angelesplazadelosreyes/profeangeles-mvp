@@ -1,5 +1,5 @@
-// public/scripts/guides.js
-(function initGuides(){
+// /public/scripts/guides.js
+(function initGuides() {
   const SKILLS_ORDER = [
     { key: "concavity", label: "Concavidad" },
     { key: "discriminant", label: "Discriminante" },
@@ -19,74 +19,83 @@
   let currentFunctionText = null;
   let loading = false;
 
-  async function fetchExercise(){
+  async function fetchCoeffs() {
     const res = await fetch(
-      "https://profeangeles-mvp.onrender.com/api/generate-exercise?type=analisis_completo"
+      "https://profeangeles-mvp.onrender.com/api/generate-exercise?type=analisis_completo",
+      { cache: "no-store" }
     );
     if (!res.ok) throw new Error("Error generando ejercicio");
     const data = await res.json();
-    return data.coeffs;
+    return data.coeffs; // {a,b,c}
   }
 
-  function toReadableFunction({ a, b, c }){
+  function toReadableFunction({ a, b, c }) {
+    const minus = "−";
+
+    // ax^2
     let fx = "f(x) = ";
+    if (a === 1) fx += "x²";
+    else if (a === -1) fx += `${minus}x²`;
+    else fx += `${a}x²`;
 
-    fx += a === 1 ? "x²" : a === -1 ? "−x²" : `${a}x²`;
-
-    if (b !== 0){
-      fx += b > 0 ? ` + ${b}x` : ` − ${Math.abs(b)}x`;
+    // bx
+    if (b !== 0) {
+      fx += b > 0 ? ` + ${b}x` : ` ${minus} ${Math.abs(b)}x`;
     }
 
-    if (c !== 0){
-      fx += c > 0 ? ` + ${c}` : ` − ${Math.abs(c)}`;
+    // c
+    if (c !== 0) {
+      fx += c > 0 ? ` + ${c}` : ` ${minus} ${Math.abs(c)}`;
     }
 
     return fx;
   }
 
-  function ready(){
+  function ready() {
     const checkboxes = document.querySelectorAll(".skills-grid input[type='checkbox']");
     const button = document.getElementById("generateGuideBtn");
     const preview = document.getElementById("statementPreview");
     const textEl = document.getElementById("statementText");
 
-    if (!checkboxes.length || !button || !preview || !textEl){
+    if (!checkboxes.length || !button || !preview || !textEl) {
       setTimeout(ready, 50);
       return;
     }
 
-    async function update(){
+    async function updateStatement() {
       const selected = Array.from(checkboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+        .filter((cb) => cb.checked)
+        .map((cb) => cb.value);
 
       button.disabled = selected.length === 0;
 
-      if (selected.length === 0){
+      if (selected.length === 0) {
         preview.style.display = "none";
         textEl.textContent = "";
         return;
       }
 
-      if (!currentFunctionText && !loading){
+      // si aún no tenemos función, la generamos UNA vez
+      if (!currentFunctionText && !loading) {
         loading = true;
         preview.style.display = "block";
         textEl.textContent = "Generando función…";
 
-        try{
-          const coeffs = await fetchExercise();
+        try {
+          const coeffs = await fetchCoeffs();
           currentFunctionText = toReadableFunction(coeffs);
-        }catch(err){
+        } catch (err) {
           console.error(err);
           textEl.textContent = "Error al generar la función.";
           return;
-        }finally{
+        } finally {
           loading = false;
         }
       }
 
+      // orden + inversa al final
       const ordered = [];
-      SKILLS_ORDER.forEach(s => {
+      SKILLS_ORDER.forEach((s) => {
         if (selected.includes(s.key)) ordered.push(s.label);
       });
       if (selected.includes(INVERSE.key)) ordered.push(INVERSE.label);
@@ -100,8 +109,53 @@
       preview.style.display = "block";
     }
 
-    checkboxes.forEach(cb => cb.addEventListener("change", update));
-    update();
+    checkboxes.forEach((cb) => cb.addEventListener("change", () => {
+      // Nota: no regeneramos la función al cambiar checks, solo cambia el enunciado.
+      updateStatement();
+    }));
+
+    button.addEventListener("click", async () => {
+      const selected = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      if (selected.length === 0) return;
+
+      button.disabled = true;
+      const oldText = button.textContent;
+      button.textContent = "Generando PDF…";
+
+      try {
+        const res = await fetch("https://profeangeles-mvp.onrender.com/api/generate-guide-pdf", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ count: 10, skills: selected })
+        });
+
+        if (!res.ok) throw new Error("Error generando PDF");
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "guia-funcion-cuadratica.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo generar el PDF. Intenta nuevamente.");
+      } finally {
+        button.textContent = oldText;
+        button.disabled = false;
+      }
+    });
+
+
+    updateStatement();
   }
 
   document.readyState === "loading"

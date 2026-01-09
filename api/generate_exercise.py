@@ -1,6 +1,8 @@
 import json
 import random
 import time
+import base64
+import io
 from fractions import Fraction
 
 from flask import Flask, Response, request, jsonify
@@ -16,6 +18,11 @@ from exercises.quadratic.latex import (
     latex_general_function,
 )
 
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+
+
 app = Flask(__name__)
 
 # --------------------- Helpers ---------------------
@@ -25,6 +32,61 @@ def to_json_number(x):
         return float(x)
     return x
 
+def readable_function_from_coeffs(a, b, c):
+    # f(x) = ax^2 + bx + c (texto simple)
+    def term_coef(val, var, is_first=False):
+        if val == 0:
+            return ""
+        sign = " + " if val > 0 else " - "
+        absval = abs(val)
+
+        if is_first:
+            sign = "-" if val < 0 else ""
+
+        if var == "x^2":
+            if absval == 1:
+                core = "x²"
+            else:
+                core = f"{absval}x²"
+        elif var == "x":
+            if absval == 1:
+                core = "x"
+            else:
+                core = f"{absval}x"
+        else:
+            core = f"{absval}"
+
+        return f"{sign}{core}" if not is_first else f"{sign}{core}"
+
+    s = "f(x) = "
+    # primer término a
+    if a == 1:
+        s += "x²"
+    elif a == -1:
+        s += "-x²"
+    else:
+        s += f"{a}x²"
+
+    s += term_coef(b, "x")
+    s += term_coef(c, "c")
+    return s
+
+def latexish_to_plain(s: str) -> str:
+    """MVP: limpia strings tipo LaTeX a algo legible en PDF."""
+    if not s:
+        return ""
+    x = s
+    x = x.replace("\\text{", "").replace("}", "")
+    x = x.replace("\\Delta", "Δ")
+    x = x.replace("\\mathbb{R}", "ℝ")
+    x = x.replace("\\infty", "∞")
+    x = x.replace("\\left", "").replace("\\right", "")
+    x = x.replace("\\;", " ")
+    x = x.replace("\\,", " ")
+    x = x.replace("~", " ")
+    return x.strip()
+
+
 # --------------------- CORS ---------------------
 @app.after_request
 def add_cors_headers(response):
@@ -33,6 +95,7 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+    response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
     return response
 
 # Preflight para el endpoint principal
@@ -248,6 +311,194 @@ def generate_exercise():
     }
 
     return Response(json.dumps(payload), mimetype="application/json")
+
+@app.route("/api/generate-guide-pdf", methods=["POST"])
+def generate_guide_pdf():
+    """
+    Body esperado:
+    {
+      "count": 10,
+      "skills": ["concavity", "roots", "graph", ...]
+    }
+    """
+    try:
+        body = request.get_json(force=True) or {}
+        count = int(body.get("count", 10))
+        skills = body.get("skills", [])
+        if not isinstance(skills, list):
+            return jsonify({"error": "skills must be a list"}), 400
+
+        # Genera "count" ejercicios
+        exercises = []
+        for _ in range(count):
+            a, b, c = rand_coeff()
+            D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
+            parts = build_solution_parts(a, b, c, D, h, k, roots, y_intercept)
+
+            # gráfico solo si se pidió
+            plot_b64 = None
+            if "graph" in skills:
+                plot_b64 = plot_quadratic_png(float(a), float(b), float(c))
+
+            exercises.append({
+                "coeffs": {"a": a, "b": b, "c": c},
+                "solution_parts": parts,
+                "plot_b64": plot_b64,
+            })
+
+        # --- Crear PDF (Carta) ---
+        buf = io.BytesIO()
+        c = canvas.Canvas(buf, pagesize=letter)
+        width, height = letter
+
+        margin = 0.75 * inch
+        y = height - margin
+
+        def draw_title(txt):
+            nonlocal y
+            c.setFont("Helvetica-Bold", 14)
+            c.drawString(margin, y, txt)
+            y -= 0.35 * inch
+
+        def draw_paragraph(txt, font="Helvetica", size=11, leading=14):
+            nonlocal y
+            c.setFont(font, size)
+            # wrap simple
+            max_w = width - 2 * margin
+            words = txt.split(" ")
+            line = ""
+            for w in words:
+                test = (line + " " + w).strip()
+                if c.stringWidth(test, font, size) <= max_w:
+                    line = test
+                else:
+                    c.drawString(margin, y, line)
+                    y -= leading
+                    line = w
+                    if y < margin:
+                        c.showPage()
+                        y = height - margin
+                        c.setFont(font, size)
+            if line:
+                c.drawString(margin, y, line)
+                y -= leading
+
+        def draw_spacer(h=0.2):
+            nonlocal y
+            y -= h * inch
+            if y < margin:
+                c.showPage()
+                y = height - margin
+
+        # ---------- Página 1: Ejercicios ----------
+        draw_title("Guía de ejercicios - Función cuadrática")
+
+        # Enunciado base (según skills, orden fijo)
+        order_labels = [
+            ("concavity", "Concavidad"),
+            ("discriminant", "Discriminante"),
+            ("roots", "Raíces"),
+            ("axis", "Eje de simetría"),
+            ("vertex", "Vértice"),
+            ("y_intercept", "Intersección con eje Y"),
+            ("domain", "Dominio"),
+            ("range", "Recorrido"),
+            ("canonical_form", "Forma canónica"),
+            ("factorized_form", "Forma factorizada"),
+            ("graph", "Gráfico"),
+        ]
+        inv_label = ("inverse", "Función inversa (restringe dominio)")
+
+        for idx, ex in enumerate(exercises, start=1):
+            a, b, c0 = ex["coeffs"]["a"], ex["coeffs"]["b"], ex["coeffs"]["c"]
+            fx = readable_function_from_coeffs(a, b, c0)
+
+            # encabezado ejercicio
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(margin, y, f"{idx}. {fx}")
+            y -= 0.22 * inch
+
+            # consigna
+            base = f"Dada la siguiente función cuadrática {fx}, determina:"
+            draw_paragraph(base, font="Helvetica", size=11, leading=14)
+            draw_spacer(0.05)
+
+            # lista a), b), ...
+            labels = [lab for key, lab in order_labels if key in skills]
+            if inv_label[0] in skills:
+                labels.append(inv_label[1])
+
+            c.setFont("Helvetica", 11)
+            for i, lab in enumerate(labels):
+                letter_i = chr(97 + i)  # a,b,c...
+                c.drawString(margin, y, f"{letter_i}) {lab}")
+                y -= 14
+                if y < margin:
+                    c.showPage()
+                    y = height - margin
+
+            # gráfico si corresponde
+            if "graph" in skills and ex["plot_b64"]:
+                try:
+                    img_bytes = base64.b64decode(ex["plot_b64"])
+                    img = io.BytesIO(img_bytes)
+                    # ancho fijo, alto proporcional aproximado
+                    img_w = 5.8 * inch
+                    img_h = 3.8 * inch
+                    if y - img_h < margin:
+                        c.showPage()
+                        y = height - margin
+                    c.drawImage(img, margin, y - img_h, width=img_w, height=img_h, preserveAspectRatio=True, mask='auto')
+                    y -= (img_h + 0.2 * inch)
+                except:
+                    pass
+
+            draw_spacer(0.35)
+
+        # ---------- Página 2: Solucionario ----------
+        c.showPage()
+        y = height - margin
+        draw_title("Solucionario")
+
+        for idx, ex in enumerate(exercises, start=1):
+            a, b, c0 = ex["coeffs"]["a"], ex["coeffs"]["b"], ex["coeffs"]["c"]
+            fx = readable_function_from_coeffs(a, b, c0)
+
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(margin, y, f"{idx}. {fx}")
+            y -= 0.22 * inch
+
+            parts = ex["solution_parts"]
+
+            # mismo orden que habilidades seleccionadas
+            for key, lab in order_labels:
+                if key not in skills:
+                    continue
+
+                val = parts.get(key)
+                if val is None:
+                    continue
+
+                # render simple
+                txt = f"{lab}: {latexish_to_plain(str(val))}"
+                draw_paragraph(txt, font="Helvetica", size=11, leading=14)
+
+            # inversa (placeholder)
+            if "inverse" in skills:
+                draw_paragraph("Función inversa: (pendiente de implementación)", font="Helvetica", size=11, leading=14)
+
+            draw_spacer(0.3)
+
+        c.save()
+        pdf = buf.getvalue()
+        buf.close()
+
+        resp = Response(pdf, mimetype="application/pdf")
+        resp.headers["Content-Disposition"] = 'attachment; filename="guia-funcion-cuadratica.pdf"'
+        return resp
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/generate-guide", methods=["POST"])
