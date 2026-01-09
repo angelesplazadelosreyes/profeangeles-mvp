@@ -14,7 +14,7 @@ def create_app():
     CORS(app)
 
     # Registra el playground como blueprint adicional (prefijo definido en playground.py)
-    from playground import playground_bp  # mismo directorio
+    from .playground import playground_bp  # mismo directorio
     app.register_blueprint(playground_bp)
 
     return app
