@@ -62,6 +62,18 @@
       return;
     }
 
+    // ✅ NUEVO: función para limpiar formulario + estado
+    function resetForm() {
+      checkboxes.forEach(cb => { cb.checked = false; });
+
+      currentFunctionText = null;
+      loading = false;
+
+      textEl.textContent = "";
+      preview.style.display = "none";
+      button.disabled = true;
+    }
+
     async function updateStatement() {
       const selected = Array.from(checkboxes)
         .filter((cb) => cb.checked)
@@ -114,6 +126,23 @@
       updateStatement();
     }));
 
+    function resetForm() {
+      // desmarcar checks
+      checkboxes.forEach(cb => (cb.checked = false));
+
+      // resetear función para que la próxima guía genere otra nueva
+      currentFunctionText = null;
+      loading = false;
+
+      // ocultar enunciado
+      preview.style.display = "none";
+      textEl.textContent = "";
+
+      // volver a deshabilitar el botón
+      button.disabled = true;
+    }
+
+
     button.addEventListener("click", async () => {
       const selected = Array.from(checkboxes)
         .filter(cb => cb.checked)
@@ -144,6 +173,8 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+        resetForm();
+
 
       } catch (err) {
         console.error(err);
@@ -154,9 +185,9 @@
       }
     });
 
-
     updateStatement();
   }
+
 
   document.readyState === "loading"
     ? document.addEventListener("DOMContentLoaded", ready)

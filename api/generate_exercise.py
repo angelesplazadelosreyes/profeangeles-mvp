@@ -78,14 +78,56 @@ def latexish_to_plain(s: str) -> str:
         return ""
     x = s
     x = x.replace("\\text{", "").replace("}", "")
-    x = x.replace("\\Delta", "Δ")
-    x = x.replace("\\mathbb{R}", "ℝ")
-    x = x.replace("\\infty", "∞")
+    x = x.replace("\\Delta", "D")
+    x = x.replace("\\mathbb{R}", "R")
+    x = x.replace("\\infty", "infinito")
     x = x.replace("\\left", "").replace("\\right", "")
     x = x.replace("\\;", " ")
     x = x.replace("\\,", " ")
     x = x.replace("~", " ")
     return x.strip()
+
+def fmt_num_plain(x, nd=2):
+    """Número corto y bonito para texto en PDF."""
+    try:
+        v = float(x)
+    except Exception:
+        return str(x)
+
+    if abs(v - round(v)) < 1e-9:
+        return str(int(round(v)))
+
+    return f"{v:.{nd}f}".rstrip("0").rstrip(".")
+
+def quadratic_inverse_right_branch(a, b, c):
+    """
+    Inversa de una cuadrática usando la rama derecha (x >= h),
+    devuelta en texto simple y "bonito" para PDF.
+
+    f(x)=a(x-h)^2 + k  =>  f^{-1}(x)= h + sqrt((x-k)/a)   si a>0
+                         h + sqrt((k-x)/|a|)             si a<0
+    """
+    a = float(a); b = float(b); c = float(c)
+
+    h = -b / (2 * a)
+    k = a * (h**2) + b * h + c
+
+    hs = fmt_num_plain(h)
+    ks = fmt_num_plain(k)
+
+    if a > 0:
+        expr = f"{hs} + sqrt((x - {ks}) / {fmt_num_plain(a)})"
+        inv_domain = f"x >= {ks}"  # dominio de f^{-1}
+    else:
+        expr = f"{hs} + sqrt(({ks} - x) / {fmt_num_plain(abs(a))})"
+        inv_domain = f"x <= {ks}"
+
+    return {
+        "expression": expr,
+        "h": hs,                 # restricción de rama derecha: x >= h
+        "inverse_domain": inv_domain
+    }
+
 
 
 # --------------------- CORS ---------------------
@@ -185,27 +227,23 @@ def latex_inverse_quadratic(a, h, k, branch="right"):
         rf"\;,\; \text{{dominio de }} f^{{-1}}: {inv_domain}"
     )
 
+
 def quadratic_inverse_right_branch(a, b, c):
     """
-    Retorna:
-    - expresión textual de la inversa
-    - restricción del dominio (x ≥ h)
+    Devuelve la inversa de una función cuadrática
+    usando la rama derecha (x ≥ h)
     """
 
+    # vértice
     h = -b / (2 * a)
 
-    # f^{-1}(x) = (-b + sqrt(b^2 - 4a(c - x))) / (2a)
-    expr = (
-        f"(-{fmt_num(b)} + sqrt({fmt_num(b*b)} - 4·{fmt_num(a)}·({fmt_num(c)} - x)))"
-        f" / (2·{fmt_num(a)})"
+    expression = (
+        f"(-{b} + √({b}² − 4·{a}·({c} − x))) / (2·{a})"
     )
 
-    restriction = f"x ≥ {fmt_num(h)}"
-
     return {
-        "expression": expr,
-        "restriction": restriction,
-        "branch": "right",
+        "expression": expression,
+        "restriction": f"x ≥ {round(h, 2)}",
     }
 
 
@@ -537,18 +575,19 @@ def generate_guide_pdf():
                 inv = quadratic_inverse_right_branch(a, b, c0)
 
                 draw_paragraph(
-                    f"Función inversa: f⁻¹(x) = {inv['expression']}",
+                    f"Funcion inversa: f^(-1)(x) = {inv['expression']}",
                     font="Helvetica",
                     size=11,
                     leading=14,
                 )
 
                 draw_paragraph(
-                    f"(se considera la rama derecha de la parábola, con restricción {inv['restriction']})",
+                    f"(se considera la rama derecha; restriccion: x >= {inv['h']})",
                     font="Helvetica-Oblique",
                     size=10,
                     leading=12,
                 )
+
 
             # gráfico en solucionario si corresponde
             if "graph" in skills and ex.get("plot_b64"):
