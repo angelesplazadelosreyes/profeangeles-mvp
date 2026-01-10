@@ -3,8 +3,10 @@ import random
 import time
 import base64
 import io
+import math
 from fractions import Fraction
 from reportlab.lib.utils import ImageReader
+from utils.format import fmt_num
 from flask import Flask, Response, request, jsonify
 from .exercises.quadratic.traits import quadratic_traits
 from .exercises.quadratic.plot import plot_quadratic_png
@@ -126,11 +128,13 @@ def rand_coeff():
         b = random.randint(1, 5)
     return a, b, c
 
+
 def latex_range(a, k):
     # a>0 => [k, +inf), a<0 => (-inf, k]
     if a > 0:
         return rf"[{k}, +\infty)"
     return rf"(-\infty, {k}]"
+
 
 def roots_to_latex(roots):
     if len(roots) == 2:
@@ -138,6 +142,72 @@ def roots_to_latex(roots):
     if len(roots) == 1:
         return rf"x_0={roots[0]}"
     return r"\text{No tiene raíces reales.}"
+ 
+
+def latex_inverse_quadratic(a, h, k, branch="right"):
+    """
+    Devuelve un string 'latex-ish' para:
+    - f^{-1}(x)
+    - restricción del dominio original (para que sea función)
+    - dominio de la inversa (que es el recorrido de f)
+
+    branch:
+      - "right"  => restringe dominio: x >= h  (rama derecha)
+      - "left"   => restringe dominio: x <= h  (rama izquierda)
+    """
+    # 1) Restricción del dominio de f (para invertibilidad)
+    if branch == "left":
+        dom_restr = rf"x \le {h}"
+        sign = "-"  # rama izquierda -> h - sqrt(...)
+    else:
+        dom_restr = rf"x \ge {h}"
+        sign = "+"  # rama derecha -> h + sqrt(...)
+
+    # 2) Dominio de f^{-1} (igual al recorrido de f)
+    #    a>0 => range [k, +inf)  => domain inverse x >= k
+    #    a<0 => range (-inf, k]  => domain inverse x <= k
+    if a > 0:
+        inv_domain = rf"x \ge {k}"
+        inside = rf"\frac{{x - {k}}}{{{a}}}"  # (x-k)/a
+    else:
+        inv_domain = rf"x \le {k}"
+        inside = rf"\frac{{{k} - x}}{{{abs(a)}}}"  # (k-x)/|a|
+
+    # 3) Expresión de la inversa
+    # f^{-1}(x) = h ± sqrt((x-k)/a)  (si a>0)
+    # f^{-1}(x) = h ± sqrt((k-x)/|a|) (si a<0)
+    inv_expr = rf"f^{{-1}}(x) = {h} {sign} \sqrt{{{inside}}}"
+
+    # 4) Texto final
+    return (
+        rf"{inv_expr}"
+        rf"\;,\; \text{{restricción: }} {dom_restr}"
+        rf"\;,\; \text{{dominio de }} f^{{-1}}: {inv_domain}"
+    )
+
+def quadratic_inverse_right_branch(a, b, c):
+    """
+    Retorna:
+    - expresión textual de la inversa
+    - restricción del dominio (x ≥ h)
+    """
+
+    h = -b / (2 * a)
+
+    # f^{-1}(x) = (-b + sqrt(b^2 - 4a(c - x))) / (2a)
+    expr = (
+        f"(-{fmt_num(b)} + sqrt({fmt_num(b*b)} - 4·{fmt_num(a)}·({fmt_num(c)} - x)))"
+        f" / (2·{fmt_num(a)})"
+    )
+
+    restriction = f"x ≥ {fmt_num(h)}"
+
+    return {
+        "expression": expr,
+        "restriction": restriction,
+        "branch": "right",
+    }
+
 
 def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
     # concavidad
@@ -175,7 +245,7 @@ def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
         "canonical_form": canon,
         "factorized_form": fact_line,
         # graph se maneja aparte (png)
-        "inverse": None,  # placeholder (cuando lo implementemos)
+        "inverse": latex_inverse_quadratic(float(a), float(h), float(k), branch="right"),
     }
     return parts
 
@@ -463,9 +533,22 @@ def generate_guide_pdf():
                 txt = f"{lab}: {latexish_to_plain(str(val))}"
                 draw_paragraph(txt, font="Helvetica", size=11, leading=14)
 
-            # inversa (placeholder)
             if "inverse" in skills:
-                draw_paragraph("Función inversa: (pendiente de implementación)", font="Helvetica", size=11, leading=14)
+                inv = quadratic_inverse_right_branch(a, b, c0)
+
+                draw_paragraph(
+                    f"Función inversa: f⁻¹(x) = {inv['expression']}",
+                    font="Helvetica",
+                    size=11,
+                    leading=14,
+                )
+
+                draw_paragraph(
+                    f"(se considera la rama derecha de la parábola, con restricción {inv['restriction']})",
+                    font="Helvetica-Oblique",
+                    size=10,
+                    leading=12,
+                )
 
             # gráfico en solucionario si corresponde
             if "graph" in skills and ex.get("plot_b64"):
@@ -473,8 +556,8 @@ def generate_guide_pdf():
                     img_bytes = base64.b64decode(ex["plot_b64"])
                     img_reader = ImageReader(io.BytesIO(img_bytes))
 
-                    img_w = 4.8 * inch
-                    img_h = 3.0 * inch
+                    img_w = 3.2 * inch
+                    img_h = 2.0 * inch
 
                     if y - img_h < margin:
                         c.showPage()
