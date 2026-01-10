@@ -4,9 +4,8 @@ import time
 import base64
 import io
 from fractions import Fraction
-
+from reportlab.lib.utils import ImageReader
 from flask import Flask, Response, request, jsonify
-
 from .exercises.quadratic.traits import quadratic_traits
 from .exercises.quadratic.plot import plot_quadratic_png
 from .exercises.quadratic.generators import rand_coeff_from_roots, rand_coeff_canonical
@@ -413,15 +412,11 @@ def generate_guide_pdf():
             a, b, c0 = ex["coeffs"]["a"], ex["coeffs"]["b"], ex["coeffs"]["c"]
             fx = readable_function_from_coeffs(a, b, c0)
 
-            # encabezado ejercicio
-            c.setFont("Helvetica-Bold", 12)
-            c.drawString(margin, y, f"{idx}. {fx}")
-            y -= 0.22 * inch
-
-            # consigna
-            base = f"Dada la siguiente función cuadrática {fx}, determina:"
-            draw_paragraph(base, font="Helvetica", size=11, leading=14)
+            # enunciado (con número + función) en una sola línea/bloque
+            base = f"{idx}. Dada la siguiente función cuadrática {fx}, determina:"
+            draw_paragraph(base, font="Helvetica-Bold", size=12, leading=15)
             draw_spacer(0.05)
+
 
             # lista a), b), ...
             labels = [lab for key, lab in order_labels if key in skills]
@@ -441,16 +436,24 @@ def generate_guide_pdf():
             if "graph" in skills and ex["plot_b64"]:
                 try:
                     img_bytes = base64.b64decode(ex["plot_b64"])
-                    img = io.BytesIO(img_bytes)
+                    img_reader = ImageReader(io.BytesIO(img_bytes))
                     # ancho fijo, alto proporcional aproximado
                     img_w = 5.8 * inch
                     img_h = 3.8 * inch
                     if y - img_h < margin:
                         c.showPage()
                         y = height - margin
-                    c.drawImage(img, margin, y - img_h, width=img_w, height=img_h, preserveAspectRatio=True, mask='auto')
+                    c.drawImage(
+                        img_reader,
+                        margin,
+                        y - img_h,
+                        width=img_w,
+                        height=img_h,
+                        preserveAspectRatio=True,
+                        mask='auto'
+                    )
                     y -= (img_h + 0.2 * inch)
-                except:
+                except Exception:
                     pass
 
             draw_spacer(0.35)
@@ -486,6 +489,33 @@ def generate_guide_pdf():
             # inversa (placeholder)
             if "inverse" in skills:
                 draw_paragraph("Función inversa: (pendiente de implementación)", font="Helvetica", size=11, leading=14)
+
+            # gráfico en solucionario si corresponde
+            if "graph" in skills and ex.get("plot_b64"):
+                try:
+                    img_bytes = base64.b64decode(ex["plot_b64"])
+                    img_reader = ImageReader(io.BytesIO(img_bytes))
+
+                    img_w = 5.8 * inch
+                    img_h = 3.8 * inch
+
+                    if y - img_h < margin:
+                        c.showPage()
+                        y = height - margin
+
+                    c.drawImage(
+                        img_reader,
+                        margin,
+                        y - img_h,
+                        width=img_w,
+                        height=img_h,
+                        preserveAspectRatio=True,
+                        mask='auto'
+                    )
+                    y -= (img_h + 0.2 * inch)
+                except Exception:
+                    pass
+
 
             draw_spacer(0.3)
 
