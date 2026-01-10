@@ -228,25 +228,6 @@ def latex_inverse_quadratic(a, h, k, branch="right"):
     )
 
 
-def quadratic_inverse_right_branch(a, b, c):
-    """
-    Devuelve la inversa de una función cuadrática
-    usando la rama derecha (x ≥ h)
-    """
-
-    # vértice
-    h = -b / (2 * a)
-
-    expression = (
-        f"(-{b} + √({b}² − 4·{a}·({c} − x))) / (2·{a})"
-    )
-
-    return {
-        "expression": expression,
-        "restriction": f"x ≥ {round(h, 2)}",
-    }
-
-
 def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
     # concavidad
     concavity = r"\text{Cóncava hacia arriba}" if a > 0 else r"\text{Cóncava hacia abajo}"
