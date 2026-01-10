@@ -432,30 +432,7 @@ def generate_guide_pdf():
                     c.showPage()
                     y = height - margin
 
-            # gráfico si corresponde
-            if "graph" in skills and ex["plot_b64"]:
-                try:
-                    img_bytes = base64.b64decode(ex["plot_b64"])
-                    img_reader = ImageReader(io.BytesIO(img_bytes))
-                    # ancho fijo, alto proporcional aproximado
-                    img_w = 5.8 * inch
-                    img_h = 3.8 * inch
-                    if y - img_h < margin:
-                        c.showPage()
-                        y = height - margin
-                    c.drawImage(
-                        img_reader,
-                        margin,
-                        y - img_h,
-                        width=img_w,
-                        height=img_h,
-                        preserveAspectRatio=True,
-                        mask='auto'
-                    )
-                    y -= (img_h + 0.2 * inch)
-                except Exception:
-                    pass
-
+        
             draw_spacer(0.35)
 
         # ---------- Página 2: Solucionario ----------
@@ -496,8 +473,8 @@ def generate_guide_pdf():
                     img_bytes = base64.b64decode(ex["plot_b64"])
                     img_reader = ImageReader(io.BytesIO(img_bytes))
 
-                    img_w = 5.8 * inch
-                    img_h = 3.8 * inch
+                    img_w = 4.8 * inch
+                    img_h = 3.0 * inch
 
                     if y - img_h < margin:
                         c.showPage()
