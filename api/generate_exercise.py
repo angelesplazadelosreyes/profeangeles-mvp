@@ -6,7 +6,7 @@ import io
 import math
 from fractions import Fraction
 from reportlab.lib.utils import ImageReader
-from utils.format import fmt_num
+from api.utils.format import fmt_num
 from flask import Flask, Response, request, jsonify
 from .exercises.quadratic.traits import quadratic_traits
 from .exercises.quadratic.plot import plot_quadratic_png
