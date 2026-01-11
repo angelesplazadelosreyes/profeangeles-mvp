@@ -556,18 +556,26 @@ def generate_guide_pdf():
                 inv = quadratic_inverse_right_branch(a, b, c0)
 
                 draw_paragraph(
-                    f"Funcion inversa: f^(-1)(x) = {inv['expression']}",
+                    "Función inversa:",
+                    font="Helvetica-Bold",
+                    size=11,
+                    leading=14,
+                )
+
+                draw_paragraph(
+                    f"f⁻¹(x) = {inv['expression']}",
                     font="Helvetica",
                     size=11,
                     leading=14,
                 )
 
                 draw_paragraph(
-                    f"(se considera la rama derecha; restriccion: x >= {inv['h']})",
+                    f"(se considera la rama derecha de la parábola, con restricción x ≥ {inv['h']})",
                     font="Helvetica-Oblique",
                     size=10,
                     leading=12,
                 )
+
 
 
             # gráfico en solucionario si corresponde
