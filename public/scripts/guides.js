@@ -91,7 +91,7 @@
       if (!currentFunctionText && !loading) {
         loading = true;
         preview.style.display = "block";
-        textEl.textContent = "Generando función…";
+        textEl.textContent = "Generando función… paciencia, puede tardar un timepo";
 
         try {
           const coeffs = await fetchCoeffs();
