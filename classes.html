@@ -5,106 +5,375 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Profe Ángeles · Clases</title>
 
-  <!-- Favicon -->
   <link rel="icon" href="/favicon.ico"/>
 
-  <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="/styles/styles.css"/>
 
-  <!-- OG -->
   <meta property="og:title" content="ProfeÁngeles - Clases"/>
   <meta property="og:description" content="Clases personalizadas de matemática. Agenda por WhatsApp."/>
   <meta property="og:image" content="/og-image.png"/>
   <meta property="og:url" content="https://profeangeles.cl/classes"/>
   <meta property="og:type" content="website"/>
 
-  <!-- Parciales -->
   <script type="module" src="/scripts/partials.js"></script>
+
+
 </head>
-
-
 
 <body>
 <div data-include="header"></div>
 
-
 <main class="container">
-  <!-- ===== CLASES (ProfeÁngeles) ===== -->
-  <section id="classes" aria-labelledby="classes-title" style="margin:2rem 0">
-    <h2 id="classes-title" style="color:#1e3a8a">Clases por Zoom — 45 minutos</h2>
+  <section id="classes" aria-labelledby="classes-title" style="margin: 1.5rem 0 2rem">
 
-    <div
-      style="
-        background: linear-gradient(90deg, #fff7d6, #ffe7b3);
-        border: 1px solid #f59e0b;
-        border-radius: 12px;
-        padding: .85rem 1rem;
-        margin: 1rem 0;
-        display: flex;
-        align-items: center;
-        gap: .6rem;
-        color: #1e3a8a;
-      "
-    >
-      <img src="/images/sol.png" alt="Promoción Verano" style="height:32px;width:auto;" />
+    <!-- ══════════════ HERO ══════════════ -->
+    <div class="classes-hero">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-badges">
+            <span class="hero-badge">📹 Google Meet</span>
+            <span class="hero-badge blue">⏱ 45 min · hora pedagógica</span>
+            <span class="hero-badge">📍 100% online</span>
+          </div>
+          <h1 id="classes-title">Aprende <span>a tu ritmo</span>,<br>con quien te explica de verdad.</h1>
+          <p class="sub">Clases personalizadas de Matemáticas, Ciencias y Python. Material incluido, dudas por WhatsApp y seguimiento real de tu avance.</p>
+          <div class="hero-ctas">
+            <a class="btn-wa"
+               href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20mi%20clase%20diagn%C3%B3stica%20gratuita"
+               target="_blank" rel="noopener noreferrer">
+              <!-- WhatsApp icon -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Quiero mi clase gratis
+            </a>
+            <a class="btn-outline-teal" href="#precios">Ver precios ↓</a>
+          </div>
+        </div>
 
-      <div>
-        <strong>Promoción Verano:</strong>
-        <span>
-          Enero y Febrero
-          <strong style="color:#ea580c;">25% de descuento</strong>
-        </span>
+        <div class="hero-stats" aria-label="Datos destacados">
+          <div class="stat-pill">
+            <strong>45</strong>
+            <span>min por clase</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-pill">
+            <strong>3</strong>
+            <span>áreas de estudio</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-pill">
+            <strong>PPT</strong>
+            <span>incluido</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-pill">
+            <strong>WA</strong>
+            <span>consultas directas</span>
+          </div>
+        </div>
       </div>
     </div>
 
-
-    <p>Refuerzo en <strong>Matemáticas</strong>, <strong>Ciencias</strong> y <strong>Fundamentos de Python</strong>.</p>
-    <p>Clases individuales y grupales</p>
-    <!-- Tarjetas -->
-    <div class="cards" style="display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin:1rem 0;">
-      <!-- Matemáticas / Ciencias -->
-      <article class="card" style="background:#fffdf4;border:1px solid #f59e0b;border-radius:14px;padding:1rem;box-shadow:0 8px 24px rgba(0,0,0,.06)">
-        <h3 style="margin-top:0">Matemáticas / Ciencias</h3>
-        <ul style="margin:0 0 1rem 1.1rem">
-          <li>Escolar: <strong>$14.000 -> </strong><strong style="color:#ea580c;">$10.500 (Promoción verano)</strong> </li>
-          <li>PAES: <strong>$16.000 -> </strong><strong style="color:#ea580c;">$12.000 (Promoción verano)</strong> </li>
-          <li>Universitario: <strong>$20.000 -> </strong><strong style="color:#ea580c;">$15.000 (Promoción verano)</strong> </li>
-        </ul>
-        <a href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20la%20clase%20diagn%C3%B3stica%20de%20Matem%C3%A1ticas%2FCiencias."
-          target="_blank" rel="noopener noreferrer"
-          class="btn" style="display:inline-block;padding:.6rem 1rem;border-radius:10px;border:1px solid #ea580c;text-decoration:none;background: linear-gradient(90deg, #fff7d6, #ffe7b3);color: #1e3a8a;">
-          Agendar
-        </a>
-      </article>
-
-      <!-- Python -->
-      <article class="card" style="background:#fffdf4;border:1px solid #f59e0b;border-radius:14px;padding:1rem;box-shadow:0 8px 24px rgba(0,0,0,.06)">
-        <h3 style="margin-top:0">Fundamentos de Programación con Python</h3>
-        <ul style="margin:0 0 1rem 1.1rem">
-          <li>Nivel 0–1: <strong>$18.000 -> </strong><strong style="color:#ea580c;">$13.500 (Promoción verano)</strong> </li>
-          <li>Nivel 2: <strong>$20.000 -> </strong><strong style="color:#ea580c;">$15.000 (Promoción verano)</strong> </li>
-          <li>Nivel 3: <strong>$22.000 -> </strong><strong style="color:#ea580c;">$16.500 (Promoción verano)</strong> </li>
-        </ul>
-        <a href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20la%20clase%20diagn%C3%B3stica%20de%20Matem%C3%A1ticas%2FCiencias."
-          target="_blank" rel="noopener noreferrer"
-          class="btn" style="display:inline-block;padding:.6rem 1rem;border-radius:10px;border:1px solid #ea580c;text-decoration:none;background: linear-gradient(90deg, #fff7d6, #ffe7b3);color: #1e3a8a;">
-          Agendar
-        </a>
-      </article>
+    <!-- ══════════════ DIAGNÓSTICO GRATUITO ══════════════ -->
+    <div class="diag-banner" role="complementary" aria-label="Clase diagnóstica gratuita">
+      <div class="diag-banner-text">
+        <h3>¿No sabes por dónde empezar?</h3>
+        <p>Agenda una sesión diagnóstica gratuita de 20 minutos. Evaluamos tu nivel, identificamos tus dificultades y definimos juntos el plan ideal.</p>
+      </div>
+      <a class="btn-diag"
+         href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20mi%20clase%20diagn%C3%B3stica%20gratuita"
+         target="_blank" rel="noopener noreferrer">
+        Agendar gratis →
+      </a>
     </div>
+
+    <!-- ══════════════ QUÉ INCLUYE CADA CLASE ══════════════ -->
+    <div class="section-label">Cada clase incluye</div>
+    <div class="includes-grid">
+      <div class="include-item">
+        <div class="include-icon teal">📊</div>
+        <div class="include-text">
+          <strong>Presentación PPT</strong>
+          <span>Te la envío por WhatsApp al terminar para que repases cuando quieras.</span>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon blue">🎥</div>
+        <div class="include-text">
+          <strong>Grabación disponible</strong>
+          <span>Pídela con anticipación y te la envío. Ideal si necesitas repasar una explicación.</span>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon yellow">💬</div>
+        <div class="include-text">
+          <strong>Dudas por WhatsApp</strong>
+          <span>Consultas puntuales entre clases para que no te quedes atascado.</span>
+        </div>
+      </div>
+      <div class="include-item">
+        <div class="include-icon green">📅</div>
+        <div class="include-text">
+          <strong>Agendamiento flexible</strong>
+          <span>Coordina por WhatsApp y recibe el link de Google Meet al instante.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PRECIOS ══════════════ -->
+    <div id="precios" style="scroll-margin-top:80px">
+      <div class="section-label">Clases individuales</div>
+      <div class="section-title">Elige tu área</div>
+      <p class="section-sub">Pago por clase, sin compromisos. Transférencia bancaria al confirmar.</p>
+
+      <div class="price-grid">
+        <!-- Matemáticas / Ciencias -->
+        <article class="price-card" aria-label="Precios Matemáticas y Ciencias">
+          <div class="price-card-header">
+            <div class="card-icon-wrap teal">📐</div>
+            <div>
+              <h3>Matemáticas / Ciencias</h3>
+              <p>Escolar, PAES y universitario</p>
+            </div>
+          </div>
+          <div class="price-card-body">
+            <div class="price-row">
+              <div class="price-level">
+                Escolar
+                <span>Básica y media</span>
+              </div>
+              <div class="price-val">$14.000 <small>/ clase</small></div>
+            </div>
+            <div class="price-row">
+              <div class="price-level">
+                PAES
+                <span>Preparación prueba de admisión</span>
+              </div>
+              <div class="price-val">$16.000 <small>/ clase</small></div>
+            </div>
+            <div class="price-row">
+              <div class="price-level">
+                Universitario
+                <span>Cálculo, Estadística, Física…</span>
+              </div>
+              <div class="price-val">$20.000 <small>/ clase</small></div>
+            </div>
+          </div>
+          <div class="price-card-footer">
+            <a class="btn-card teal"
+               href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20una%20clase%20de%20Matem%C3%A1ticas%20o%20Ciencias."
+               target="_blank" rel="noopener noreferrer">
+              Agendar por WhatsApp →
+            </a>
+          </div>
+        </article>
+
+        <!-- Python -->
+        <article class="price-card" aria-label="Precios Python">
+          <div class="price-card-header">
+            <div class="card-icon-wrap blue">🐍</div>
+            <div>
+              <h3>Fundamentos de Python</h3>
+              <p>Desde cero hasta proyectos reales</p>
+            </div>
+          </div>
+          <div class="price-card-body">
+            <div class="price-row">
+              <div class="price-level">
+                Nivel 0–1
+                <span>Sin experiencia previa</span>
+              </div>
+              <div class="price-val">$18.000 <small>/ clase</small></div>
+            </div>
+            <div class="price-row">
+              <div class="price-level">
+                Nivel 2
+                <span>Funciones, listas, lógica</span>
+              </div>
+              <div class="price-val">$20.000 <small>/ clase</small></div>
+            </div>
+            <div class="price-row">
+              <div class="price-level">
+                Nivel 3
+                <span>POO, archivos, proyectos</span>
+              </div>
+              <div class="price-val">$22.000 <small>/ clase</small></div>
+            </div>
+          </div>
+          <div class="price-card-footer">
+            <a class="btn-card blue"
+               href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20una%20clase%20de%20Python."
+               target="_blank" rel="noopener noreferrer">
+              Agendar por WhatsApp →
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ══════════════ PACKS MENSUALES ══════════════ -->
+    <div class="packs-wrapper">
+      <div class="section-label">Mayor ahorro + más beneficios</div>
+      <div class="section-title">Packs mensuales</div>
+      <p class="section-sub">Compromiso mensual con precio fijo y beneficios exclusivos que las clases sueltas no incluyen.</p>
+
+      <div class="packs-grid">
+        <!-- Básico -->
+        <div class="pack-card">
+          <div class="pack-name">Pack Básico</div>
+          <div class="pack-highlight">4 clases / mes</div>
+          <ul class="pack-features">
+            <li>Horario fijo semanal</li>
+            <li>PPT de cada clase</li>
+            <li>Grabación disponible</li>
+            <li class="exclusive">Consultas WhatsApp entre clases</li>
+          </ul>
+          <p class="pack-note">* Precio según nivel y materia. Consulta por WhatsApp.</p>
+        </div>
+
+        <!-- Refuerzo — destacado -->
+        <div class="pack-card featured">
+          <div class="pack-badge">⭐ Más elegido</div>
+          <div class="pack-name">Pack Refuerzo</div>
+          <div class="pack-highlight">8 clases / mes · ~7% descuento</div>
+          <ul class="pack-features">
+            <li>2 clases por semana</li>
+            <li>PPT de cada clase</li>
+            <li>Grabación disponible</li>
+            <li class="exclusive">Consultas WhatsApp entre clases</li>
+            <li class="exclusive">Prioridad de horario</li>
+            <li class="exclusive">Seguimiento mensual de avance</li>
+          </ul>
+          <p class="pack-note">* Precio según nivel y materia. Consulta por WhatsApp.</p>
+        </div>
+
+        <!-- Intensivo -->
+        <div class="pack-card">
+          <div class="pack-name">Pack Intensivo</div>
+          <div class="pack-highlight">12 clases / mes · ~13% descuento</div>
+          <ul class="pack-features">
+            <li>3 clases por semana</li>
+            <li>PPT de cada clase</li>
+            <li>Grabación disponible</li>
+            <li class="exclusive">Consultas WhatsApp entre clases</li>
+            <li class="exclusive">Prioridad máxima de agenda</li>
+            <li class="exclusive">Seguimiento mensual de avance</li>
+            <li class="exclusive">Guías de ejercicios <span class="coming-soon">Próximamente</span></li>
+          </ul>
+          <p class="pack-note">* Precio según nivel y materia. Consulta por WhatsApp.</p>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:1.25rem;">
+        <a class="btn-wa"
+           href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20consultar%20por%20los%20packs%20mensuales."
+           target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Consultar mi pack ideal
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════ TESTIMONIOS ══════════════ -->
+    <div class="section-label">Lo que dicen mis estudiantes</div>
+    <div class="section-title">Opiniones reales</div>
+    <p class="section-sub">Reemplaza estos ejemplos con capturas de WhatsApp o el nombre real de tus ex alumnos.</p>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">Reprobé cálculo dos semestres seguidos. Con la Profe Ángeles entendí de verdad los límites y derivadas. Saqué un 5,6 en el final.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background: var(--cl-teal);">M</div>
+          <div class="t-info">
+            <strong>Martina V.</strong>
+            <span>Ingeniería, Santiago</span>
+          </div>
+        </div>
+        <div class="t-source">Opinión verificada vía WhatsApp</div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">Quería aprender Python para cambiarme de área. Explica muy claro, paso a paso, y nunca te deja con dudas sin responder.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background: var(--cl-blue);">R</div>
+          <div class="t-info">
+            <strong>Rodrigo E.</strong>
+            <span>Reorientación profesional</span>
+          </div>
+        </div>
+        <div class="t-source">Opinión verificada vía WhatsApp</div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">Mi hijo subió más de 100 puntos en simulacros PAES en dos meses. Lo que más valoro es que ella se adapta al ritmo de cada estudiante.</p>
+        <div class="t-author">
+          <div class="t-avatar" style="background: #7C3AED;">C</div>
+          <div class="t-info">
+            <strong>Carolina M.</strong>
+            <span>Apoderada, Temuco</span>
+          </div>
+        </div>
+        <div class="t-source">Opinión verificada vía WhatsApp</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ FAQ ══════════════ -->
+    <div class="section-label">Preguntas frecuentes</div>
+    <div class="section-title">Dudas comunes</div>
+
+    <div class="faq-list">
+      <details>
+        <summary>¿Cuánto dura cada clase? <span class="faq-caret">+</span></summary>
+        <p>45 minutos, equivalente a una hora pedagógica estándar en Chile. Es el tiempo óptimo para mantener la concentración y avanzar de forma efectiva sin agotar al estudiante.</p>
+      </details>
+      <details>
+        <summary>¿Cómo se realizan las clases? <span class="faq-caret">+</span></summary>
+        <p>100% online por Google Meet. Solo necesitas conexión a internet y un dispositivo con pantalla. Al confirmar tu clase te envío el link directamente por WhatsApp.</p>
+      </details>
+      <details>
+        <summary>¿Qué incluye la clase diagnóstica gratuita? <span class="faq-caret">+</span></summary>
+        <p>Una sesión de 20 minutos donde evaluamos tu nivel actual, identificamos tus dificultades específicas y te recomiendo el plan más adecuado para tus objetivos. Sin costo ni compromiso.</p>
+      </details>
+      <details>
+        <summary>¿Me envían material después de la clase? <span class="faq-caret">+</span></summary>
+        <p>Sí. Al terminar cada clase te envío la presentación PPT que usamos por WhatsApp, para que puedas repasar cuando quieras. Si necesitas la grabación de la clase, avísame con anticipación y la grabo sin problema.</p>
+      </details>
+      <details>
+        <summary>¿Puedo hacer preguntas entre clases? <span class="faq-caret">+</span></summary>
+        <p>Sí. Las consultas puntuales por WhatsApp están disponibles para todos mis estudiantes. En los packs mensuales este beneficio es prioritario, con respuesta más rápida y seguimiento continuo.</p>
+      </details>
+      <details>
+        <summary>¿Cómo se paga? <span class="faq-caret">+</span></summary>
+        <p>Por transferencia bancaria al confirmar la clase. Los datos de cuenta se entregan por WhatsApp al momento de agendar.</p>
+      </details>
+      <details>
+        <summary>¿Puedo cambiar o cancelar el horario? <span class="faq-caret">+</span></summary>
+        <p>Sí, con al menos 24 horas de anticipación podemos reagendar sin costo. Los packs mensuales tienen horario fijo para garantizar continuidad, pero se pueden ajustar con aviso previo.</p>
+      </details>
+    </div>
+
+    <!-- ══════════════ CTA FINAL ══════════════ -->
+    <div class="final-cta">
+      <h3>¿Lista para empezar?</h3>
+      <p>Agenda tu clase diagnóstica gratuita hoy. Sin compromiso, en menos de 2 minutos por WhatsApp.</p>
+      <a class="btn-wa"
+         href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20mi%20clase%20diagn%C3%B3stica%20gratuita"
+         target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Escribir por WhatsApp
+      </a>
+    </div>
+
   </section>
-
-
 </main>
 
-
 <div data-include="footer"></div>
-
 <script type="module" src="/scripts/partials.js"></script>
 
 </body>
