@@ -1248,3 +1248,19 @@ button:not(:disabled){
   transition: background .15s, color .15s;
 }
 .tech-card .btn-card-tech:hover { background: #1d9e75; color: #fff; }
+
+/* ── Nota presencial ── */
+.presencial-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  background: #f0faf7;
+  border: 1px solid #9fe1cb;
+  border-radius: 10px;
+  padding: .85rem 1.1rem;
+  margin-top: 1.25rem;
+  font-size: .92rem;
+  color: #0f6e56;
+}
+.presencial-note .pn-icon { font-size: 1.25rem; line-height: 1; }
+.presencial-note strong { display: block; margin-bottom: .2rem; color: #085041; }
