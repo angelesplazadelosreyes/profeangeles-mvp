@@ -27,76 +27,6 @@
 
   <script type="module" src="/scripts/partials.js"></script>
 
-  <style>
-    /* ── Nota presencial ── */
-    .presencial-note {
-      display: flex;
-      align-items: flex-start;
-      gap: .75rem;
-      background: #f0faf7;
-      border: 1px solid #9fe1cb;
-      border-radius: 10px;
-      padding: .85rem 1.1rem;
-      margin-top: 1.25rem;
-      font-size: .92rem;
-      color: #0f6e56;
-    }
-    .presencial-note .pn-icon { font-size: 1.25rem; line-height: 1; }
-    .presencial-note strong { display: block; margin-bottom: .2rem; color: #085041; }
-
-    /* ── Sección servicios tech ── */
-    .tech-section { margin: 3rem 0 2rem; }
-    .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-      margin-top: 1.25rem;
-    }
-    .tech-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 1.4rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: .6rem;
-      transition: box-shadow .2s;
-    }
-    .tech-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.07); }
-    .tech-card-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-      margin-bottom: .25rem;
-    }
-    .tech-card-icon.green  { background: #e1f5ee; }
-    .tech-card-icon.purple { background: #ede9fe; }
-    .tech-card-icon.orange { background: #fff3e0; }
-    .tech-card h3 { font-size: 1rem; font-weight: 600; margin: 0; color: #0f172a; }
-    .tech-card p  { font-size: .9rem; color: #475569; margin: 0; line-height: 1.5; }
-    .tech-price {
-      font-size: .9rem;
-      color: #0f6e56;
-      font-weight: 600;
-      margin-top: auto;
-      padding-top: .5rem;
-    }
-    .tech-card .btn-card-tech {
-      display: inline-block;
-      margin-top: .6rem;
-      padding: .5rem 1rem;
-      border-radius: 8px;
-      border: 1.5px solid #1d9e75;
-      color: #0f6e56;
-      font-size: .88rem;
-      font-weight: 600;
-      text-decoration: none;
-      text-align: center;
-      transition: background .15s, color .15s;
-    }
-    .tech-card .btn-card-tech:hover { background: #1d9e75; color: #fff; }
-  </style>
 </head>
 
 <body>
@@ -292,13 +222,13 @@
         <div class="pn-icon">📍</div>
         <div>
           <strong>¿Prefieres clases presenciales en Curicó?</strong>
-          Los precios anteriores corresponden a clases online (Google Meet). Para clases a domicilio en Curicó se agrega un recargo por traslado de $3.500. Coordina directamente por WhatsApp.
+          Los precios anteriores corresponden a clases online (Google Meet). Para clases a domicilio en Curicó se agrega un recargo de $5.000. Coordina directamente por WhatsApp.
         </div>
       </div>
     </div>
 
     <!-- ══════════════ PACKS MENSUALES ══════════════ -->
-    <div class="packs-wrapper">
+    <div class="packs-wrapper" style="margin-top: 2rem;">
       <div class="section-label">Mayor ahorro + más beneficios</div>
       <div class="section-title">Packs mensuales</div>
       <p class="section-sub">Compromiso mensual con precio fijo y beneficios exclusivos que las clases sueltas no incluyen.</p>
@@ -360,52 +290,7 @@
       </div>
     </div>
 
-    <!-- ══════════════ SERVICIOS TECNOLÓGICOS ══════════════ -->
-    <div class="tech-section">
-      <div class="section-label">Más allá de las clases</div>
-      <div class="section-title">Servicios tecnológicos</div>
-      <p class="section-sub">Ingeniera en Informática con experiencia en desarrollo web, automatización y QA. Soluciones concretas para personas y negocios en Curicó.</p>
 
-      <div class="tech-grid">
-
-        <div class="tech-card">
-          <div class="tech-card-icon green">📊</div>
-          <h3>Automatización con Excel</h3>
-          <p>Planillas de inventario, control de ventas o cualquier proceso que hoy manejas en papel o de forma manual. Entrega en 48 hrs, incluye capacitación.</p>
-          <div class="tech-price">Desde $35.000</div>
-          <a class="btn-card-tech"
-             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20necesito%20una%20planilla%20Excel%20para%20mi%20negocio."
-             target="_blank" rel="noopener noreferrer">
-            Consultar →
-          </a>
-        </div>
-
-        <div class="tech-card">
-          <div class="tech-card-icon purple">🌐</div>
-          <h3>Desarrollo web</h3>
-          <p>Sitios web simples y profesionales para negocios, emprendimientos o profesionales independientes. Diseño responsivo, publicación incluida.</p>
-          <div class="tech-price">Desde $150.000</div>
-          <a class="btn-card-tech"
-             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20me%20interesa%20tener%20un%20sitio%20web."
-             target="_blank" rel="noopener noreferrer">
-            Consultar →
-          </a>
-        </div>
-
-        <div class="tech-card">
-          <div class="tech-card-icon orange">🔍</div>
-          <h3>Talleres para colegios</h3>
-          <p>Talleres extraprogramáticos de introducción a la programación o nivelación en matemáticas. Hasta 20 estudiantes, material incluido.</p>
-          <div class="tech-price">Desde $60.000 por sesión</div>
-          <a class="btn-card-tech"
-             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20me%20interesa%20un%20taller%20para%20mi%20colegio."
-             target="_blank" rel="noopener noreferrer">
-            Consultar →
-          </a>
-        </div>
-
-      </div>
-    </div>
 
     <!-- ══════════════ TESTIMONIOS ══════════════ -->
     <div class="section-label">Lo que dicen mis estudiantes</div>
