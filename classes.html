@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Profe Ángeles · Clases</title>
+  <title>Clases particulares en Curicó · Matemáticas, Ciencias y Python · Profe Ángeles</title>
 
   <link rel="icon" href="/favicon.ico"/>
 
@@ -13,15 +13,90 @@
 
   <link rel="stylesheet" href="/styles/styles.css"/>
 
-  <meta property="og:title" content="ProfeÁngeles - Clases"/>
-  <meta property="og:description" content="Clases personalizadas de matemática. Agenda por WhatsApp."/>
+  <!-- SEO -->
+  <meta name="description" content="Clases particulares de Matemáticas, Ciencias y Python en Curicó y online. Presencial a domicilio o por Google Meet. Ingeniera en Informática con 20 años de experiencia docente."/>
+  <meta name="keywords" content="clases particulares Curicó, matemáticas Curicó, clases PAES Curicó, Python Curicó, refuerzo escolar Curicó, clases online Chile"/>
+  <meta name="author" content="Profe Ángeles"/>
+
+  <meta property="og:title" content="Clases particulares en Curicó · Profe Ángeles"/>
+  <meta property="og:description" content="Matemáticas, Ciencias y Python. Presencial en Curicó u online. Primera sesión diagnóstica gratuita."/>
   <meta property="og:image" content="/og-image.png"/>
   <meta property="og:url" content="https://profeangeles.cl/classes"/>
   <meta property="og:type" content="website"/>
+  <meta property="og:locale" content="es_CL"/>
 
   <script type="module" src="/scripts/partials.js"></script>
 
+  <style>
+    /* ── Nota presencial ── */
+    .presencial-note {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      background: #f0faf7;
+      border: 1px solid #9fe1cb;
+      border-radius: 10px;
+      padding: .85rem 1.1rem;
+      margin-top: 1.25rem;
+      font-size: .92rem;
+      color: #0f6e56;
+    }
+    .presencial-note .pn-icon { font-size: 1.25rem; line-height: 1; }
+    .presencial-note strong { display: block; margin-bottom: .2rem; color: #085041; }
 
+    /* ── Sección servicios tech ── */
+    .tech-section { margin: 3rem 0 2rem; }
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    .tech-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      transition: box-shadow .2s;
+    }
+    .tech-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.07); }
+    .tech-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: .25rem;
+    }
+    .tech-card-icon.green  { background: #e1f5ee; }
+    .tech-card-icon.purple { background: #ede9fe; }
+    .tech-card-icon.orange { background: #fff3e0; }
+    .tech-card h3 { font-size: 1rem; font-weight: 600; margin: 0; color: #0f172a; }
+    .tech-card p  { font-size: .9rem; color: #475569; margin: 0; line-height: 1.5; }
+    .tech-price {
+      font-size: .9rem;
+      color: #0f6e56;
+      font-weight: 600;
+      margin-top: auto;
+      padding-top: .5rem;
+    }
+    .tech-card .btn-card-tech {
+      display: inline-block;
+      margin-top: .6rem;
+      padding: .5rem 1rem;
+      border-radius: 8px;
+      border: 1.5px solid #1d9e75;
+      color: #0f6e56;
+      font-size: .88rem;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: background .15s, color .15s;
+    }
+    .tech-card .btn-card-tech:hover { background: #1d9e75; color: #fff; }
+  </style>
 </head>
 
 <body>
@@ -37,15 +112,14 @@
           <div class="hero-badges">
             <span class="hero-badge">📹 Google Meet</span>
             <span class="hero-badge blue">⏱ 45 min · hora pedagógica</span>
-            <span class="hero-badge">📍 100% online</span>
+            <span class="hero-badge">📍 Online y presencial Curicó</span>
           </div>
           <h1 id="classes-title">Aprende <span>a tu ritmo</span>,<br>con quien te explica de verdad.</h1>
-          <p class="sub">Clases personalizadas de Matemáticas, Ciencias y Python. Material incluido, dudas por WhatsApp y seguimiento real de tu avance.</p>
+          <p class="sub">Clases personalizadas de Matemáticas, Ciencias y Python en Curicó y online. Material incluido, dudas por WhatsApp y seguimiento real de tu avance.</p>
           <div class="hero-ctas">
             <a class="btn-wa"
                href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20quiero%20agendar%20mi%20clase%20diagn%C3%B3stica%20gratuita"
                target="_blank" rel="noopener noreferrer">
-              <!-- WhatsApp icon -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
               Quiero mi clase gratis
             </a>
@@ -127,7 +201,7 @@
     <div id="precios" style="scroll-margin-top:80px">
       <div class="section-label">Clases individuales</div>
       <div class="section-title">Elige tu área</div>
-      <p class="section-sub">Pago por clase, sin compromisos. Transférencia bancaria al confirmar.</p>
+      <p class="section-sub">Pago por clase, sin compromisos. Transferencia bancaria al confirmar.</p>
 
       <div class="price-grid">
         <!-- Matemáticas / Ciencias -->
@@ -212,6 +286,15 @@
           </div>
         </article>
       </div>
+
+      <!-- Nota presencial -->
+      <div class="presencial-note">
+        <div class="pn-icon">📍</div>
+        <div>
+          <strong>¿Prefieres clases presenciales en Curicó?</strong>
+          Los precios anteriores corresponden a clases online (Google Meet). Para clases a domicilio en Curicó se agrega un recargo por traslado de $3.500. Coordina directamente por WhatsApp.
+        </div>
+      </div>
     </div>
 
     <!-- ══════════════ PACKS MENSUALES ══════════════ -->
@@ -277,6 +360,53 @@
       </div>
     </div>
 
+    <!-- ══════════════ SERVICIOS TECNOLÓGICOS ══════════════ -->
+    <div class="tech-section">
+      <div class="section-label">Más allá de las clases</div>
+      <div class="section-title">Servicios tecnológicos</div>
+      <p class="section-sub">Ingeniera en Informática con experiencia en desarrollo web, automatización y QA. Soluciones concretas para personas y negocios en Curicó.</p>
+
+      <div class="tech-grid">
+
+        <div class="tech-card">
+          <div class="tech-card-icon green">📊</div>
+          <h3>Automatización con Excel</h3>
+          <p>Planillas de inventario, control de ventas o cualquier proceso que hoy manejas en papel o de forma manual. Entrega en 48 hrs, incluye capacitación.</p>
+          <div class="tech-price">Desde $35.000</div>
+          <a class="btn-card-tech"
+             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20necesito%20una%20planilla%20Excel%20para%20mi%20negocio."
+             target="_blank" rel="noopener noreferrer">
+            Consultar →
+          </a>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-icon purple">🌐</div>
+          <h3>Desarrollo web</h3>
+          <p>Sitios web simples y profesionales para negocios, emprendimientos o profesionales independientes. Diseño responsivo, publicación incluida.</p>
+          <div class="tech-price">Desde $150.000</div>
+          <a class="btn-card-tech"
+             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20me%20interesa%20tener%20un%20sitio%20web."
+             target="_blank" rel="noopener noreferrer">
+            Consultar →
+          </a>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-icon orange">🔍</div>
+          <h3>Talleres para colegios</h3>
+          <p>Talleres extraprogramáticos de introducción a la programación o nivelación en matemáticas. Hasta 20 estudiantes, material incluido.</p>
+          <div class="tech-price">Desde $60.000 por sesión</div>
+          <a class="btn-card-tech"
+             href="https://wa.me/56971312255?text=Hola%20Profe%20%C3%81ngeles%2C%20me%20interesa%20un%20taller%20para%20mi%20colegio."
+             target="_blank" rel="noopener noreferrer">
+            Consultar →
+          </a>
+        </div>
+
+      </div>
+    </div>
+
     <!-- ══════════════ TESTIMONIOS ══════════════ -->
     <div class="section-label">Lo que dicen mis estudiantes</div>
     <div class="section-title">Opiniones reales</div>
@@ -333,8 +463,12 @@
         <p>45 minutos, equivalente a una hora pedagógica estándar en Chile. Es el tiempo óptimo para mantener la concentración y avanzar de forma efectiva sin agotar al estudiante.</p>
       </details>
       <details>
-        <summary>¿Cómo se realizan las clases? <span class="faq-caret">+</span></summary>
-        <p>100% online por Google Meet. Solo necesitas conexión a internet y un dispositivo con pantalla. Al confirmar tu clase te envío el link directamente por WhatsApp.</p>
+        <summary>¿Las clases son online o presenciales? <span class="faq-caret">+</span></summary>
+        <p>Las clases se realizan principalmente online por Google Meet. También ofrezco clases presenciales a domicilio en Curicó, con un recargo por traslado según la distancia. Consulta disponibilidad por WhatsApp.</p>
+      </details>
+      <details>
+        <summary>¿Cómo se realizan las clases online? <span class="faq-caret">+</span></summary>
+        <p>100% por Google Meet. Solo necesitas conexión a internet y un dispositivo con pantalla. Al confirmar tu clase te envío el link directamente por WhatsApp.</p>
       </details>
       <details>
         <summary>¿Qué incluye la clase diagnóstica gratuita? <span class="faq-caret">+</span></summary>
