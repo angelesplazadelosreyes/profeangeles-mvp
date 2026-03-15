@@ -56,7 +56,7 @@ function destroyAnyChart() {
   // (1) nuestro puntero local
   if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 
-  // (2) renderers tipo exercises2
+  // (2) referencia compartida para renderers
   if (window.__chartInstance) { window.__chartInstance.destroy(); window.__chartInstance = null; }
 
   // (3) legado (por si quedó algo viejo)

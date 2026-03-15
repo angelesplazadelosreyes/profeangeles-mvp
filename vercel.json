@@ -7,15 +7,6 @@
     { "source": "/exercises", "destination": "/exercises.html" },
     { "source": "/classes", "destination": "/classes.html" },
     { "source": "/guides", "destination": "/guides.html" },
-    { "source": "/services-dev", "destination": "/services-dev.html" },
-    { "source": "/exercises2", "destination": "/exercises2.html" }
-  ],
-  "headers": [
-    {
-      "source": "/exercises2.html",
-      "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
-      ]
-    }
+    { "source": "/services-dev", "destination": "/services-dev.html" }
   ]
 }

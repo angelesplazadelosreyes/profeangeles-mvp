@@ -13,7 +13,6 @@ export default defineConfig({
         classes: 'classes.html',
         guides: 'guides.html',
         "services-dev":'services-dev.html',
-        exercises2: 'exercises2/index.html',
       },
     },
   },
@@ -26,7 +25,6 @@ export default defineConfig({
             if (req.url === '/') req.url = '/index.html';
             else if (req.url === '/exercises') req.url = '/exercises.html';
             else if (req.url === '/classes') req.url = '/classes.html';
-            else if (req.url === '/exercises2') req.url = '/exercises2/index.html'; // ← añadido
           }
           next();
         });
