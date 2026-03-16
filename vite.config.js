@@ -12,7 +12,8 @@ export default defineConfig({
         exercises: 'exercises.html',
         classes: 'classes.html',
         guides: 'guides.html',
-        "services-dev":'services-dev.html',
+        "services-dev": 'services-dev.html',
+        "class-area": 'class-area.html',
       },
     },
   },
@@ -25,6 +26,7 @@ export default defineConfig({
             if (req.url === '/') req.url = '/index.html';
             else if (req.url === '/exercises') req.url = '/exercises.html';
             else if (req.url === '/classes') req.url = '/classes.html';
+            else if (req.url.startsWith('/class-area')) req.url = '/class-area.html' + req.url.slice('/class-area'.length);
           }
           next();
         });
