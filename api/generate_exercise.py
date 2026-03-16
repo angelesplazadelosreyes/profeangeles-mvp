@@ -4,6 +4,7 @@ import time
 import base64
 import io
 import math
+import os
 from fractions import Fraction
 from reportlab.lib.utils import ImageReader
 from api.utils.format import fmt_num
@@ -129,6 +130,20 @@ def quadratic_inverse_right_branch(a, b, c):
     }
 
 
+# --------------------- Auth ---------------------
+UNPROTECTED = {"/", "/health"}
+
+@app.before_request
+def require_api_key():
+    if request.method == "OPTIONS":
+        return None
+    if request.path in UNPROTECTED:
+        return None
+    key = request.headers.get("X-API-Key", "")
+    expected = os.environ.get("API_KEY", "")
+    if not expected or key != expected:
+        return jsonify({"error": "Unauthorized"}), 401
+    
 
 # --------------------- CORS ---------------------
 @app.after_request
@@ -137,7 +152,7 @@ def add_cors_headers(response):
     #   "https://profeangeles.cl", "https://profeangeles-*.vercel.app"
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization,X-API-Key"
     response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
     return response
 
