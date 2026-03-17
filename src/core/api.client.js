@@ -1,13 +1,8 @@
 // src/core/api.client.js
-const PROD_API = 'https://profeangeles-mvp.onrender.com';
-
-function resolveApiBase() {
-  return PROD_API;
-}
+const PROD_API = import.meta.env.VITE_API_URL;
 
 function buildApiUrl({ topic, subtopic, type }) {
-  const base = resolveApiBase();
-  const url = new URL('/api/generate-exercise', base);
+  const url = new URL('/api/generate-exercise', PROD_API);
   url.searchParams.set('topic', topic);
   url.searchParams.set('subtopic', subtopic);
   url.searchParams.set('type', type);
