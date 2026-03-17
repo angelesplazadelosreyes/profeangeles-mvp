@@ -88,9 +88,9 @@ function ready() {
         const coeffs = await fetchCoeffs();
         currentFunctionText = toReadableFunction(coeffs);
       } catch (err) {
-        console.error(err);
-        textEl.textContent = 'Error al generar la función.';
-        return;
+          console.error(err);
+          textEl.textContent = '⚠️ No se pudo conectar al servidor. Intenta nuevamente.';
+          return;
       } finally {
         loading = false;
       }
@@ -139,9 +139,10 @@ function ready() {
       resetForm();
 
     } catch (err) {
-      console.error(err);
-      alert('No se pudo generar el PDF. Intenta nuevamente.');
-    } finally {
+        console.error(err);
+        textEl.textContent = '⚠️ No se pudo generar el PDF. Intenta nuevamente.';
+        preview.style.display = 'block';
+      } finally {
       hideLoadingModal();
       button.textContent = oldText;
       button.disabled = false;

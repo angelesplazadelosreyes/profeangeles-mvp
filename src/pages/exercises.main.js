@@ -26,7 +26,30 @@ const OPTIONS = MATH_OPTIONS;
 function setStatus(msg) {
   const el = document.getElementById('status');
   if (!el) return;
+  el.className = 'status';
   el.textContent = msg || '';
+}
+
+function showError(msg, retryFn = null) {
+  const el = document.getElementById('status');
+  if (!el) return;
+  el.className = 'status status-error';
+  el.innerHTML = '';
+
+  const text = document.createElement('span');
+  text.textContent = msg;
+  el.appendChild(text);
+
+  if (retryFn) {
+    const btn = document.createElement('button');
+    btn.textContent = 'Reintentar';
+    btn.addEventListener('click', () => {
+      el.className = 'status';
+      el.textContent = '';
+      retryFn();
+    });
+    el.appendChild(btn);
+  }
 }
 
 function setLoading(isLoading) {
@@ -182,7 +205,7 @@ async function nuevoEjercicio() {
 
     destroyAnyChart();
   } catch (err) {
-    alert(err.message || 'Failed to fetch');
+    showError('No se pudo generar el ejercicio. ¿La conexión está bien?', nuevoEjercicio);
   } finally {
     setLoading(false);
   }
@@ -205,7 +228,7 @@ async function mostrarRespuesta() {
 
     await mountSolution(lastExercise);
   } catch (err) {
-    alert(err.message || 'Failed to fetch');
+    showError('No se pudo obtener la respuesta. ¿La conexión está bien?', nuevoEjercicio);
   } finally {
     setLoading(false);
   }
