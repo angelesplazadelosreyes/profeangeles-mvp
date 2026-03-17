@@ -3,6 +3,7 @@
 console.log('[exercises.main] cargado');
 
 import { fetchExercise } from '../core/api.client.js';
+import { showLoadingModal, hideLoadingModal } from '../ui/loading.modal.js';
 import { MATH_OPTIONS } from '../subjects/math/options.js';
 import { renderMath } from '../renderers/math.render.js';
 import { selectRendererKey, loadRenderer } from '../renderers/registry.js';
@@ -35,7 +36,10 @@ function setLoading(isLoading) {
   if (btnNuevo) btnNuevo.disabled = isLoading;
   if (btnMostrar) btnMostrar.disabled = isLoading;
 
-  setStatus(isLoading ? 'Generando… Paciencia, a veces demora un poco en cargar' : '');
+  if (isLoading) showLoadingModal();
+  else hideLoadingModal();
+
+  setStatus('');
 }
 
 /* ===================================================

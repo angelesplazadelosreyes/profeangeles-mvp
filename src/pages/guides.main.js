@@ -1,6 +1,7 @@
 // src/pages/guides.main.js
 const API_BASE = import.meta.env.VITE_API_URL;
 const API_KEY  = import.meta.env.VITE_API_KEY ?? '';
+import { showLoadingModal, hideLoadingModal } from '../ui/loading.modal.js';
 
 function authHeaders(extra = {}) {
   return {
@@ -115,6 +116,7 @@ function ready() {
     button.disabled = true;
     const oldText = button.textContent;
     button.textContent = 'Generando PDF…';
+    showLoadingModal();
 
     try {
       const res = await fetch(`${API_BASE}/api/generate-guide-pdf`, {
@@ -140,6 +142,7 @@ function ready() {
       console.error(err);
       alert('No se pudo generar el PDF. Intenta nuevamente.');
     } finally {
+      hideLoadingModal();
       button.textContent = oldText;
       button.disabled = false;
     }
