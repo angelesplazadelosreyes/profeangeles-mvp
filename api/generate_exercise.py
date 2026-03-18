@@ -146,8 +146,24 @@ def require_api_key():
     
 
 # --------------------- CORS ---------------------
+# --------------------- CORS ---------------------
+ALLOWED_ORIGINS = {
+    "https://profeangeles-mvp.vercel.app",
+    "https://profeangeles.cl",          # cuando tengas dominio propio
+    "http://localhost:5173",            # Vite dev local
+    "http://localhost:3000",            # alternativa local
+}
+
 @app.after_request
 def add_cors_headers(response):
+    origin = request.headers.get("Origin", "")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Vary"] = "Origin"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization,X-API-Key"
+    response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
+    return response
     # Para MVP dejamos *; OJO, después reemplazas por los dominios de Vercel y mi dominio:
     #   "https://profeangeles.cl", "https://profeangeles-*.vercel.app"
     response.headers["Access-Control-Allow-Origin"] = "*"
