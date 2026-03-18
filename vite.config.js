@@ -14,6 +14,7 @@ export default defineConfig({
         guides: 'guides.html',
         "services-dev": 'services-dev.html',
         "class-area": 'class-area.html',
+        games: 'games.html',
       },
     },
   },
@@ -23,9 +24,10 @@ export default defineConfig({
       configureServer(server) {
         server.middlewares.use((req, _res, next) => {
           if (req.url && !req.url.includes('.')) {
-            if (req.url === '/') req.url = '/index.html';
-            else if (req.url === '/exercises') req.url = '/exercises.html';
-            else if (req.url === '/classes') req.url = '/classes.html';
+            if (req.url === '/')                        req.url = '/index.html';
+            else if (req.url === '/exercises')          req.url = '/exercises.html';
+            else if (req.url === '/classes')            req.url = '/classes.html';
+            else if (req.url === '/games')              req.url = '/games.html';
             else if (req.url.startsWith('/class-area')) req.url = '/class-area.html' + req.url.slice('/class-area'.length);
           }
           next();
