@@ -547,27 +547,65 @@ html,body{
 /* ===========================
    Footer
    =========================== */
-.site-footer{
-  margin-top:2rem; padding:1.25rem 0;
-  border-top:1px solid var(--pa-border); background:var(--pa-surface);
+.site-footer {
+  margin-top: 2rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--pa-border);
+  background: var(--pa-surface);
 }
-.footer-grid{
-  display:flex; justify-content:space-between; align-items:center; gap:1rem;
-}
-.site-footer a{ text-decoration:none; color:var(--pa-primary-dark); }
-.site-footer a:hover{ text-decoration:underline; }
 
-.socials{ display:flex; gap:.75rem; }
-.socials a{
-  display:inline-flex; padding:.25rem; border-radius:.5rem;
-  color:var(--pa-text); opacity:.85;
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem 1.5rem;
 }
-.socials a:hover{ opacity:1; background:#F3F4F6; }
-.socials svg{ width:22px; height:22px; display:block; }
 
-.socials a.linkedin:hover{ color:#0A66C2; }
-.socials a.instagram:hover{ color:#E4405F; }
-.socials a.whatsapp:hover{ color:#25D366; }
+/* En móvil: columna centrada */
+@media (max-width: 640px) {
+  .footer-grid {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: .6rem;
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .25rem .5rem;
+  }
+
+  /* Oculta los separadores · entre links en móvil
+     (son texto plano en el HTML, no elementos reales,
+     así que mejor los hacemos menos invasivos) */
+  .footer-nav a {
+    white-space: nowrap;
+  }
+}
+
+.site-footer a {
+  text-decoration: none;
+  color: var(--pa-primary-dark);
+}
+.site-footer a:hover { text-decoration: underline; }
+
+.socials { display: flex; gap: .75rem; }
+.socials a {
+  display: inline-flex;
+  padding: .25rem;
+  border-radius: .5rem;
+  color: var(--pa-text);
+  opacity: .85;
+}
+.socials a:hover { opacity: 1; background: #F3F4F6; }
+.socials svg { width: 22px; height: 22px; display: block; }
+
+.socials a.linkedin:hover  { color: #0A66C2; }
+.socials a.instagram:hover { color: #E4405F; }
+.socials a.whatsapp:hover  { color: #25D366; }
 
 /* ===========================
    Utilidades

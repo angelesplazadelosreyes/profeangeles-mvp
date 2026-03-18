@@ -111,7 +111,7 @@ export function showLoadingModal() {
     modalEl.classList.add('lm-visible');
     rotatorStep = 0;
     rotateContent();
-    rotatorInterval = setInterval(rotateContent, 3000);
+    rotatorInterval = setInterval(rotateContent, 4000);
   }, SHOW_DELAY_MS);
 }
 
