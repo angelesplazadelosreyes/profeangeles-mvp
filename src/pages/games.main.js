@@ -89,6 +89,11 @@ function openModal(game) {
 }
 
 function closeModal() {
+  // Detener cualquier timer activo del juego antes de cerrar
+  if (window.__gameState?.timer) {
+    clearInterval(window.__gameState.timer);
+    window.__gameState.timer = null;
+  }
   modal.setAttribute('hidden', '');
   document.body.style.overflow = '';
   modalBody.innerHTML = '';

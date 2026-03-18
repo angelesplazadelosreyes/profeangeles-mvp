@@ -51,10 +51,11 @@ function soundAlert() {
 
 // ── Estado del juego ─────────────────────────────────────────
 let state = {};
+window.__gameState = state;
 
 function initState(tableRange, diffKey) {
   state = {
-    tableRange,           // 0 = todas, N = tabla específica
+    tableRange,
     diffKey,
     diff:   CONFIG.difficulty[diffKey],
     questions: generateQuestions(tableRange),
@@ -65,6 +66,7 @@ function initState(tableRange, diffKey) {
     secondsLeft: 0,
     answered:  false,
   };
+  window.__gameState = state; // sincronizar referencia global
 }
 
 // ── Generación de preguntas ──────────────────────────────────

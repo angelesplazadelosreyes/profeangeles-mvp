@@ -131,6 +131,7 @@
    Mobile: modal full-screen
    ============================================================ */
 @media (max-width: 600px) {
+  /* Modal full-screen en móvil */
   .game-modal__panel {
     width: 100%;
     height: 100%;
@@ -139,7 +140,36 @@
   }
 
   .game-modal {
-    align-items: flex-end;
+    align-items: flex-start;
+  }
+
+  /* Ocultar sidebar en móvil dentro de games, mostrar solo el panel */
+  .exercises-layout {
+    display: block;
+  }
+
+  /* Tarjetas de juego: 2 columnas en móvil */
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Opciones del juego: apilar en móvil si son 3 */
+  .tg-options {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  .tg-opt-btn {
+    padding: 0.85rem 0.25rem;
+    font-size: 1.1rem;
+  }
+
+  .tg-question {
+    font-size: 2.2rem;
+  }
+
+  .tg-result-stats {
+    gap: 1rem;
   }
 }
 
