@@ -45,25 +45,3 @@
   </nav>
 </header>
 
-<script>
-  (function () {
-    const toggle = document.querySelector('.nav-toggle');
-    const menu   = document.getElementById('main-menu');
-    if (!toggle || !menu) return;
-
-    toggle.addEventListener('click', function () {
-      const open = menu.classList.toggle('menu-open');
-      toggle.setAttribute('aria-expanded', open);
-      toggle.classList.toggle('nav-toggle--open', open);
-    });
-
-    // Cierra el menú si se hace clic fuera
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('.nav')) {
-        menu.classList.remove('menu-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.classList.remove('nav-toggle--open');
-      }
-    });
-  })();
-</script>

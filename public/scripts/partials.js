@@ -16,6 +16,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([...headers].map(el => inject(el, 'header')));
   await Promise.all([...footers].map(el => inject(el, 'footer')));
 
+  // 1.2) Toggle menú hamburguesa (móvil)
+  (function initNavToggle() {
+    const toggle = document.querySelector('.nav-toggle');
+    const menu   = document.getElementById('main-menu');
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener('click', function () {
+      const open = menu.classList.toggle('menu-open');
+      toggle.setAttribute('aria-expanded', open);
+      toggle.classList.toggle('nav-toggle--open', open);
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.nav')) {
+        menu.classList.remove('menu-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.classList.remove('nav-toggle--open');
+      }
+    });
+  })();
+
   // 1.1) Utilidades del footer (migradas desde el parcial)
   (function initFooterUtils() {
     const yearEl = document.getElementById('footer-year');
