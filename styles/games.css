@@ -1,0 +1,394 @@
+/* ============================================================
+   games.css — Página de juegos y modal
+   ============================================================ */
+
+/* Grid de tarjetas de juego */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.4rem 1rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--color-surface, #fff);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  text-align: center;
+  color: inherit;
+  font-family: inherit;
+}
+
+.game-card:hover,
+.game-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+  border-color: var(--color-primary, #0d9488);
+  outline: none;
+}
+
+.game-card__icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.game-card__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.game-card__soon {
+  font-size: 0.72rem;
+  color: var(--color-muted, #888);
+  margin-top: 0.1rem;
+}
+
+/* ============================================================
+   Modal del juego
+   ============================================================ */
+.game-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-modal[hidden] {
+  display: none;
+}
+
+.game-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.game-modal__panel {
+  position: relative;
+  z-index: 1;
+  background: var(--color-surface, #fff);
+  border-radius: 16px;
+  width: min(95vw, 560px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.game-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  flex-shrink: 0;
+}
+
+.game-modal__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.game-modal__close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--color-muted, #888);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.game-modal__close:hover {
+  background: var(--color-border, #e5e7eb);
+  color: var(--color-text, #111);
+}
+
+.game-modal__body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ============================================================
+   Mobile: modal full-screen
+   ============================================================ */
+@media (max-width: 600px) {
+  .game-modal__panel {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+
+  .game-modal {
+    align-items: flex-end;
+  }
+}
+
+/* ============================================================
+   Juego de Tablas
+   ============================================================ */
+
+/* Setup */
+.tg-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tg-section-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted, #888);
+  margin-bottom: 0.25rem;
+}
+
+.tg-table-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tg-table-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  border: 2px solid var(--color-border, #e5e7eb);
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: inherit;
+}
+
+.tg-table-btn:hover { border-color: var(--color-primary, #0d9488); }
+.tg-table-btn--active {
+  background: var(--color-primary, #0d9488);
+  border-color: var(--color-primary, #0d9488);
+  color: #fff;
+}
+
+.tg-difficulty {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.tg-diff-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  border: 2px solid var(--color-border, #e5e7eb);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.15s;
+  color: inherit;
+}
+
+.tg-diff-btn:hover { border-color: var(--color-primary, #0d9488); }
+.tg-diff-btn--active {
+  border-color: var(--color-primary, #0d9488);
+  background: color-mix(in srgb, var(--color-primary, #0d9488) 10%, transparent);
+}
+
+.tg-diff-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: block;
+}
+.tg-diff-dot--facil   { background: #22c55e; }
+.tg-diff-dot--medio   { background: #eab308; }
+.tg-diff-dot--dificil { background: #ef4444; }
+
+.tg-diff-sub {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--color-muted, #888);
+}
+
+.tg-start-btn {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: none;
+  background: var(--color-primary, #0d9488);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.tg-start-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.tg-start-btn:not(:disabled):hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* HUD */
+.tg-game { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.tg-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tg-timer {
+  position: relative;
+  width: 48px; height: 48px;
+}
+.tg-timer svg { position: absolute; inset: 0; }
+.tg-timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.tg-progress {
+  font-size: 0.85rem;
+  color: var(--color-muted, #888);
+  font-weight: 600;
+}
+
+.tg-score-box {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.tg-heart { color: #e879a0; }
+
+/* Pregunta */
+.tg-question {
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding: 0.5rem 0;
+}
+
+/* Opciones */
+.tg-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.tg-opt-btn {
+  padding: 1rem 0.5rem;
+  border-radius: 12px;
+  border: 2px solid var(--color-border, #e5e7eb);
+  background: var(--color-surface, #fff);
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s;
+  color: inherit;
+}
+.tg-opt-btn:hover:not(:disabled) {
+  border-color: var(--color-primary, #0d9488);
+  transform: translateY(-2px);
+}
+.tg-opt--correct { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+.tg-opt--wrong   { background: #fee2e2; border-color: #ef4444; color: #b91c1c; }
+
+/* Resultado */
+.tg-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  text-align: center;
+}
+
+.tg-result-emoji { font-size: 3rem; }
+.tg-result-title { font-size: 1.4rem; font-weight: 800; margin: 0; }
+
+.tg-result-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tg-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.tg-stat-val {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primary, #0d9488);
+}
+.tg-stat-total {
+  font-size: 1rem;
+  color: var(--color-muted, #888);
+}
+.tg-stat-label {
+  font-size: 0.75rem;
+  color: var(--color-muted, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tg-result-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.tg-action-btn {
+  flex: 1;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tg-action-btn--primary {
+  background: var(--color-primary, #0d9488);
+  color: #fff;
+}
+.tg-action-btn--secondary {
+  background: transparent;
+  border-color: var(--color-border, #e5e7eb);
+  color: inherit;
+}
+.tg-action-btn:hover { opacity: 0.85; }
