@@ -16,7 +16,7 @@ function createModal() {
     <div class="lm-card" role="dialog" aria-live="polite">
       <div class="lm-spinner"></div>
       <p class="lm-title">Despertando el servidor…</p>
-      <p class="lm-sub">El servidor gratuito se duerme si no lo usan. <br>Puede tardar hasta 30 segundos la primera vez.</p>
+      <p class="lm-sub">El servidor gratuito se duerme si no lo usan. <br>Puede tardar hasta 50 segundos la primera vez.</p>
       <div class="lm-content" id="lm-content"></div>
     </div>
   `;
