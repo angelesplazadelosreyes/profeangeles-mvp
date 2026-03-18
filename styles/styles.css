@@ -677,36 +677,32 @@ html,body{
   gap: .75rem 1.5rem;
 }
 
-/* En móvil: columna centrada */
-@media (max-width: 640px) {
-  .footer-grid {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: .6rem;
-  }
-
-  .footer-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: .25rem .5rem;
-  }
-
-  /* Oculta los separadores · entre links en móvil
-     (son texto plano en el HTML, no elementos reales,
-     así que mejor los hacemos menos invasivos) */
-  .footer-nav a {
-    white-space: nowrap;
-  }
-}
-
 .site-footer a {
   text-decoration: none;
   color: var(--pa-primary-dark);
 }
 .site-footer a:hover { text-decoration: underline; }
 
+/* Footer nav con separadores CSS */
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .25rem 0;
+}
+
+.footer-nav a::after {
+  content: '·';
+  margin: 0 .4rem;
+  color: var(--pa-text-muted, #94a3b8);
+  pointer-events: none;
+}
+
+.footer-nav a:last-child::after {
+  content: none;
+}
+
+/* Redes sociales */
 .socials { display: flex; gap: .75rem; }
 .socials a {
   display: inline-flex;
@@ -721,6 +717,24 @@ html,body{
 .socials a.linkedin:hover  { color: #0A66C2; }
 .socials a.instagram:hover { color: #E4405F; }
 .socials a.whatsapp:hover  { color: #25D366; }
+
+/* Móvil */
+@media (max-width: 640px) {
+  .footer-grid {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: .6rem;
+  }
+
+  .footer-nav {
+    justify-content: center;
+  }
+
+  .footer-nav a {
+    white-space: nowrap;
+  }
+}
 
 /* ===========================
    Utilidades
