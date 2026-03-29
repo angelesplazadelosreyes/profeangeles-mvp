@@ -33,29 +33,6 @@ export default function Nav() {
 
   return (
     <>
-      <style>{`
-        .nav-desktop { display: flex; }
-        .nav-hamburger { display: none; }
-        .nav-mobile-menu { display: none; }
-
-        @media (max-width: 860px) {
-          .nav-desktop { display: none; }
-          .nav-hamburger { display: flex; }
-          .nav-mobile-menu {
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 64px; left: 0; right: 0;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--rule);
-            padding: 0.75rem 1.5rem 1rem;
-            gap: 0.25rem;
-            z-index: 199;
-          }
-          .nav-mobile-menu.closed { display: none; }
-        }
-      `}</style>
 
       {/* ── BARRA PRINCIPAL ── */}
       <nav style={{
