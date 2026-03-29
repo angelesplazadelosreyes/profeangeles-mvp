@@ -12,6 +12,7 @@ import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
+import PaletteSwitcher from "@/components/ui/PaletteSwitcher";
 
 // Inter — cuerpo de texto, UI, etiquetas
 // variable CSS --font-inter disponible en todo el sitio
@@ -66,6 +67,7 @@ export default function RootLayout({
         <Nav />
         {children}
         <Footer />
+        <PaletteSwitcher />
       </body>
     </html>
   );
