@@ -9,7 +9,7 @@ import FiltrosBlock from '@/components/ejercicios/FiltrosBlock';
 import EjercicioArea from '@/components/ejercicios/EjercicioArea';
 import ColdStartModal from '@/components/ejercicios/ColdStartModal';
 
-const COLD_START_UMBRAL_MS = 8000;
+const COLD_START_UMBRAL_MS = 2000;
 
 function getPrimerTema(): string {
   return Object.keys(MATH_OPTIONS)[0] ?? '';

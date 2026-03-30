@@ -3,17 +3,10 @@
 
 import { useState, useEffect } from 'react';
 
-const DATOS_CURIOSOS = [
-  'El número π tiene infinitos decimales y nunca se repite.',
-  'El cero fue inventado en la India alrededor del siglo VII.',
-  'Un googol es 10 elevado a la potencia 100.',
-  'Los números de Fibonacci aparecen en la naturaleza: flores, conchas, galaxias.',
-  'El número primo más grande conocido tiene más de 24 millones de dígitos.',
-];
-
 interface Pregunta {
   enunciado: string;
-  respuesta: number;
+  opciones: number[];
+  correcta: number;
 }
 
 function generarPregunta(): Pregunta {
@@ -21,8 +14,16 @@ function generarPregunta(): Pregunta {
   const b = Math.floor(Math.random() * 9) + 1;
   const ops = ['+', '-', '×'] as const;
   const op  = ops[Math.floor(Math.random() * ops.length)];
-  const respuesta = op === '+' ? a + b : op === '-' ? a - b : a * b;
-  return { enunciado: `${a} ${op} ${b} = ?`, respuesta };
+  const correcta = op === '+' ? a + b : op === '-' ? a - b : a * b;
+
+  const distractores = new Set<number>();
+  while (distractores.size < 2) {
+    const d = correcta + (Math.floor(Math.random() * 6) - 3);
+    if (d !== correcta) distractores.add(d);
+  }
+
+  const opciones = [...distractores, correcta].sort(() => Math.random() - 0.5);
+  return { enunciado: `${a} ${op} ${b}`, opciones, correcta };
 }
 
 interface Props {
@@ -30,76 +31,102 @@ interface Props {
 }
 
 export default function ColdStartModal({ visible }: Props) {
-  const [dato, setDato]         = useState('');
-  const [pregunta, setPregunta] = useState<Pregunta | null>(null);
-  const [input, setInput]       = useState('');
-  const [feedback, setFeedback] = useState('');
-  const [aciertos, setAciertos] = useState(0);
+  const [pregunta,   setPregunta]   = useState<Pregunta | null>(null);
+  const [feedback,   setFeedback]   = useState<'ok' | 'error' | null>(null);
+  const [aciertos,   setAciertos]   = useState(0);
+  const [desaciertos, setDesaciertos] = useState(0);
+  const [finalizado, setFinalizado] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
-    setDato(DATOS_CURIOSOS[Math.floor(Math.random() * DATOS_CURIOSOS.length)]);
     setPregunta(generarPregunta());
-    setInput('');
-    setFeedback('');
+    setFeedback(null);
     setAciertos(0);
+    setDesaciertos(0);
+    setFinalizado(false);
   }, [visible]);
 
-  if (!visible) return null;
+  // Mostrar resultado final justo antes de que desaparezca el modal
+  useEffect(() => {
+    if (!visible && (aciertos + desaciertos) > 0) {
+      setFinalizado(true);
+    }
+  }, [visible]);
 
-  function verificar() {
-    if (!pregunta) return;
-    const intento = parseInt(input, 10);
-    if (intento === pregunta.respuesta) {
-      const nuevos = aciertos + 1;
-      setAciertos(nuevos);
-      setFeedback('¡Correcto!');
+  if (!visible && !finalizado) return null;
+
+  function elegir(opcion: number) {
+    if (!pregunta || feedback !== null) return;
+
+    if (opcion === pregunta.correcta) {
+      setFeedback('ok');
+      setAciertos(a => a + 1);
       setTimeout(() => {
         setPregunta(generarPregunta());
-        setInput('');
-        setFeedback('');
+        setFeedback(null);
       }, 800);
     } else {
-      setFeedback('Intenta de nuevo');
+      setFeedback('error');
+      setDesaciertos(d => d + 1);
+      setTimeout(() => {
+        setPregunta(generarPregunta());
+        setFeedback(null);
+      }, 800);
     }
+  }
+
+  const total = aciertos + desaciertos;
+
+  if (finalizado) {
+    return (
+      <div className="coldstart-overlay">
+        <div className="coldstart-modal">
+          <p className="coldstart-resultado">
+            Le atinaste a {aciertos} de {total} 🎉
+          </p>
+          {aciertos === total && total > 0 && (
+            <p className="coldstart-felicidades">¡Felicidades!</p>
+          )}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="coldstart-overlay">
       <div className="coldstart-modal">
-        <p className="coldstart-title">
-          Despertando el servidor… puede tomar hasta 50 segundos.
-        </p>
-
-        <div className="coldstart-dato">
-          💡 {dato}
-        </div>
-
         {pregunta && (
           <div className="coldstart-minijuego">
             <p className="coldstart-pregunta">
-              Mientras esperamos: {pregunta.enunciado}
+              ¿Cuánto es {pregunta.enunciado}?
             </p>
-            <div className="coldstart-input-row">
-              <input
-                className="coldstart-input"
-                type="number"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && verificar()}
-                autoFocus
-              />
-              <button className="btn-ejercicio btn-ejercicio--primary" onClick={verificar}>
-                Verificar
-              </button>
+            <div className="coldstart-opciones">
+              {pregunta.opciones.map((op) => (
+                <button
+                  key={op}
+                  className={[
+                    'coldstart-opcion',
+                    feedback === 'ok' && op === pregunta.correcta
+                      ? 'coldstart-opcion--ok' : '',
+                    feedback === 'error' && op === pregunta.correcta
+                      ? 'coldstart-opcion--ok' : '',
+                    feedback === 'error' && op !== pregunta.correcta
+                      ? 'coldstart-opcion--error' : '',
+                  ].join(' ')}
+                  onClick={() => elegir(op)}
+                >
+                  {op}
+                </button>
+              ))}
             </div>
-            <p className={[
-              'coldstart-feedback',
-              feedback === '¡Correcto!' ? 'coldstart-feedback--ok' : 'coldstart-feedback--error',
-            ].join(' ')}>
-              {feedback}
+            {feedback && (
+              <p className={`coldstart-feedback coldstart-feedback--${feedback}`}>
+                {feedback === 'ok' ? '¡Correcto!' : 'Incorrecto'}
+              </p>
+            )}
+            <p className="coldstart-progreso">
+              Aciertos: {aciertos} · Desaciertos: {desaciertos}
             </p>
-            <p className="coldstart-progreso">Aciertos: {aciertos}</p>
           </div>
         )}
       </div>

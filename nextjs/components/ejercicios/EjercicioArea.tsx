@@ -3,6 +3,7 @@
 
 import { useEffect, useRef } from 'react';
 import { ExerciseResponse } from '@/lib/api.client';
+import { selectRendererKey, loadRenderer } from '@/lib/renderers/registry';
 
 interface Props {
   ejercicio: ExerciseResponse | null;
@@ -26,31 +27,32 @@ export default function EjercicioArea({
   const enunciadoRef = useRef<HTMLDivElement>(null);
   const solucionRef  = useRef<HTMLDivElement>(null);
 
-  // Renderiza LaTeX cuando cambia el ejercicio
+  // Renderiza enunciado cuando cambia el ejercicio
   useEffect(() => {
     if (!ejercicio || !enunciadoRef.current) return;
 
-    const latex = ejercicio.latex_enunciado ?? '';
+    const latex = (ejercicio.latex_enunciado as string) ?? '';
     enunciadoRef.current.innerHTML = latex ? `$$${latex}$$` : '';
-
     window.MathJax?.typesetPromise([enunciadoRef.current]);
   }, [ejercicio]);
 
-  // Renderiza solución cuando se pide mostrar
+  // Renderiza solución con el renderer correcto
   useEffect(() => {
     if (!ejercicio || !mostrarSolucion || !solucionRef.current) return;
 
-    // Renderizado básico — en la siguiente iteración se integra el registry
-    const sol = ejercicio.latex_solucion as string | undefined;
-    solucionRef.current.innerHTML = sol ? `$$${sol}$$` : '';
-    window.MathJax?.typesetPromise([solucionRef.current]);
+    const root = solucionRef.current;
+    root.innerHTML = '';
+
+    const key = selectRendererKey(ejercicio);
+    loadRenderer(key).then((renderFn) => {
+      renderFn(root, ejercicio);
+    });
   }, [ejercicio, mostrarSolucion]);
 
   if (!ejercicio && !status && !error) return null;
 
   return (
     <div className="ejercicio-area">
-      {/* Status / error */}
       {status && !error && (
         <p className="ejercicio-status">{status}</p>
       )}
@@ -63,7 +65,6 @@ export default function EjercicioArea({
         </p>
       )}
 
-      {/* Enunciado */}
       {ejercicio && (
         <>
           <div>
@@ -71,7 +72,6 @@ export default function EjercicioArea({
             <div className="ejercicio-enunciado" ref={enunciadoRef} />
           </div>
 
-          {/* Solución */}
           {mostrarSolucion && (
             <div className="ejercicio-solucion">
               <div className="ejercicio-seccion-label">Solución</div>
