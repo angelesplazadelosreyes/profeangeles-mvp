@@ -1,0 +1,516 @@
+/* nextjs/styles/ejercicios.css */
+
+/* ── Layout principal ─────────────────────────────────────────────────── */
+
+.ejercicios-page {
+  min-height: calc(100vh - 64px);
+  padding: 2rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ejercicios-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────── */
+
+.ejercicios-sidebar {
+  background: var(--color-primary);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  position: sticky;
+  top: 80px;
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--color-primary-light);
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-item:hover:not(.sidebar-item--disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-item--active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.sidebar-item--disabled {
+  color: var(--color-primary-light);
+  cursor: default;
+  font-size: 13px;
+}
+
+.sidebar-item__soon {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.sidebar-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── Panel derecho ────────────────────────────────────────────────────── */
+
+.ejercicios-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Cabecera del panel ───────────────────────────────────────────────── */
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-nivel-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.panel-filtros-resumen {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.panel-filtros-link {
+  font-size: 12px;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+}
+
+/* ── Bloque de filtros ────────────────────────────────────────────────── */
+
+.filtros-block {
+  background: var(--color-bg-card);
+  border: 0.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtro-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ── Chips de nivel ───────────────────────────────────────────────────── */
+
+.chips-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  border: 0.5px solid var(--color-border);
+  color: var(--color-text-muted);
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chip--selected {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* ── Selects ──────────────────────────────────────────────────────────── */
+
+.selects-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ejercicios-select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 0.5px solid var(--color-border);
+  font-size: 13px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  width: 100%;
+  cursor: pointer;
+}
+
+.ejercicios-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* ── Lista de tipos ───────────────────────────────────────────────────── */
+
+.tipos-box {
+  border: 0.5px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+}
+
+.tipos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 8px;
+  margin-top: 8px;
+}
+
+.tipo-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.1s;
+}
+
+.tipo-item:hover {
+  background: var(--color-primary-bg);
+}
+
+.tipo-radio {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+
+.tipo-radio--checked {
+  border-color: var(--color-primary);
+}
+
+.tipo-radio--checked::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.tipo-label {
+  font-size: 13px;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.tipo-label--checked {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ── Botones de acción ────────────────────────────────────────────────── */
+
+.acciones-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-ejercicio {
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-ejercicio:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ejercicio--primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-ejercicio--primary:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.btn-ejercicio--secondary {
+  background: none;
+  color: var(--color-text);
+  border: 0.5px solid var(--color-border);
+}
+
+.btn-ejercicio--secondary:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Área del ejercicio ───────────────────────────────────────────────── */
+
+.ejercicio-area {
+  background: var(--color-bg-card);
+  border: 0.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ejercicio-seccion-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.ejercicio-enunciado {
+  font-size: 15px;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+.ejercicio-solucion {
+  border-top: 0.5px solid var(--color-border);
+  padding-top: 1.25rem;
+}
+
+/* ── Estado / error ───────────────────────────────────────────────────── */
+
+.ejercicio-status {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  min-height: 20px;
+}
+
+.ejercicio-status--error {
+  color: var(--color-error, #c0392b);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-reintentar {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 0.5px solid currentColor;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* ── Modal cold start ─────────────────────────────────────────────────── */
+
+.coldstart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.coldstart-modal {
+  background: var(--color-bg-card);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.coldstart-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.coldstart-dato {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  background: var(--color-primary-bg);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+}
+
+.coldstart-minijuego {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coldstart-pregunta {
+  font-size: 15px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.coldstart-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.coldstart-input {
+  width: 80px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 0.5px solid var(--color-border);
+  font-size: 15px;
+  text-align: center;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.coldstart-feedback {
+  font-size: 13px;
+  min-height: 18px;
+}
+
+.coldstart-feedback--ok {
+  color: var(--color-success, #27ae60);
+}
+
+.coldstart-feedback--error {
+  color: var(--color-error, #c0392b);
+}
+
+.coldstart-progreso {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* ── Responsive móvil ─────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .ejercicios-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ejercicios-sidebar {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0.875rem;
+  }
+
+  .sidebar-title {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .sidebar-item {
+    width: auto;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+
+  .selects-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tipos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .acciones-row {
+    flex-direction: column;
+  }
+
+  .btn-ejercicio {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .ejercicios-page {
+    padding: 1rem;
+  }
+
+  .tipos-grid {
+    grid-template-columns: 1fr;
+  }
+}
