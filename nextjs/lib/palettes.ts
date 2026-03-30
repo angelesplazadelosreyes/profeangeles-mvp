@@ -35,7 +35,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(109,40,217,.22)",
       "--shadow":     "0 4px 24px rgba(109,40,217,.08)",
       "--shadow-lg":  "0 16px 48px rgba(109,40,217,.14)",
-      "--nav-bg":     "rgba(245,243,255,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
   {
@@ -60,7 +60,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(157,23,77,.22)",
       "--shadow":     "0 4px 24px rgba(157,23,77,.08)",
       "--shadow-lg":  "0 16px 48px rgba(157,23,77,.14)",
-      "--nav-bg":     "rgba(255,245,247,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
   {
@@ -85,7 +85,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(3,105,161,.22)",
       "--shadow":     "0 4px 24px rgba(3,105,161,.08)",
       "--shadow-lg":  "0 16px 48px rgba(3,105,161,.14)",
-      "--nav-bg":     "rgba(240,249,255,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
   {
@@ -110,7 +110,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(67,56,202,.22)",
       "--shadow":     "0 4px 24px rgba(67,56,202,.08)",
       "--shadow-lg":  "0 16px 48px rgba(67,56,202,.14)",
-      "--nav-bg":     "rgba(248,247,255,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
   {
@@ -135,7 +135,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(15,118,110,.22)",
       "--shadow":     "0 4px 24px rgba(15,118,110,.08)",
       "--shadow-lg":  "0 16px 48px rgba(15,118,110,.14)",
-      "--nav-bg":     "rgba(240,253,250,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
   {
@@ -160,7 +160,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(124,58,237,.22)",
       "--shadow":     "0 4px 24px rgba(124,58,237,.08)",
       "--shadow-lg":  "0 16px 48px rgba(124,58,237,.14)",
-      "--nav-bg":     "rgba(255,247,245,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
   {
@@ -185,7 +185,7 @@ export const palettes: Palette[] = [
       "--rule-med":   "rgba(59,89,152,.22)",
       "--shadow":     "0 4px 24px rgba(59,89,152,.08)",
       "--shadow-lg":  "0 16px 48px rgba(59,89,152,.14)",
-      "--nav-bg":     "rgba(248,250,255,.94)",
+      "--nav-bg":     "rgba(255,255,255,.96)",
     },
   },
 ];
