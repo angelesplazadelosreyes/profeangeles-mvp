@@ -19,7 +19,6 @@ const profileButtons = [
 export default function Hero() {
   return (
     <section style={{
-      minHeight: "100vh",
       padding: "7rem 3rem 4rem",
       position: "relative",
       overflow: "hidden",

@@ -22,14 +22,7 @@ export default function ProfileSections() {
           }}
         >
           {/* ── Bloque superior: avatar + texto ── */}
-          <div style={{
-            display: "grid",
-            // Todos los avatares a la izquierda — columna fija de 240px
-            gridTemplateColumns: "240px 1fr",
-            gap: "3rem",
-            alignItems: "center",
-            marginBottom: "3rem",
-          }}>
+          <div className="profile-intro-grid">
 
             {/* Avatar + badge — siempre a la izquierda */}
             <div style={{
