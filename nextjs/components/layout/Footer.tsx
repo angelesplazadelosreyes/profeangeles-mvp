@@ -18,7 +18,7 @@ export default function Footer() {
 
       {/* Logo */}
       <div style={{
-        fontFamily: "var(--font-syne), sans-serif",
+        fontFamily: "var(--font-inter), sans-serif",
         fontWeight: 800, fontSize: "1.05rem", color: "#fff",
       }}>
         Profe<span style={{ color: "var(--cta)" }}>Á</span>ngeles

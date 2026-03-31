@@ -42,7 +42,7 @@ export default function ProfileSections() {
               </div>
               <div style={{
                 background: "var(--primary)", color: "#fff",
-                fontFamily: "var(--font-syne), sans-serif", fontWeight: 700,
+                fontFamily: "var(--font-inter), sans-serif", fontWeight: 700,
                 fontSize: "0.95rem", padding: "0.55rem 1.5rem",
                 borderRadius: "100px",
                 boxShadow: "0 4px 14px rgba(0,0,0,.12)",
@@ -65,13 +65,13 @@ export default function ProfileSections() {
 
               {/* Título de sección
                   Fuente actual: Syne 800
-                  Para cambiar fuente: reemplaza var(--font-syne) por var(--font-inter)
+                  Para cambiar fuente: reemplaza var(--font-inter) por var(--font-inter)
                   Para cambiar peso: ajusta fontWeight (300 más suave, 700 más fuerte)
                   Para cambiar tamaño: ajusta los 3 valores de clamp(mínimo, fluido, máximo)
                   Ejemplo más pequeño: clamp(1.2rem, 2vw, 1.8rem)
                   Ejemplo más grande: clamp(2rem, 4vw, 3.2rem) */}
               <h2 style={{
-                fontFamily: "var(--font-syne), sans-serif",
+                fontFamily: "var(--font-inter), sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(1.2rem, 2vw, 1.8rem)",
                 lineHeight: 1.1, letterSpacing: "-0.025em",
@@ -134,9 +134,9 @@ export default function ProfileSections() {
 
                 {/* Título de tarjeta
                     Para cambiar tamaño: ajusta fontSize (ej: "0.9rem" más pequeño)
-                    Para cambiar fuente: reemplaza var(--font-syne) por var(--font-inter) */}
+                    Para cambiar fuente: reemplaza var(--font-inter) por var(--font-inter) */}
                 <h4 style={{
-                  fontFamily: "var(--font-syne), sans-serif", fontWeight: 700,
+                  fontFamily: "var(--font-inter), sans-serif", fontWeight: 700,
                   fontSize: "1.05rem", color: "var(--txt)",
                   marginBottom: "0.4rem", transition: "color .3s",
                 }}>

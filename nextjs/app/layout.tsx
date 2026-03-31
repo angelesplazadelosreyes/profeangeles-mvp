@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Inter, Syne } from "next/font/google";
+import { Inter, Kalam } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
@@ -14,10 +14,10 @@ const inter = Inter({
   weight: ["300", "400", "500"],
 });
 
-const syne = Syne({
-  variable: "--font-syne",
+const kalam = Kalam({
+  variable: "--font-kalam",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["700"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${syne.variable}`}>
+    <html lang="es" className={`${inter.variable} ${kalam.variable}`}>
       <head>
         <script
           dangerouslySetInnerHTML={{

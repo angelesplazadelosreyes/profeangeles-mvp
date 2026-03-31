@@ -41,12 +41,13 @@ export default function Nav() {
         padding: "0 2.5rem", height: "64px",
         background: "var(--nav-bg)",
         backdropFilter: "blur(16px)",
-        borderBottom: "1px solid var(--rule)",
+        borderBottom: "2px solid var(--primary)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.16)",
       }}>
 
         {/* Logo */}
         <Link href="/" style={{
-          fontFamily: "var(--font-syne), sans-serif",
+          fontFamily: "var(--font-inter), sans-serif",
           fontWeight: 800, fontSize: "1.2rem",
           letterSpacing: "-0.02em", textDecoration: "none",
           color: "var(--txt)",
@@ -69,7 +70,7 @@ export default function Nav() {
                   gap: "3px", padding: "0 1rem", height: "100%",
                   textDecoration: "none", minWidth: "64px",
                   color: isActive(item.href) ? "var(--primary)" : "var(--txt-muted)",
-                  borderBottom: isActive(item.href) ? "2px solid var(--primary)" : "2px solid transparent",
+                  borderBottom: isActive(item.href) ? "4px solid var(--primary)" : "4px solid transparent",
                   transition: "color .2s, border-color .2s",
                 }}
               >

@@ -214,44 +214,72 @@ export default function Hero() {
 
         {/* ── TEXTO ── */}
         <div className="hero-texto" style={{ position: "relative", zIndex: 1 }}>
-
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: "0.5rem",
-            background: "var(--primary-lt)", border: "1px solid var(--rule-med)",
-            color: "var(--primary)", fontSize: "0.72rem", fontWeight: 500,
-            letterSpacing: "0.09em", textTransform: "uppercase" as const,
-            padding: "0.38rem 1rem", borderRadius: "100px", marginBottom: "1.25rem",
+            background: "var(--bg-card)",
+            borderRadius: "1.25rem",
+            padding: "2rem 2rem 1.75rem",
+            boxShadow: "0 4px 6px rgba(0,0,0,0.04), 0 10px 28px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06)",
+            position: "relative",
           }}>
-            <span style={{
-              width: "6px", height: "6px",
-              background: "var(--cta)", borderRadius: "50%",
-            }} />
-            Ciencias · Tecnología · Educación
+
+            {/* Borde dibujado a mano con SVG — color var(--primary) */}
+            <svg
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                overflow: "visible", pointerEvents: "none",
+                borderRadius: "1.25rem",
+              }}
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 3 6 Q 2 2 6 2 Q 30 0.5 50 1 Q 70 0.5 94 2 Q 98 2 98 6
+                  Q 99 25 98.5 50 Q 99 75 98 94 Q 98 98 94 98
+                  Q 70 99.5 50 99 Q 30 99.5 6 98 Q 2 98 2 94
+                  Q 1 75 1.5 50 Q 1 25 3 6 Z"
+                stroke="var(--primary)"
+                strokeWidth="1.2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+              />
+              <path
+                d="M 4 7 Q 3 3 7 2.5 Q 31 1 50 1.5 Q 69 1 93 2.5
+                  Q 97 3 97.5 7 Q 98.5 26 98 50 Q 98.5 74 97.5 93
+                  Q 97 97 93 97.5 Q 69 99 50 98.5 Q 31 99 7 97.5
+                  Q 3 97 2.5 93 Q 1.5 74 2 50 Q 1.5 26 4 7 Z"
+                stroke="var(--primary)"
+                strokeWidth="0.6"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                opacity={0.4}
+              />
+            </svg>
+
+            <h1 style={{
+              fontFamily: "var(--font-kalam), cursive",
+              fontWeight: 800,
+              fontSize: "clamp(1.5rem, 2.5vw, 2.2rem)",
+              lineHeight: 1.15, letterSpacing: "-0.02em",
+              color: "var(--txt)", marginBottom: "1rem",
+            }}>
+              Hola, soy Ángeles
+            </h1>
+
+            <p style={{
+              fontSize: "0.97rem", fontWeight: 300, lineHeight: 1.8,
+              color: "var(--txt)", marginBottom: "0",
+            }}>
+              Ingeniera en informática y docente.<br />
+              Ayudo a las personas a encontrar soluciones y aprender en el proceso.<br />
+              ¿Quieres que trabajemos juntos?
+            </p>
+
           </div>
-
-          {/* Título
-              Fuente actual: Syne 800
-              Para cambiar a Inter: reemplaza var(--font-syne) por var(--font-inter)
-              y ajusta fontWeight a 300 o 400 para un look más suave */}
-          <h1 style={{
-            fontFamily: "var(--font-syne), sans-serif",
-            fontWeight: 800,
-            fontSize: "clamp(1.5rem, 2.5vw, 2.2rem)",
-            lineHeight: 1.15, letterSpacing: "-0.02em",
-            color: "var(--txt)", marginBottom: "1rem",
-          }}>
-            Hola, soy Ángeles
-          </h1>
-
-          <p style={{
-            fontSize: "0.97rem", fontWeight: 300, lineHeight: 1.8,
-            color: "var(--txt-muted)", marginBottom: "0",
-          }}>
-            Ingeniera en informática y docente.<br />
-            Ayudo a las personas a encontrar soluciones y aprender en el proceso.<br />
-            ¿Quieres que trabajemos juntos?
-          </p>
-
         </div>
 
         {/* ── SELECTOR DE PERFIL ── */}
@@ -275,7 +303,7 @@ export default function Hero() {
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "0.5rem",
                   padding: "0.7rem 1.2rem", borderRadius: "100px",
-                  fontFamily: "var(--font-syne), sans-serif",
+                  fontFamily: "var(--font-inter), sans-serif",
                   fontWeight: 700, fontSize: "0.85rem",
                   border: "2px solid var(--rule-med)",
                   background: "var(--bg-card)", color: "var(--txt)",

@@ -49,7 +49,7 @@ export default function PaletteSwitcher() {
           border: "1px solid rgba(0,0,0,.06)",
         }}>
           <div style={{
-            fontFamily: "var(--font-syne), sans-serif", fontWeight: 700,
+            fontFamily: "var(--font-inter), sans-serif", fontWeight: 700,
             fontSize: "0.85rem", color: "#1a1a2e", marginBottom: "0.25rem",
             paddingBottom: "0.5rem", borderBottom: "1px solid #f0eeff",
           }}>
