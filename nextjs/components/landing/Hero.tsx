@@ -19,7 +19,7 @@ const profileButtons = [
 export default function Hero() {
   return (
     <section style={{
-      padding: "7rem 3rem 4rem",
+      padding: "7rem 3rem 1rem",
       position: "relative",
       overflow: "hidden",
       background: "var(--bg)",
@@ -217,7 +217,7 @@ export default function Hero() {
           <div style={{
             background: "var(--bg-card)",
             borderRadius: "1.25rem",
-            padding: "2rem 2rem 1.75rem",
+            padding: "2rem 2rem 1.75rem 3.5rem",
             boxShadow: "0 4px 6px rgba(0,0,0,0.04), 0 10px 28px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06)",
             position: "relative",
           }}>
@@ -278,63 +278,37 @@ export default function Hero() {
               Ayudo a las personas a encontrar soluciones y aprender en el proceso.<br />
               ¿Quieres que trabajemos juntos?
             </p>
+            {/* ── SELECTOR DE PERFIL ── */}
+            <div style={{ borderTop: "1px solid var(--rule)", margin: "1.5rem 0 0" }} />
+            <div style={{
+              fontSize: "0.72rem", fontWeight: 500,
+              letterSpacing: "0.1em", textTransform: "uppercase" as const,
+              color: "var(--txt-muted)", margin: "1rem 0 0.75rem",
+            }}>
+              ¿Cuál es tu perfil?
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "0.65rem" }}>
+              {profileButtons.map((profile) => (
+                <Link
+                  key={profile.href}
+                  href={profile.href}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                    padding: "0.7rem 1.2rem", borderRadius: "100px",
+                    fontWeight: 700, fontSize: "0.85rem",
+                    border: "2px solid var(--primary)",
+                    background: "var(--bg-card)", color: "var(--txt)",
+                    textDecoration: "none",
+                    boxShadow: "var(--shadow)",
+                  }}
+                >
+                  <span style={{ fontSize: "1rem" }}>{profile.icon}</span>
+                  {profile.label}
+                </Link>
+              ))}
+            </div>
 
           </div>
-        </div>
-
-        {/* ── SELECTOR DE PERFIL ── */}
-        <div className="hero-selector" style={{ position: "relative", zIndex: 1 }}>
-
-          <div style={{ borderTop: "1px solid var(--rule)", marginBottom: "1.25rem" }} />
-
-          <div style={{
-            fontSize: "0.72rem", fontWeight: 500,
-            letterSpacing: "0.1em", textTransform: "uppercase" as const,
-            color: "var(--txt-muted)", marginBottom: "0.75rem",
-          }}>
-            ¿Cuál es tu perfil?
-          </div>
-
-          <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "0.65rem" }}>
-            {profileButtons.map((profile) => (
-              <Link
-                key={profile.href}
-                href={profile.href}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                  padding: "0.7rem 1.2rem", borderRadius: "100px",
-                  fontFamily: "var(--font-inter), sans-serif",
-                  fontWeight: 700, fontSize: "0.85rem",
-                  border: "2px solid var(--rule-med)",
-                  background: "var(--bg-card)", color: "var(--txt)",
-                  textDecoration: "none",
-                  boxShadow: "var(--shadow)",
-                }}
-              >
-                <span style={{ fontSize: "1rem" }}>{profile.icon}</span>
-                {profile.label}
-              </Link>
-            ))}
-          </div>
-
-          <Link
-            href="https://wa.me/56971312255"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex" as const,
-              alignItems: "center", gap: "0.5rem",
-              marginTop: "1.25rem",
-              background: "var(--cta)", color: "#fff",
-              padding: "0.75rem 1.6rem", borderRadius: "100px",
-              fontWeight: 500, fontSize: "0.9rem",
-              textDecoration: "none",
-              boxShadow: "0 6px 20px rgba(0,0,0,.12)",
-            }}
-          >
-            Agendar diagnóstico gratis →
-          </Link>
-
         </div>
 
       </div>

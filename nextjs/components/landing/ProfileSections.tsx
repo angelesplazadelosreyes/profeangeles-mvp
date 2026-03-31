@@ -31,11 +31,11 @@ export default function ProfileSections() {
             }}>
               <div style={{
                 width: "140px", height: "140px", borderRadius: "50%",
-                background: "var(--primary-lt)",
+                background: "#ffffff",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "4rem",
-                border: "4px solid var(--bg-card)",
-                boxShadow: "var(--shadow-lg)",
+                border: "3px solid var(--primary)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.50)",
                 transition: "background .4s, border-color .3s",
               }}>
                 {profile.icon}
@@ -64,8 +64,8 @@ export default function ProfileSections() {
               </div>
 
               {/* Título de sección
-                  Fuente actual: Syne 800
-                  Para cambiar fuente: reemplaza var(--font-inter) por var(--font-inter)
+                  Fuente actual: Inter 800
+                  Para cambiar fuente: reemplaza var(--font-inter) por var(--font-elegida)
                   Para cambiar peso: ajusta fontWeight (300 más suave, 700 más fuerte)
                   Para cambiar tamaño: ajusta los 3 valores de clamp(mínimo, fluido, máximo)
                   Ejemplo más pequeño: clamp(1.2rem, 2vw, 1.8rem)
@@ -127,6 +127,8 @@ export default function ProfileSections() {
                   background: "var(--primary-lt)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: "1.3rem", marginBottom: "1rem",
+                  border: "1.5px solid var(--primary)",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08)",
                   transition: "background .3s",
                 }}>
                   {card.icon}
