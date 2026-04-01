@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import PaletteSwitcher from "@/components/ui/PaletteSwitcher";
 import "@/styles/landing.css";
 import '@/styles/ejercicios.css';
+import '@/styles/guias.css';
 
 const inter = Inter({
   variable: "--font-inter",
