@@ -11,9 +11,9 @@
 
 .ejercicios-layout {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 260px 1fr;
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* ── Sidebar ──────────────────────────────────────────────────────────── */
@@ -28,7 +28,7 @@
 }
 
 .sidebar-title {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.1em;
   color: white;
@@ -42,7 +42,7 @@
   align-items: center;
   gap: 10px;
   padding: 9px 1.25rem;
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   transition: background 0.15s;
@@ -65,7 +65,7 @@
 .sidebar-item--disabled {
   color: rgba(255, 255, 255, 0.5);
   cursor: default;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .sidebar-item__soon {
@@ -90,6 +90,10 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  background: var(--bg-card);
+  border: 0.5px solid var(--rule-med);
+  border-radius: 12px;
+  padding: 1.5rem;
 }
 
 /* ── Cabecera del panel ───────────────────────────────────────────────── */
@@ -399,6 +403,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  border: 2px solid #1a1a2e;
+  box-shadow: 0 8px 0 #1a1a2e;
 }
 
 .coldstart-title {
