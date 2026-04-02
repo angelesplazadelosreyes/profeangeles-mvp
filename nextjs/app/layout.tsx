@@ -8,6 +8,7 @@ import PaletteSwitcher from "@/components/ui/PaletteSwitcher";
 import "@/styles/landing.css";
 import '@/styles/ejercicios.css';
 import '@/styles/guias.css';
+import '@/styles/clases.css';
 
 const inter = Inter({
   variable: "--font-inter",

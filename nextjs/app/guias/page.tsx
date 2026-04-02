@@ -23,15 +23,19 @@ export default function GuiasPage() {
   async function generarGuia() {
     setCargando(true);
     setError(null);
+
     try {
       const res = await fetch('/api/guias', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ count: cantidad, skills }),
       });
+
+      if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? `Error ${res.status}`);
       }
+
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
@@ -40,7 +44,11 @@ export default function GuiasPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo generar la guia.');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'No se pudo generar la guia. Intenta nuevamente.'
+      );
     } finally {
       setCargando(false);
     }
@@ -50,10 +58,24 @@ export default function GuiasPage() {
     <main className="guias-page">
       <div className="guias-header">
         <h1>Guias descargables</h1>
-        <p>Genera ejercicios en PDF para imprimir o practicar sin conexion. Incluye solucionario.</p>
+        <p>
+          Genera un conjunto de ejercicios en PDF para imprimir o practicar
+          sin conexion. Incluye solucionario al final.
+        </p>
       </div>
-      <ConfiguradorGuia cantidad={cantidad} skills={skills} cargando={cargando} error={error} onCantidad={setCantidad} onToggle={toggleSkill} onGenerar={generarGuia} />
+
+      <ConfiguradorGuia
+        cantidad={cantidad}
+        skills={skills}
+        cargando={cargando}
+        error={error}
+        onCantidad={setCantidad}
+        onToggle={toggleSkill}
+        onGenerar={generarGuia}
+      />
+
       <PreviewGuia skills={skills} />
+
       <GuiaModal visible={cargando} cantidad={cantidad} />
     </main>
   );
