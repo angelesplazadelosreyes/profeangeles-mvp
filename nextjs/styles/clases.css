@@ -700,3 +700,73 @@
   .stat-pill:last-child { border-bottom: none; }
   .diag-banner      { flex-direction: column; }
 }
+
+/* ── Informática ────────────────────────────────────────────────── */
+.informatica-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.tech-card {
+  border: 0.5px solid var(--rule-med, #ddd);
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: var(--color-bg, #fff);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tech-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text, #1a1a2e);
+  margin: 0;
+}
+
+.tech-card p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #555);
+  line-height: 1.65;
+  flex: 1;
+  margin: 0;
+}
+
+.tech-card-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.tech-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary, #7c6fcd);
+}
+
+.btn-card-tech {
+  display: inline-block;
+  margin-top: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary, #7c6fcd);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: opacity 0.15s;
+}
+
+.btn-card-tech:hover { opacity: 0.88; }
+
+@media (max-width: 700px) {
+  .tech-grid { grid-template-columns: 1fr; }
+}
