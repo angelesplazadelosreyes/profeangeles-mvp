@@ -213,6 +213,8 @@ def build_exercises_html(exercises, skills):
         fx = ex["fx"]
         labels = [lab for key, lab in ORDER_LABELS if key in skills]
         chips = "".join(f'<span class="chip">{l}</span>' for l in labels)
+        if "inverse" in skills:
+            chips += '<span class="chip">Función inversa</span>'
         html += f"""
         <div class="exercise-card">
           <div class="exercise-number">Ejercicio {idx}</div>

@@ -107,21 +107,23 @@ def quadratic_inverse_right_branch(a, b, c):
     hs = fmt_num_plain(h)
     ks = fmt_num_plain(k)
 
+    a_fmt = fmt_num_plain(abs(a))
+    
     if a > 0:
         if k >= 0:
-            inside = f"(x - {ks}) / {fmt_num_plain(a)}"
+            inside = f"(x - {ks}) / {a_fmt}" if abs(a) != 1 else f"x - {ks}"
         else:
-            inside = f"(x + {fmt_num_plain(abs(k))}) / {fmt_num_plain(a)}"
-        expr = f"{hs} + √({inside})"
+            inside = f"(x + {fmt_num_plain(abs(k))}) / {a_fmt}" if abs(a) != 1 else f"x + {fmt_num_plain(abs(k))}"
+        expr = f"√({inside})" if hs == "0" else f"{hs} + √({inside})"
         restr = f"x >= {hs}"
     else:
         if k >= 0:
-            inside = f"({ks} - x) / {fmt_num_plain(abs(a))}"
+            inside = f"({ks} - x) / {a_fmt}" if abs(a) != 1 else f"{ks} - x"
         else:
-            inside = f"({fmt_num_plain(abs(k))} + x) / {fmt_num_plain(abs(a))}"
+            inside = f"({fmt_num_plain(abs(k))} + x) / {a_fmt}" if abs(a) != 1 else f"{fmt_num_plain(abs(k))} + x"
         expr = f"√({inside})" if hs == "0" else f"{hs} + √({inside})"
         restr = f"x <= {ks}"
-
+        
     return {
         "expression": expr,
         "h": hs,
@@ -310,7 +312,7 @@ def build_solution_parts_plain(a, b, c, D, h, k, roots, y_intercept):
     concavity = "Cóncava hacia arriba" if a > 0 else "Cóncava hacia abajo"
 
     # Discriminante
-    discriminant = f"D = {fmt_num_plain(D)}"
+    discriminant = f"{fmt_num_plain(D)}"
 
     # Raíces
     if len(roots) == 2:
