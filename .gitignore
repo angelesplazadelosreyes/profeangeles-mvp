@@ -34,3 +34,11 @@ build/
 .vercel/
 .netlify/
 .render/
+
+
+# Next.js
+.next/
+nextjs/.next/
+
+# Archivos de prueba
+test.pdf

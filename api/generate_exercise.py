@@ -7,7 +7,7 @@ import math
 import os
 from fractions import Fraction
 from reportlab.lib.utils import ImageReader
-from api.utils.format import fmt_num
+from api.utils.format import fmt_num, fmt_num_plain
 from flask import Flask, Response, request, jsonify
 from .exercises.quadratic.traits import quadratic_traits
 from .exercises.quadratic.plot import plot_quadratic_png
@@ -74,40 +74,31 @@ def readable_function_from_coeffs(a, b, c):
     return s
 
 def latexish_to_plain(s: str) -> str:
-    """MVP: limpia strings tipo LaTeX a algo legible en PDF."""
+    """Limpia strings tipo LaTeX a texto plano legible en PDF."""
     if not s:
         return ""
     x = s
-    x = x.replace("\\text{", "").replace("}", "")
-    x = x.replace("\\Delta", "D")
+    # Primero reemplazos completos antes de eliminar llaves
     x = x.replace("\\mathbb{R}", "R")
+    x = x.replace("\\mathbb{R", "R")      # bug: llave sin cerrar
+    x = x.replace("\\Delta", "D")
     x = x.replace("\\infty", "infinito")
-    x = x.replace("\\left", "").replace("\\right", "")
-    x = x.replace("\\;", " ")
-    x = x.replace("\\,", " ")
-    x = x.replace("~", " ")
+    x = x.replace("\\text{No tiene raíces reales.}", "No tiene raíces reales.")
+    x = x.replace("\\text{No es factorizable en }", "No es factorizable en R")
+    x = x.replace("\\text{No es factorizable en R}", "No es factorizable en R")
+    x = x.replace("\\text{Cóncava hacia arriba}", "Cóncava hacia arriba")
+    x = x.replace("\\text{Cóncava hacia abajo}", "Cóncava hacia abajo")
+    # Limpiar comandos LaTeX restantes
+    x = x.replace("\\text{", "").replace("\\left", "").replace("\\right", "")
+    x = x.replace("\\;", " ").replace("\\,", " ").replace("~", " ")
+    x = x.replace("\\frac{", "").replace("\\sqrt{", "√(")
+    x = x.replace("\\ge", ">=").replace("\\le", "<=")
+    # Eliminar llaves sobrantes al final
+    x = x.replace("{", "").replace("}", ")")
     return x.strip()
-
-def fmt_num_plain(x, nd=2):
-    """Número corto y bonito para texto en PDF."""
-    try:
-        v = float(x)
-    except Exception:
-        return str(x)
-
-    if abs(v - round(v)) < 1e-9:
-        return str(int(round(v)))
-
-    return f"{v:.{nd}f}".rstrip("0").rstrip(".")
+    
 
 def quadratic_inverse_right_branch(a, b, c):
-    """
-    Inversa de una cuadrática usando la rama derecha (x >= h),
-    devuelta en texto simple y "bonito" para PDF.
-
-    f(x)=a(x-h)^2 + k  =>  f^{-1}(x)= h + sqrt((x-k)/a)   si a>0
-                         h + sqrt((k-x)/|a|)             si a<0
-    """
     a = float(a); b = float(b); c = float(c)
 
     h = -b / (2 * a)
@@ -116,19 +107,28 @@ def quadratic_inverse_right_branch(a, b, c):
     hs = fmt_num_plain(h)
     ks = fmt_num_plain(k)
 
+    a_fmt = fmt_num_plain(abs(a))
+    
     if a > 0:
-        expr = f"{hs} + sqrt((x - {ks}) / {fmt_num_plain(a)})"
-        inv_domain = f"x >= {ks}"  # dominio de f^{-1}
+        if k >= 0:
+            inside = f"(x - {ks}) / {a_fmt}" if abs(a) != 1 else f"x - {ks}"
+        else:
+            inside = f"(x + {fmt_num_plain(abs(k))}) / {a_fmt}" if abs(a) != 1 else f"x + {fmt_num_plain(abs(k))}"
+        expr = f"√({inside})" if hs == "0" else f"{hs} + √({inside})"
+        restr = f"x >= {hs}"
     else:
-        expr = f"{hs} + sqrt(({ks} - x) / {fmt_num_plain(abs(a))})"
-        inv_domain = f"x <= {ks}"
-
+        if k >= 0:
+            inside = f"({ks} - x) / {a_fmt}" if abs(a) != 1 else f"{ks} - x"
+        else:
+            inside = f"({fmt_num_plain(abs(k))} + x) / {a_fmt}" if abs(a) != 1 else f"{fmt_num_plain(abs(k))} + x"
+        expr = f"√({inside})" if hs == "0" else f"{hs} + √({inside})"
+        restr = f"x <= {ks}"
+        
     return {
         "expression": expr,
-        "h": hs,                 # restricción de rama derecha: x >= h
-        "inverse_domain": inv_domain
+        "h": hs,
+        "inverse_domain": restr
     }
-
 
 # --------------------- Auth ---------------------
 UNPROTECTED = {"/", "/health"}
@@ -211,11 +211,12 @@ def latex_range(a, k):
 
 def roots_to_latex(roots):
     if len(roots) == 2:
-        return rf"x_1={roots[0]},\; x_2={roots[1]}"
+        r1 = fmt_num_plain(roots[0])
+        r2 = fmt_num_plain(roots[1])
+        return f"x1={r1}, x2={r2}"
     if len(roots) == 1:
-        return rf"x_0={roots[0]}"
-    return r"\text{No tiene raíces reales.}"
- 
+        return f"x0={fmt_num_plain(roots[0])}"
+    return "No tiene raíces reales."
 
 def latex_inverse_quadratic(a, h, k, branch="right"):
     """
@@ -231,10 +232,10 @@ def latex_inverse_quadratic(a, h, k, branch="right"):
     # 1) Restricción del dominio de f (para invertibilidad)
     if branch == "left":
         dom_restr = rf"x \le {h}"
-        sign = "-"  # rama izquierda -> h - sqrt(...)
+        sign = "-"  # rama izquierda -> h - √(...)
     else:
         dom_restr = rf"x \ge {h}"
-        sign = "+"  # rama derecha -> h + sqrt(...)
+        sign = "+"  # rama derecha -> h + √(...)
 
     # 2) Dominio de f^{-1} (igual al recorrido de f)
     #    a>0 => range [k, +inf)  => domain inverse x >= k
@@ -247,8 +248,8 @@ def latex_inverse_quadratic(a, h, k, branch="right"):
         inside = rf"\frac{{{k} - x}}{{{abs(a)}}}"  # (k-x)/|a|
 
     # 3) Expresión de la inversa
-    # f^{-1}(x) = h ± sqrt((x-k)/a)  (si a>0)
-    # f^{-1}(x) = h ± sqrt((k-x)/|a|) (si a<0)
+    # f^{-1}(x) = h ± √((x-k)/a)  (si a>0)
+    # f^{-1}(x) = h ± √((k-x)/|a|) (si a<0)
     inv_expr = rf"f^{{-1}}(x) = {h} {sign} \sqrt{{{inside}}}"
 
     # 4) Texto final
@@ -264,9 +265,9 @@ def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
     concavity = r"\text{Cóncava hacia arriba}" if a > 0 else r"\text{Cóncava hacia abajo}"
 
     # eje simetría, vértice, etc.
-    axis = rf"x={h}"
-    vertex = rf"({h},{k})"
-    yint = rf"(0,{y_intercept})"
+    axis = f"x={fmt_num_plain(h)}"
+    vertex = f"({fmt_num_plain(h)},{fmt_num_plain(k)})"
+    yint = f"(0,{fmt_num_plain(y_intercept)})"
 
     # formas
     canon = latex_canonical_from_vertex(float(a), float(h), float(k))
@@ -285,7 +286,7 @@ def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
 
     parts = {
         "concavity": concavity,
-        "discriminant": rf"\Delta={D}",
+        "discriminant": f"D={fmt_num_plain(D)}",
         "roots": roots_to_latex(roots),
         "axis": axis,
         "vertex": vertex,
@@ -299,6 +300,91 @@ def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
     }
     return parts
 
+
+def build_solution_parts_plain(a, b, c, D, h, k, roots, y_intercept):
+    """Versión texto plano para PDF — sin LaTeX."""
+    from fractions import Fraction
+
+    def to_frac(x):
+        return fmt_num_plain(x)
+
+    # Concavidad
+    concavity = "Cóncava hacia arriba" if a > 0 else "Cóncava hacia abajo"
+
+    # Discriminante
+    discriminant = f"{fmt_num_plain(D)}"
+
+    # Raíces
+    if len(roots) == 2:
+        r1, r2 = to_frac(roots[0]), to_frac(roots[1])
+        roots_str = f"x₁ = {r1}, x₂ = {r2}"
+    elif len(roots) == 1:
+        roots_str = f"x₀ = {to_frac(roots[0])}"
+    else:
+        roots_str = "No tiene raíces reales."
+
+    # Eje de simetría
+    axis = f"x = {to_frac(h)}"
+
+    # Vértice
+    vertex = f"({to_frac(h)}, {to_frac(k)})"
+
+    # Intersección eje Y
+    y_intercept_str = f"(0, {fmt_num_plain(y_intercept)})"
+
+    # Dominio
+    domain = "ℝ"
+
+    # Recorrido
+    if a > 0:
+        range_str = f"[{to_frac(k)}, +∞)"
+    else:
+        range_str = f"(-∞, {to_frac(k)}]"
+
+    # Forma canónica — texto plano
+    a_str = "" if a == 1 else ("-" if a == -1 else str(a))
+    h_f = to_frac(abs(h))
+    k_f = to_frac(abs(k))
+    if abs(h) < 1e-9:
+        inside = "x"
+    elif h > 0:
+        inside = f"x - {h_f}"
+    else:
+        inside = f"x + {h_f}"
+    k_term = f"+ {k_f}" if k >= 0 else f"- {k_f}"
+    if inside == "x":
+        canonical = f"{a_str}x² {k_term}"
+    else:
+        canonical = f"{a_str}({inside})² {k_term}"
+
+    # Forma factorizada — texto plano
+    if len(roots) == 2:
+        r1v, r2v = roots[0], roots[1]
+        def factor(r):
+            if abs(r) < 1e-9:
+                return "x"
+            rf = to_frac(abs(r))
+            return f"(x - {rf})" if r > 0 else f"(x + {rf})"
+        factorized = f"{a_str}{factor(r1v)}{factor(r2v)}"
+    elif len(roots) == 1:
+        r0 = roots[0]
+        rf = to_frac(abs(r0))
+        factorized = f"{a_str}(x - {rf})²" if r0 > 0 else f"{a_str}(x + {rf})²"
+    else:
+        factorized = "No es factorizable en ℝ"
+
+    return {
+        "concavity":       concavity,
+        "discriminant":    discriminant,
+        "roots":           roots_str,
+        "axis":            axis,
+        "vertex":          vertex,
+        "y_intercept":     y_intercept_str,
+        "domain":          domain,
+        "range":           range_str,
+        "canonical_form":  canonical,
+        "factorized_form": factorized,
+    }
 
 @app.route("/api/generate-exercise", methods=["GET"])
 def generate_exercise():
@@ -433,6 +519,51 @@ def generate_exercise():
 
 @app.route("/api/generate-guide-pdf", methods=["POST"])
 def generate_guide_pdf():
+    """
+    Body esperado:
+    {
+      "count": 10,
+      "skills": ["concavity", "roots", "graph", ...]
+    }
+    """
+    try:
+        body = request.get_json(force=True) or {}
+        count = int(body.get("count", 10))
+        skills = body.get("skills", [])
+        if not isinstance(skills, list):
+            return jsonify({"error": "skills must be a list"}), 400
+
+        # Genera "count" ejercicios
+        exercises = []
+        for _ in range(count):
+            a, b, c = rand_coeff()
+            D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
+            parts = build_solution_parts_plain(a, b, c, D, h, k, roots, y_intercept)
+
+            plot_b64 = None
+            if "graph" in skills:
+                plot_b64 = plot_quadratic_png(float(a), float(b), float(c))
+
+            inv = quadratic_inverse_right_branch(a, b, c)
+
+            exercises.append({
+                "fx": readable_function_from_coeffs(a, b, c),
+                "solution_parts": parts,
+                "plot_b64": plot_b64,
+                "inverse": inv,
+            })
+
+        # Genera PDF con Playwright
+        from api.pdf_generator import generate_guide_pdf_bytes
+        pdf = generate_guide_pdf_bytes(exercises, skills)
+
+        resp = Response(pdf, mimetype="application/pdf")
+        resp.headers["Content-Disposition"] = 'attachment; filename="guia-funcion-cuadratica.pdf"'
+        return resp
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
     """
     Body esperado:
     {
@@ -594,14 +725,14 @@ def generate_guide_pdf():
                 )
 
                 draw_paragraph(
-                    f"f⁻¹(x) = {inv['expression']}",
+                    f"f^(-1)(x) = {inv['expression']}",
                     font="Helvetica",
                     size=11,
                     leading=14,
                 )
 
                 draw_paragraph(
-                    f"(se considera la rama derecha de la parábola, con restricción x ≥ {inv['h']})",
+                    f"(se considera la rama derecha de la parábola, con restriccion x >= {inv['h']})",
                     font="Helvetica-Oblique",
                     size=10,
                     leading=12,

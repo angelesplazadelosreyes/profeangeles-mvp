@@ -3,4 +3,5 @@ flask-cors>=4.0,<5
 gunicorn>=21.2,<22
 numpy>=2.2,<3
 matplotlib>=3.10,<3.11
-reportlab==4.2.5
+reportlab>=4.4,<5
+playwright>=1.58,<2
