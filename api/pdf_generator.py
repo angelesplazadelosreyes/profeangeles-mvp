@@ -290,7 +290,7 @@ def build_solutions_html(exercises, skills):
 
 async def _generate_pdf_bytes(html: str) -> bytes:
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
         page = await browser.new_page()
         await page.set_content(html, wait_until="networkidle")
         pdf = await page.pdf(
