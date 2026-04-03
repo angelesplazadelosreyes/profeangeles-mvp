@@ -91,7 +91,7 @@ def latexish_to_plain(s: str) -> str:
     # Limpiar comandos LaTeX restantes
     x = x.replace("\\text{", "").replace("\\left", "").replace("\\right", "")
     x = x.replace("\\;", " ").replace("\\,", " ").replace("~", " ")
-    x = x.replace("\\frac{", "").replace("\\sqrt{", "sqrt(")
+    x = x.replace("\\frac{", "").replace("\\sqrt{", "√(")
     x = x.replace("\\ge", ">=").replace("\\le", "<=")
     # Eliminar llaves sobrantes al final
     x = x.replace("{", "").replace("}", ")")
@@ -112,14 +112,14 @@ def quadratic_inverse_right_branch(a, b, c):
             inside = f"(x - {ks}) / {fmt_num_plain(a)}"
         else:
             inside = f"(x + {fmt_num_plain(abs(k))}) / {fmt_num_plain(a)}"
-        expr = f"{hs} + sqrt({inside})"
+        expr = f"{hs} + √({inside})"
         restr = f"x >= {hs}"
     else:
         if k >= 0:
             inside = f"({ks} - x) / {fmt_num_plain(abs(a))}"
         else:
             inside = f"({fmt_num_plain(abs(k))} + x) / {fmt_num_plain(abs(a))}"
-        expr = f"{hs} + sqrt({inside})"
+        expr = f"√({inside})" if hs == "0" else f"{hs} + √({inside})"
         restr = f"x <= {ks}"
 
     return {
@@ -230,10 +230,10 @@ def latex_inverse_quadratic(a, h, k, branch="right"):
     # 1) Restricción del dominio de f (para invertibilidad)
     if branch == "left":
         dom_restr = rf"x \le {h}"
-        sign = "-"  # rama izquierda -> h - sqrt(...)
+        sign = "-"  # rama izquierda -> h - √(...)
     else:
         dom_restr = rf"x \ge {h}"
-        sign = "+"  # rama derecha -> h + sqrt(...)
+        sign = "+"  # rama derecha -> h + √(...)
 
     # 2) Dominio de f^{-1} (igual al recorrido de f)
     #    a>0 => range [k, +inf)  => domain inverse x >= k
@@ -246,8 +246,8 @@ def latex_inverse_quadratic(a, h, k, branch="right"):
         inside = rf"\frac{{{k} - x}}{{{abs(a)}}}"  # (k-x)/|a|
 
     # 3) Expresión de la inversa
-    # f^{-1}(x) = h ± sqrt((x-k)/a)  (si a>0)
-    # f^{-1}(x) = h ± sqrt((k-x)/|a|) (si a<0)
+    # f^{-1}(x) = h ± √((x-k)/a)  (si a>0)
+    # f^{-1}(x) = h ± √((k-x)/|a|) (si a<0)
     inv_expr = rf"f^{{-1}}(x) = {h} {sign} \sqrt{{{inside}}}"
 
     # 4) Texto final
@@ -350,7 +350,10 @@ def build_solution_parts_plain(a, b, c, D, h, k, roots, y_intercept):
     else:
         inside = f"x + {h_f}"
     k_term = f"+ {k_f}" if k >= 0 else f"- {k_f}"
-    canonical = f"{a_str}({inside})² {k_term}"
+    if inside == "x":
+        canonical = f"{a_str}x² {k_term}"
+    else:
+        canonical = f"{a_str}({inside})² {k_term}"
 
     # Forma factorizada — texto plano
     if len(roots) == 2:

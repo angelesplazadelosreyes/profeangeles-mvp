@@ -271,7 +271,7 @@ def build_solutions_html(exercises, skills):
                 <div class="sol-row">
                   <span class="sol-letter">{letter})</span>
                   <span><span class="sol-label">Función inversa:</span>
-                  f^(-1)(x) = {inv['expression']}<br>
+                  f⁻¹(x) = {inv['expression']}<br>
                   <em style="font-size:11px;color:#888780">restricción x &ge; {inv['h']}</em>
                   </span>
                 </div>
