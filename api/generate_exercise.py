@@ -7,7 +7,7 @@ import math
 import os
 from fractions import Fraction
 from reportlab.lib.utils import ImageReader
-from api.utils.format import fmt_num
+from api.utils.format import fmt_num, fmt_num_plain
 from flask import Flask, Response, request, jsonify
 from .exercises.quadratic.traits import quadratic_traits
 from .exercises.quadratic.plot import plot_quadratic_png
@@ -96,18 +96,7 @@ def latexish_to_plain(s: str) -> str:
     # Eliminar llaves sobrantes al final
     x = x.replace("{", "").replace("}", ")")
     return x.strip()
-
-def fmt_num_plain(x, nd=2):
-    """Número corto y bonito para texto en PDF."""
-    try:
-        v = float(x)
-    except Exception:
-        return str(x)
-
-    if abs(v - round(v)) < 1e-9:
-        return str(int(round(v)))
-
-    return f"{v:.{nd}f}".rstrip("0").rstrip(".")
+    
 
 def quadratic_inverse_right_branch(a, b, c):
     a = float(a); b = float(b); c = float(c)
@@ -310,6 +299,88 @@ def build_solution_parts(a, b, c, D, h, k, roots, y_intercept):
     return parts
 
 
+def build_solution_parts_plain(a, b, c, D, h, k, roots, y_intercept):
+    """Versión texto plano para PDF — sin LaTeX."""
+    from fractions import Fraction
+
+    def to_frac(x):
+        return fmt_num_plain(x)
+
+    # Concavidad
+    concavity = "Cóncava hacia arriba" if a > 0 else "Cóncava hacia abajo"
+
+    # Discriminante
+    discriminant = f"D = {fmt_num_plain(D)}"
+
+    # Raíces
+    if len(roots) == 2:
+        r1, r2 = to_frac(roots[0]), to_frac(roots[1])
+        roots_str = f"x₁ = {r1}, x₂ = {r2}"
+    elif len(roots) == 1:
+        roots_str = f"x₀ = {to_frac(roots[0])}"
+    else:
+        roots_str = "No tiene raíces reales."
+
+    # Eje de simetría
+    axis = f"x = {to_frac(h)}"
+
+    # Vértice
+    vertex = f"({to_frac(h)}, {to_frac(k)})"
+
+    # Intersección eje Y
+    y_intercept_str = f"(0, {fmt_num_plain(y_intercept)})"
+
+    # Dominio
+    domain = "ℝ"
+
+    # Recorrido
+    if a > 0:
+        range_str = f"[{to_frac(k)}, +∞)"
+    else:
+        range_str = f"(-∞, {to_frac(k)}]"
+
+    # Forma canónica — texto plano
+    a_str = "" if a == 1 else ("-" if a == -1 else str(a))
+    h_f = to_frac(abs(h))
+    k_f = to_frac(abs(k))
+    if abs(h) < 1e-9:
+        inside = "x"
+    elif h > 0:
+        inside = f"x - {h_f}"
+    else:
+        inside = f"x + {h_f}"
+    k_term = f"+ {k_f}" if k >= 0 else f"- {k_f}"
+    canonical = f"{a_str}({inside})² {k_term}"
+
+    # Forma factorizada — texto plano
+    if len(roots) == 2:
+        r1v, r2v = roots[0], roots[1]
+        def factor(r):
+            if abs(r) < 1e-9:
+                return "x"
+            rf = to_frac(abs(r))
+            return f"(x - {rf})" if r > 0 else f"(x + {rf})"
+        factorized = f"{a_str}{factor(r1v)}{factor(r2v)}"
+    elif len(roots) == 1:
+        r0 = roots[0]
+        rf = to_frac(abs(r0))
+        factorized = f"{a_str}(x - {rf})²" if r0 > 0 else f"{a_str}(x + {rf})²"
+    else:
+        factorized = "No es factorizable en ℝ"
+
+    return {
+        "concavity":       concavity,
+        "discriminant":    discriminant,
+        "roots":           roots_str,
+        "axis":            axis,
+        "vertex":          vertex,
+        "y_intercept":     y_intercept_str,
+        "domain":          domain,
+        "range":           range_str,
+        "canonical_form":  canonical,
+        "factorized_form": factorized,
+    }
+
 @app.route("/api/generate-exercise", methods=["GET"])
 def generate_exercise():
     # Params
@@ -443,6 +514,51 @@ def generate_exercise():
 
 @app.route("/api/generate-guide-pdf", methods=["POST"])
 def generate_guide_pdf():
+    """
+    Body esperado:
+    {
+      "count": 10,
+      "skills": ["concavity", "roots", "graph", ...]
+    }
+    """
+    try:
+        body = request.get_json(force=True) or {}
+        count = int(body.get("count", 10))
+        skills = body.get("skills", [])
+        if not isinstance(skills, list):
+            return jsonify({"error": "skills must be a list"}), 400
+
+        # Genera "count" ejercicios
+        exercises = []
+        for _ in range(count):
+            a, b, c = rand_coeff()
+            D, h, k, roots, y_intercept = quadratic_traits(a, b, c)
+            parts = build_solution_parts_plain(a, b, c, D, h, k, roots, y_intercept)
+
+            plot_b64 = None
+            if "graph" in skills:
+                plot_b64 = plot_quadratic_png(float(a), float(b), float(c))
+
+            inv = quadratic_inverse_right_branch(a, b, c)
+
+            exercises.append({
+                "fx": readable_function_from_coeffs(a, b, c),
+                "solution_parts": parts,
+                "plot_b64": plot_b64,
+                "inverse": inv,
+            })
+
+        # Genera PDF con Playwright
+        from api.pdf_generator import generate_guide_pdf_bytes
+        pdf = generate_guide_pdf_bytes(exercises, skills)
+
+        resp = Response(pdf, mimetype="application/pdf")
+        resp.headers["Content-Disposition"] = 'attachment; filename="guia-funcion-cuadratica.pdf"'
+        return resp
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
     """
     Body esperado:
     {
