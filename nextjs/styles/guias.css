@@ -1,0 +1,295 @@
+/* styles/guias.css */
+
+/* ── Layout general ─────────────────────────────────────────────── */
+.guias-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.guias-header {
+  margin-bottom: 1.75rem;
+}
+
+.guias-header h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text, #1a1a2e);
+  margin-bottom: 0.35rem;
+}
+
+.guias-header p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary, #555);
+  max-width: 55ch;
+  line-height: 1.6;
+}
+
+/* ── Card contenedor (igual patrón que /ejercicios) ─────────────── */
+.guias-card {
+  border: 0.5px solid var(--rule-med, #ddd);
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: var(--color-bg, #fff);
+}
+
+/* ── Nota informativa cold start ────────────────────────────────── */
+.guias-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--primary-5, #f3f0ff);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--primary-dark, #3c3489);
+  line-height: 1.5;
+}
+
+.guias-note-icon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  margin-top: 1px;
+}
+
+/* ── Fila de selectores ─────────────────────────────────────────── */
+.guias-config-row {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.guias-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.guias-field label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #555);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.guias-field select {
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  border: 0.5px solid var(--rule-med, #ddd);
+  border-radius: 8px;
+  background: var(--color-bg-secondary, #f9f9f9);
+  color: var(--color-text, #1a1a2e);
+  min-width: 160px;
+  cursor: pointer;
+}
+
+/* ── Sección habilidades ─────────────────────────────────────────── */
+.guias-section-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #555);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+}
+
+.guias-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.guias-skill-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 0.5px solid var(--rule-med, #ddd);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text, #1a1a2e);
+  cursor: pointer;
+  background: var(--color-bg-secondary, #f9f9f9);
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.guias-skill-chip:hover {
+  border-color: var(--primary, #7c6fcd);
+}
+
+.guias-skill-chip.activo {
+  border-color: var(--primary, #7c6fcd);
+  background: var(--primary-5, #f3f0ff);
+  color: var(--primary-dark, #3c3489);
+}
+
+.guias-skill-chip input[type="checkbox"] {
+  accent-color: var(--primary, #7c6fcd);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* ── Divider ────────────────────────────────────────────────────── */
+.guias-divider {
+  height: 0.5px;
+  background: var(--rule-med, #ddd);
+  margin: 1.25rem 0;
+}
+
+/* ── Fila de acción ─────────────────────────────────────────────── */
+.guias-action-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.guias-btn-primary {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: var(--primary, #7c6fcd);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.guias-btn-primary:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.guias-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.guias-action-hint {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #888);
+}
+
+/* ── Error ──────────────────────────────────────────────────────── */
+.guias-error {
+  margin-top: 1rem;
+  padding: 0.65rem 0.9rem;
+  background: #fff0f0;
+  border: 0.5px solid #f5c0c0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #a32d2d;
+}
+
+/* ── Preview estática ───────────────────────────────────────────── */
+.guias-preview {
+  margin-top: 1.75rem;
+  border: 0.5px dashed var(--rule-med, #ccc);
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: var(--color-bg-secondary, #f9f9f9);
+}
+
+.guias-preview-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.guias-preview-ex {
+  background: var(--color-bg, #fff);
+  border: 0.5px solid var(--rule-med, #ddd);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.guias-preview-ex-num {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #888);
+  margin-bottom: 0.35rem;
+}
+
+.guias-preview-ex-body {
+  font-size: 0.875rem;
+  color: var(--color-text, #1a1a2e);
+  line-height: 1.6;
+}
+
+.guias-preview-ex-tags {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.guias-tag {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--primary-5, #f3f0ff);
+  color: var(--primary-dark, #3c3489);
+}
+
+.guias-preview-dots {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #aaa);
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.guias-solucionario-sep {
+  border-top: 1.5px dashed #ccc;
+  margin: 1rem 0 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.guias-solucionario-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #888);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.guias-solucionario-item {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #555);
+  line-height: 1.9;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .guias-skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .guias-config-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .guias-field select {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .guias-skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
