@@ -1,0 +1,351 @@
+/* ── Página /juegos ─────────────────────────────────────── */
+.juegos-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.juegos-page__title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.juegos-page__subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted, #6b7280);
+  margin-bottom: 2.5rem;
+}
+
+.juegos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Tarjeta de juego ───────────────────────────────────── */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--color-primary-20, #e9d5ff);
+  background: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  color: inherit;
+}
+
+.game-card:hover:not(.game-card--disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-color: var(--color-primary);
+}
+
+.game-card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-card__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.game-card__name {
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.game-card__desc {
+  font-size: 0.82rem;
+  color: var(--color-text-muted, #6b7280);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.game-card__soon {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Página del juego /juegos/[id] ──────────────────────── */
+.juego-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.juego-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.juego-page__back:hover {
+  text-decoration: underline;
+}
+
+/* ── Juego Tablas ───────────────────────────────────────── */
+.tg-setup,
+.tg-game,
+.tg-result {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tg-section-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tg-table-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tg-table-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 2px solid var(--color-primary-20, #e9d5ff);
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--color-primary);
+}
+
+.tg-table-btn:hover,
+.tg-table-btn--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.tg-difficulty {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tg-diff-btn {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.9rem;
+  border-radius: 10px;
+  border: 2px solid var(--color-primary-20, #e9d5ff);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.tg-diff-btn:hover,
+.tg-diff-btn--active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-5, #faf5ff);
+}
+
+.tg-diff-sub {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.tg-diff-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.tg-diff-dot--facil   { background: #22c55e; }
+.tg-diff-dot--medio   { background: #f59e0b; }
+.tg-diff-dot--dificil { background: #ef4444; }
+
+.tg-start-btn {
+  margin-top: 0.5rem;
+  padding: 0.9rem;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.tg-start-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* HUD */
+.tg-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tg-timer {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.tg-timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.tg-progress {
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.tg-score-box {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.tg-heart { color: #ef4444; }
+
+.tg-question {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 800;
+  text-align: center;
+  color: var(--color-primary);
+  padding: 1.5rem 0;
+}
+
+.tg-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.tg-opt-btn {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid var(--color-primary-20, #e9d5ff);
+  background: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.tg-opt-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-5, #faf5ff);
+}
+
+.tg-opt--correct { background: #dcfce7; border-color: #22c55e; }
+.tg-opt--wrong   { background: #fee2e2; border-color: #ef4444; }
+
+/* Resultado */
+.tg-result {
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.tg-result-emoji { font-size: 4rem; }
+
+.tg-result-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.tg-result-stats {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+}
+
+.tg-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tg-stat-val {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.tg-stat-total {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.tg-stat-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.tg-result-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.tg-action-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  border: 2px solid var(--color-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tg-action-btn--primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.tg-action-btn--secondary {
+  background: #fff;
+  color: var(--color-primary);
+}
+
+.tg-action-btn:hover {
+  opacity: 0.85;
+}

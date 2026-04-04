@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   { href: "/",            icon: "🏠", label: "Inicio"      },
   { href: "/ejercicios",  icon: "✏️", label: "Ejercicios"  },
   { href: "/guias",       icon: "📄", label: "Guías"       },
+  { href: "/juegos",      icon: "🎮", label: "Juegos"      },
   { href: "/clases",      icon: "🎓", label: "Clases"      },
   { href: "/informatica", icon: "💻", label: "Informática" },
 ];
