@@ -146,12 +146,11 @@ def require_api_key():
     
 
 # --------------------- CORS ---------------------
-# --------------------- CORS ---------------------
 ALLOWED_ORIGINS = {
     "https://profeangeles-mvp.vercel.app",
-    "https://profeangeles.cl",          # cuando tengas dominio propio
-    "http://localhost:5173",            # Vite dev local
-    "http://localhost:3000",            # alternativa local
+    "https://profeangeles.cl",
+    "https://www.profeangeles.cl",
+    "http://localhost:3000",
 }
 
 @app.after_request
@@ -164,14 +163,6 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization,X-API-Key"
     response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
     return response
-    # Para MVP dejamos *; OJO, después reemplazas por los dominios de Vercel y mi dominio:
-    #   "https://profeangeles.cl", "https://profeangeles-*.vercel.app"
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization,X-API-Key"
-    response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
-    return response
-
 # Preflight para el endpoint principal
 @app.route("/api/generate-exercise", methods=["OPTIONS"])
 def generate_exercise_options():
