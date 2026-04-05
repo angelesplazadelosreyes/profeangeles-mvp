@@ -27,9 +27,6 @@ export default async function JuegoPage({ params }: Props) {
   return (
     <main className="juego-page">
       <Link href="/juegos" className="juego-page__back">← Volver a juegos</Link>
-      <h1 style={{ fontWeight: 800, fontSize: '1.6rem', marginBottom: '1.5rem' }}>
-        {juego.icon} {juego.name}
-      </h1>
       {id === 'tablas' && <TablasMult />}
     </main>
   );

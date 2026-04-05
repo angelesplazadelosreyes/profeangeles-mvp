@@ -78,7 +78,7 @@
 
 /* ── Página del juego /juegos/[id] ──────────────────────── */
 .juego-page {
-  max-width: 600px;
+  max-width: 620px;
   margin: 0 auto;
   padding: 6rem 1.5rem 4rem;
 }
@@ -98,124 +98,151 @@
   text-decoration: underline;
 }
 
-/* ── Juego Tablas ───────────────────────────────────────── */
-.tg-setup,
-.tg-game,
-.tg-result {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* ── Juego Tablas — Card contenedor ─────────────────────── */
+.tg-wrap {
+  background: #F2F2F2;
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 1.5rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.tg-game-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a1a6e;
+  margin-bottom: 0.2rem;
 }
 
 .tg-section-label {
+  font-size: 1rem;
   font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--color-text-muted, #6b7280);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: #0070C0;
+  margin-bottom: 0.6rem;
+  margin-top: 1rem;
 }
 
+/* ── Chips de tabla ─────────────────────────────────────── */
 .tg-table-selector {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 8px;
+  row-gap: 14px;
+  margin-bottom: 0.5rem;
 }
 
 .tg-table-btn {
-  padding: 0.4rem 0.9rem;
+  padding: 8px 18px;
   border-radius: 999px;
-  border: 2px solid var(--color-primary-20, #e9d5ff);
-  background: #fff;
-  font-size: 0.85rem;
+  border: 3px solid #7030A0;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
-  color: var(--color-primary);
+  color: #000;
+  transition: transform 0.1s;
 }
 
-.tg-table-btn:hover,
+.tg-table-btn:hover { opacity: 0.85; }
+
 .tg-table-btn--active {
-  background: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
+  transform: scale(1.15) !important;
+  box-shadow: 0 4px 0 #7030A0;
+  font-size: 14px;
+  padding: 10px 22px;
 }
 
+/* ── Colores de cada chip ───────────────────────────────── */
+.tg-chip-0  { background: #FF66FF; }
+.tg-chip-2  { background: #92D050; }
+.tg-chip-3  { background: #00B0F0; }
+.tg-chip-4  { background: #FFC000; }
+.tg-chip-5  { background: #FFFF00; }
+.tg-chip-6  { background: #9C85FF; }
+.tg-chip-7  { background: #FF0066; }
+.tg-chip-8  { background: #25D366; }
+.tg-chip-9  { background: #FF5050; }
+.tg-chip-10 { background: #00FFFF; }
+.tg-chip-11 { background: #00FF00; }
+.tg-chip-12 { background: #CC3300; }
+
+/* ── Dificultad ─────────────────────────────────────────── */
 .tg-difficulty {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 1.25rem;
 }
 
 .tg-diff-btn {
-  flex: 1;
-  min-width: 120px;
+  background: #F2CFEE;
+  border: 3px solid #7030A0;
+  border-radius: 14px;
+  aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.9rem;
-  border-radius: 10px;
-  border: 2px solid var(--color-primary-20, #e9d5ff);
-  background: #fff;
+  justify-content: center;
+  gap: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.15s;
+  transition: transform 0.1s;
 }
 
-.tg-diff-btn:hover,
+.tg-diff-btn:hover { transform: scale(1.04); }
+
 .tg-diff-btn--active {
-  border-color: var(--color-primary);
-  background: var(--color-primary-5, #faf5ff);
+  border-width: 4px;
+  transform: scale(1.15);
+  box-shadow: 0 6px 14px rgba(112,48,160,0.4);
 }
 
-.tg-diff-sub {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--color-text-muted, #6b7280);
-}
+.tg-diff-emoji { font-size: 48px; line-height: 1; }
+.tg-diff-label { font-size: 14px; font-weight: 700; color: #000; }
 
-.tg-diff-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.tg-diff-dot--facil   { background: #22c55e; }
-.tg-diff-dot--medio   { background: #f59e0b; }
-.tg-diff-dot--dificil { background: #ef4444; }
-
+/* ── Botón Jugar ────────────────────────────────────────── */
 .tg-start-btn {
-  margin-top: 0.5rem;
-  padding: 0.9rem;
-  border-radius: 10px;
-  border: none;
-  background: var(--color-primary);
-  color: #fff;
-  font-size: 1rem;
+  display: block;
+  margin: 0 auto;
+  background: #00B0F0;
+  border: 3px solid #7030A0;
+  border-radius: 999px;
+  padding: 13px 52px;
+  font-size: 17px;
   font-weight: 700;
+  color: #000;
   cursor: pointer;
-  transition: opacity 0.15s;
+  letter-spacing: 0.05em;
+  box-shadow: 0 6px 0 #0070A0, 0 8px 0 #7030A0;
+  position: relative;
+  top: 0;
+  transition: top 0.1s, box-shadow 0.1s;
+}
+
+.tg-start-btn:hover { opacity: 0.92; }
+
+.tg-start-btn:active {
+  top: 4px;
+  box-shadow: 0 2px 0 #0070A0, 0 3px 0 #7030A0;
 }
 
 .tg-start-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  background: var(--color-primary);
-  color: #fff;
+  box-shadow: 0 6px 0 #0070A0, 0 8px 0 #7030A0;
 }
 
-/* HUD */
+/* ── HUD ────────────────────────────────────────────────── */
 .tg-hud {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
 .tg-timer {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
 }
 
 .tg-timer-num {
@@ -225,12 +252,14 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  color: #1a1a6e;
 }
 
 .tg-progress {
   font-size: 0.9rem;
-  color: var(--color-text-muted, #6b7280);
+  font-weight: 600;
+  color: #1a1a6e;
 }
 
 .tg-score-box {
@@ -239,18 +268,21 @@
   gap: 0.3rem;
   font-weight: 800;
   font-size: 1.1rem;
+  color: #1a1a6e;
 }
 
 .tg-heart { color: #ef4444; }
 
+/* ── Pregunta ───────────────────────────────────────────── */
 .tg-question {
   font-size: clamp(2.5rem, 8vw, 4rem);
   font-weight: 800;
   text-align: center;
-  color: var(--color-primary);
+  color: #1a1a6e;
   padding: 1.5rem 0;
 }
 
+/* ── Opciones ───────────────────────────────────────────── */
 .tg-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -258,42 +290,54 @@
 }
 
 .tg-opt-btn {
-  padding: 1rem;
-  border-radius: 10px;
-  border: 2px solid var(--color-primary-20, #e9d5ff);
-  background: #fff;
-  font-size: 1.3rem;
-  font-weight: 700;
+  padding: 1.2rem 1rem;
+  aspect-ratio: 2 / 1;
+  border-radius: 14px;
+  border: 3px solid #7030A0;
+  background: #F2CFEE;
+  font-size: 1.4rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.1s;
+  color: #000;
+  transition: transform 0.1s;
+  box-shadow: 0 4px 0 #7030A0;
+  position: relative;
+  top: 0;
 }
 
 .tg-opt-btn:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  background: var(--color-primary-5, #faf5ff);
+  transform: scale(1.04);
 }
 
-.tg-opt--correct { background: #dcfce7; border-color: #22c55e; }
-.tg-opt--wrong   { background: #fee2e2; border-color: #ef4444; }
+.tg-opt-btn:active:not(:disabled) {
+  top: 3px;
+  box-shadow: 0 1px 0 #7030A0;
+}
 
-/* Resultado */
+.tg-opt--correct { background: #92D050; border-color: #3a7a00; box-shadow: 0 4px 0 #3a7a00; }
+.tg-opt--wrong   { background: #FF5050; border-color: #a00000; box-shadow: 0 4px 0 #a00000; }
+
+/* ── Resultado ──────────────────────────────────────────── */
 .tg-result {
   align-items: center;
   padding: 2rem 0;
+  text-align: center;
 }
 
 .tg-result-emoji { font-size: 4rem; }
 
 .tg-result-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: #1a1a6e;
+  margin: 0.5rem 0 1rem;
 }
 
 .tg-result-stats {
   display: flex;
-  gap: 2rem;
-  margin: 1rem 0;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .tg-stat {
@@ -301,51 +345,159 @@
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
+  background: #F2CFEE;
+  border: 3px solid #7030A0;
+  border-radius: 14px;
+  padding: 0.75rem 1.25rem;
 }
 
 .tg-stat-val {
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: #1a1a6e;
 }
 
 .tg-stat-total {
   font-size: 1rem;
   font-weight: 400;
-  color: var(--color-text-muted, #6b7280);
+  color: #555;
 }
 
 .tg-stat-label {
   font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
+  color: #555;
+  font-weight: 600;
 }
 
 .tg-result-actions {
   display: flex;
+  justify-content: center;
   gap: 0.75rem;
-  margin-top: 0.5rem;
 }
 
 .tg-action-btn {
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  border: 2px solid var(--color-primary);
-  font-size: 0.95rem;
+  padding: 12px 32px;
+  border-radius: 999px;
+  border: 3px solid #7030A0;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  box-shadow: 0 5px 0 #7030A0;
+  position: relative;
+  top: 0;
+  transition: top 0.1s, box-shadow 0.1s;
+}
+
+.tg-action-btn:active {
+  top: 3px;
+  box-shadow: 0 2px 0 #7030A0;
 }
 
 .tg-action-btn--primary {
-  background: var(--color-primary);
-  color: #fff;
+  background: #00B0F0;
+  color: #000;
 }
 
 .tg-action-btn--secondary {
-  background: #fff;
-  color: var(--color-primary);
+  background: #F2F2F2;
+  color: #1a1a6e;
 }
 
-.tg-action-btn:hover {
-  opacity: 0.85;
+/* ── HUD nuevo ──────────────────────────────────────────── */
+.tg-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.tg-lives {
+  display: flex;
+  gap: 4px;
+}
+
+.tg-heart {
+  font-size: 2rem;
+  color: #ef4444;
+  transition: opacity 0.2s;
+}
+
+.tg-heart--lost {
+  opacity: 0.2;
+}
+
+.tg-timer-box {
+  font-size: 1.1rem;
+  font-weight: 800;
+  transition: color 0.3s;
+}
+
+/* ── Barra de progreso ──────────────────────────────────── */
+.tg-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.tg-progress-bar {
+  flex: 1;
+  height: 16px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  border: 2px solid #7030A0;
+  overflow: hidden;
+}
+
+.tg-progress-fill {
+  height: 100%;
+  background: #00B0F0;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.tg-progress-trophy {
+  font-size: 1.6rem;
+}
+
+.tg-progress-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #7030A0;
+  margin-bottom: 0.5rem;
+  text-align: right;
+}
+
+/* ── Feedback popup ─────────────────────────────────────── */
+.tg-feedback-pop {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
+  font-weight: 800;
+  animation: tg-pop 0.9s ease forwards;
+  white-space: nowrap;
+}
+
+.tg-feedback-ok  { color: #25D366; }
+.tg-feedback-err { color: #FF5050; }
+
+@keyframes tg-pop {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(0); }
+  20%  { opacity: 1; transform: translateX(-50%) translateY(-8px); }
+  80%  { opacity: 1; transform: translateX(-50%) translateY(-12px); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+}
+
+/* ── Opciones 2 o 3 columnas ────────────────────────────── */
+.tg-options--2 { grid-template-columns: repeat(2, 1fr); }
+.tg-options--3 { grid-template-columns: repeat(3, 1fr); }
+
+/* ── Resultado nuevo ────────────────────────────────────── */
+.tg-result-subtitle {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1rem;
+  text-align: center;
 }

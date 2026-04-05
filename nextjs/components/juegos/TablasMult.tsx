@@ -2,17 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-// ── Configuración ────────────────────────────────────────────
 const CONFIG = {
-  totalQuestions: 15,
+  gameDuration: 60,
   difficulty: {
-    facil:   { label: 'Fácil',    seconds: 10, points: 1 },
-    medio:   { label: 'Medio',    seconds: 6,  points: 2 },
-    dificil: { label: 'Difícil',  seconds: 3,  points: 3 },
+    mfacil:  { label: 'Muy fácil', emoji: '😊', options: 2, lives: 5, goal: 10  },
+    facil:   { label: 'Fácil',     emoji: '😄', options: 3, lives: 5, goal: 12  },
+    medio:   { label: 'Medio',     emoji: '🤩', options: 3, lives: 5, goal: 15  },
+    dificil: { label: 'Difícil',   emoji: '😎', options: 3, lives: 3, goal: 20  },
   } as const,
 };
 
 type DiffKey = keyof typeof CONFIG.difficulty;
+type EndReason = 'tiempo' | 'copa' | 'vidas';
 
 interface Question {
   a: number;
@@ -21,7 +22,9 @@ interface Question {
   options: number[];
 }
 
-// ── Audio ────────────────────────────────────────────────────
+const HIT_MESSAGES  = ['¡Bien!', '¡Excelente!', '¡Súper!', '¡Genial!', '¡Crack!', '¡Perfecto!'];
+const MISS_MESSAGES = ['¡Ups!', 'Ohhh...', 'Nuuu...', '¡Casi!', 'No fue...'];
+
 function playTone(freq: number, dur: number, type: OscillatorType = 'sine', vol = 0.3) {
   try {
     const ac   = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -38,12 +41,18 @@ function playTone(freq: number, dur: number, type: OscillatorType = 'sine', vol 
   } catch (_) {}
 }
 
-const soundCorrect = () => { playTone(520, 0.12); setTimeout(() => playTone(660, 0.15, 'sine', 0.25), 100); };
-const soundWrong   = () => playTone(220, 0.25, 'sawtooth', 0.2);
-const soundAlert   = () => playTone(440, 0.08, 'square', 0.15);
+const soundCorrect = () => {
+  playTone(520, 0.1);
+  setTimeout(() => playTone(660, 0.12, 'sine', 0.25), 80);
+  setTimeout(() => playTone(800, 0.1, 'sine', 0.2), 180);
+};
+const soundWrong = () => playTone(200, 0.3, 'sawtooth', 0.2);
+const soundWin   = () => {
+  [520, 660, 780, 1040].forEach((f, i) => setTimeout(() => playTone(f, 0.15, 'sine', 0.25), i * 120));
+};
 
-// ── Helpers ──────────────────────────────────────────────────
 const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -54,207 +63,230 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function generateOptions(correct: number): number[] {
+function generateOptions(correct: number, count: number): number[] {
   const opts = new Set([correct]);
-  while (opts.size < 3) {
-    const delta = randInt(1, 4) * (Math.random() < 0.5 ? 1 : -1);
-    const wrong = correct + delta * randInt(1, 3);
+  while (opts.size < count) {
+    const delta = randInt(1, 3) * (Math.random() < 0.5 ? 1 : -1);
+    const wrong = correct + delta;
     if (wrong > 0 && wrong !== correct) opts.add(wrong);
   }
   return shuffle([...opts]);
 }
 
-function generateQuestions(tableRange: number): Question[] {
-  return Array.from({ length: CONFIG.totalQuestions }, () => {
-    const a = tableRange === 0 ? randInt(1, 12) : tableRange;
-    const b = randInt(1, 12);
-    const correct = a * b;
-    return { a, b, correct, options: generateOptions(correct) };
-  });
+function generateQuestion(tableRange: number, optionCount: number): Question {
+  const a = tableRange === 0 ? randInt(1, 12) : tableRange;
+  const b = randInt(1, 12);
+  const correct = a * b;
+  return { a, b, correct, options: generateOptions(correct, optionCount) };
 }
 
-// ── Tipos de pantalla ────────────────────────────────────────
+const CHIP_COLORS: Record<number, string> = {
+  0: 'tg-chip-0', 2: 'tg-chip-2', 3: 'tg-chip-3', 4: 'tg-chip-4',
+  5: 'tg-chip-5', 6: 'tg-chip-6', 7: 'tg-chip-7', 8: 'tg-chip-8',
+  9: 'tg-chip-9', 10: 'tg-chip-10', 11: 'tg-chip-11', 12: 'tg-chip-12',
+};
+const CHIP_ROTATIONS = [-2, 1.5, -1, 2, 1, -2.5, 1.5, -1, 2, -1.5, 1, -2];
+const CHIPS = [
+  { n: 0,  label: 'Todas (1–12)' },
+  { n: 2,  label: 'Tabla del 2'  },
+  { n: 3,  label: 'Tabla del 3'  },
+  { n: 4,  label: 'Tabla del 4'  },
+  { n: 5,  label: 'Tabla del 5'  },
+  { n: 6,  label: 'Tabla del 6'  },
+  { n: 7,  label: 'Tabla del 7'  },
+  { n: 8,  label: 'Tabla del 8'  },
+  { n: 9,  label: 'Tabla del 9'  },
+  { n: 10, label: 'Tabla del 10' },
+  { n: 11, label: 'Tabla del 11' },
+  { n: 12, label: 'Tabla del 12' },
+];
+const DIFF_ORDER: DiffKey[] = ['mfacil', 'facil', 'medio', 'dificil'];
+
+const OPT_COLORS = [
+  '#FF66FF', '#92D050', '#00B0F0', '#FFC000',
+  '#FFFF00', '#9C85FF', '#FF0066', '#25D366',
+  '#FF5050', '#00FFFF', '#00FF00', '#CC3300',
+];
+
 type Screen = 'setup' | 'game' | 'result';
 
-// ── Componente principal ─────────────────────────────────────
 export default function TablasMult() {
-  const [screen,      setScreen]      = useState<Screen>('setup');
-  const [tableRange,  setTableRange]  = useState(0);
-  const [diffKey,     setDiffKey]     = useState<DiffKey | null>(null);
-  const [questions,   setQuestions]   = useState<Question[]>([]);
-  const [current,     setCurrent]     = useState(0);
-  const [score,       setScore]       = useState(0);
-  const [hits,        setHits]        = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(0);
-  const [answered,    setAnswered]    = useState(false);
-  const [optStates,   setOptStates]   = useState<Record<number, 'correct' | 'wrong' | null>>({});
-  const [alerting,    setAlerting]    = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [screen,     setScreen]     = useState<Screen>('setup');
+  const [tableRange, setTableRange] = useState(0);
+  const [diffKey,    setDiffKey]    = useState<DiffKey | null>(null);
+  const [question,   setQuestion]   = useState<Question | null>(null);
+  const [hits,       setHits]       = useState(0);
+  const [misses,     setMisses]     = useState(0);
+  const [lives,      setLives]      = useState(5);
+  const [timeLeft,   setTimeLeft]   = useState(CONFIG.gameDuration);
+  const [answered,   setAnswered]   = useState(false);
+  const [optStates,  setOptStates]  = useState<Record<number, 'correct' | 'wrong' | null>>({});
+  const [feedback,   setFeedback]   = useState<{ msg: string; ok: boolean } | null>(null);
+  const [endReason,  setEndReason]  = useState<EndReason | null>(null);
+  const [optColors, setOptColors] = useState<string[]>([]);
+
+  const timerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
+  const feedbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const diff = diffKey ? CONFIG.difficulty[diffKey] : null;
 
-  // ── Iniciar juego ──────────────────────────────────────────
   function startGame() {
-    if (!diffKey) return;
-    setCurrent(0);
-    setScore(0);
+    if (!diffKey || !diff) return;
     setHits(0);
-    setQuestions(generateQuestions(tableRange));
+    setMisses(0);
+    setLives(diff.lives);
+    setTimeLeft(CONFIG.gameDuration);
+    setAnswered(false);
+    setOptStates({});
+    setFeedback(null);
+    setEndReason(null);
+    setOptColors(randomColors(diff.options));
+    setQuestion(generateQuestion(tableRange, diff.options));
     setScreen('game');
   }
 
-  // ── Timer ──────────────────────────────────────────────────
   useEffect(() => {
-    if (screen !== 'game' || !diff) return;
-    setSecondsLeft(diff.seconds);
-    setAnswered(false);
-    setOptStates({});
-    setAlerting(false);
-  }, [screen, current]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (screen !== 'game' || answered || !diff) return;
-
+    if (screen !== 'game') return;
     timerRef.current = setInterval(() => {
-      setSecondsLeft(prev => {
-        const next = prev - 1;
-        if (next <= 2 && next > 0) soundAlert();
-        if (next <= 2) setAlerting(true);
-        if (next <= 0) {
+      setTimeLeft(t => {
+        if (t <= 1) {
           clearInterval(timerRef.current!);
-          soundWrong();
-          setAnswered(true);
-          // Mostrar respuesta correcta
-          setOptStates(() => {
-            const q = questions[current];
-            return { [q.correct]: 'correct' };
-          });
-          setTimeout(() => advance(), 800);
+          setEndReason('tiempo');
+          setScreen('result');
+          return 0;
         }
-        return next;
+        return t - 1;
       });
     }, 1000);
-
     return () => clearInterval(timerRef.current!);
-  }, [screen, current, answered]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [screen]);
 
-  // ── Responder ──────────────────────────────────────────────
+  function randomColors(count: number): string[] {
+  return shuffle([...OPT_COLORS]).slice(0, count);
+}
+
   function handleAnswer(val: number) {
-    if (answered) return;
-    clearInterval(timerRef.current!);
+    if (answered || !question || !diff) return;
     setAnswered(true);
+    const ok = val === question.correct;
 
-    const q = questions[current];
-    const correct = val === q.correct;
-
-    if (correct) {
-      setScore(s => s + diff!.points);
-      setHits(h => h + 1);
+    if (ok) {
       soundCorrect();
-      setOptStates({ [q.correct]: 'correct' });
+      setOptStates({ [question.correct]: 'correct' });
+      const newHits = hits + 1;
+      setHits(newHits);
+      showFeedback(pick(HIT_MESSAGES), true);
+      if (newHits >= diff.goal) {
+        clearInterval(timerRef.current!);
+        setTimeout(() => { soundWin(); setEndReason('copa'); setScreen('result'); }, 400);
+        return;
+      }
     } else {
       soundWrong();
-      setOptStates({ [q.correct]: 'correct', [val]: 'wrong' });
+      setOptStates({ [question.correct]: 'correct', [val]: 'wrong' });
+      setMisses(m => m + 1);
+      const newLives = lives - 1;
+      setLives(newLives);
+      showFeedback(pick(MISS_MESSAGES), false);
+      if (newLives <= 0) {
+        clearInterval(timerRef.current!);
+        setTimeout(() => { setEndReason('vidas'); setScreen('result'); }, 600);
+        return;
+      }
     }
 
-    setTimeout(() => advance(), 600);
+    setTimeout(() => {
+      setAnswered(false);
+      setOptStates({});
+      setOptColors(randomColors(diff.options));
+      setQuestion(generateQuestion(tableRange, diff.options));
+    }, 500);
   }
 
-  function advance() {
-    setCurrent(c => {
-      const next = c + 1;
-      if (next >= CONFIG.totalQuestions) {
-        setScreen('result');
-      }
-      return next;
-    });
+  function showFeedback(msg: string, ok: boolean) {
+    setFeedback({ msg, ok });
+    if (feedbackRef.current) clearTimeout(feedbackRef.current);
+    feedbackRef.current = setTimeout(() => setFeedback(null), 900);
   }
 
-  // ── Circumference para SVG ─────────────────────────────────
-  const CIRCUMFERENCE = 94.25;
-  const arcOffset = diff
-    ? CIRCUMFERENCE * (1 - secondsLeft / diff.seconds)
-    : 0;
-
-  // ── Render ─────────────────────────────────────────────────
   if (screen === 'setup') {
     return (
-      <div className="tg-setup">
-        <div className="tg-section-label">¿Hasta qué tabla practicar?</div>
+      <div className="tg-wrap">
+        <div className="tg-game-title">✖ Tablas de multiplicar</div>
+
+        <div className="tg-section-label">Elige tu tabla</div>
         <div className="tg-table-selector">
-          {[0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+          {CHIPS.map(({ n, label }, i) => (
             <button
               key={n}
-              className={`tg-table-btn${tableRange === n ? ' tg-table-btn--active' : ''}`}
+              className={`tg-table-btn ${CHIP_COLORS[n]}${tableRange === n ? ' tg-table-btn--active' : ''}`}
+              style={{ transform: `rotate(${CHIP_ROTATIONS[i]}deg)` }}
               onClick={() => setTableRange(n)}
             >
-              {n === 0 ? 'Todas (1–12)' : `Tabla del ${n}`}
+              {label}
             </button>
           ))}
         </div>
 
-        <div className="tg-section-label" style={{ marginTop: '1.5rem' }}>Dificultad</div>
+        <div className="tg-section-label">Dificultad</div>
         <div className="tg-difficulty">
-          {(Object.entries(CONFIG.difficulty) as [DiffKey, typeof CONFIG.difficulty[DiffKey]][]).map(([key, d]) => (
+          {DIFF_ORDER.map(key => (
             <button
               key={key}
               className={`tg-diff-btn${diffKey === key ? ' tg-diff-btn--active' : ''}`}
               onClick={() => setDiffKey(key)}
             >
-              <span className={`tg-diff-dot tg-diff-dot--${key}`} />
-              <span>{d.label}</span>
-              <span className="tg-diff-sub">{d.seconds}s por pregunta</span>
+              <span className="tg-diff-emoji">{CONFIG.difficulty[key].emoji}</span>
+              <span className="tg-diff-label">{CONFIG.difficulty[key].label}</span>
             </button>
           ))}
         </div>
 
         <button className="tg-start-btn" disabled={!diffKey} onClick={startGame}>
-          Jugar
+          JUGAR
         </button>
       </div>
     );
   }
 
-  if (screen === 'game' && questions.length > 0) {
-    const q = questions[Math.min(current, CONFIG.totalQuestions - 1)];
+  if (screen === 'game' && question && diff) {
+    const progressPct = Math.min((hits / diff.goal) * 100, 100);
     return (
-      <div className="tg-game">
+      <div className="tg-wrap">
         <div className="tg-hud">
-          <div className="tg-timer">
-            <svg viewBox="0 0 36 36" width="48" height="48">
-              <circle cx="18" cy="18" r="15" fill="none" stroke="var(--tg-timer-track,#e5e7eb)" strokeWidth="3" />
-              <circle
-                cx="18" cy="18" r="15" fill="none"
-                stroke={alerting ? '#ef4444' : 'var(--tg-timer-bar,#0d9488)'}
-                strokeWidth="3"
-                strokeDasharray={CIRCUMFERENCE}
-                strokeDashoffset={arcOffset}
-                strokeLinecap="round"
-                transform="rotate(-90 18 18)"
-              />
-            </svg>
-            <span className="tg-timer-num" style={{ color: alerting ? '#ef4444' : undefined }}>
-              {secondsLeft}
-            </span>
+          <div className="tg-lives">
+            {Array.from({ length: diff.lives }).map((_, i) => (
+              <span key={i} className={`tg-heart${i >= lives ? ' tg-heart--lost' : ''}`}>♥</span>
+            ))}
           </div>
-
-          <div className="tg-progress">
-            <span>{current + 1}</span>/<span>{CONFIG.totalQuestions}</span>
-          </div>
-
-          <div className="tg-score-box">
-            <span className="tg-heart">♥</span>
-            <span>{score}</span>
+          <div className="tg-timer-box" style={{ color: timeLeft <= 10 ? '#ef4444' : '#1a1a6e' }}>
+            ⏱ {timeLeft}s
           </div>
         </div>
 
-        <div className="tg-question">{q.a} × {q.b}</div>
+        <div className="tg-progress-wrap">
+          <div className="tg-progress-bar">
+            <div className="tg-progress-fill" style={{ width: `${progressPct}%` }} />
+          </div>
+          <span className="tg-progress-trophy">🏆</span>
+        </div>
+        <div className="tg-progress-label">{hits} / {diff.goal} aciertos</div>
 
-        <div className="tg-options">
-          {q.options.map(opt => (
+        <div className="tg-question" style={{ position: 'relative' }}>
+          {question.a} × {question.b}
+          {feedback && (
+            <span className={`tg-feedback-pop${feedback.ok ? ' tg-feedback-ok' : ' tg-feedback-err'}`}>
+              {feedback.msg}
+            </span>
+          )}
+        </div>
+
+        <div className={`tg-options tg-options--${question.options.length}`}>
+          {question.options.map((opt, i) => (
             <button
               key={opt}
-              className={`tg-opt-btn${optStates[opt] === 'correct' ? ' tg-opt--correct' : optStates[opt] === 'wrong' ? ' tg-opt--wrong' : ''}`}
+              className="tg-opt-btn"
+              style={{ background: optColors[i] }}
               disabled={answered}
               onClick={() => handleAnswer(opt)}
             >
@@ -266,32 +298,45 @@ export default function TablasMult() {
     );
   }
 
-  if (screen === 'result') {
-    const maxScore = CONFIG.totalQuestions * (diff?.points ?? 1);
-    const pct = Math.round((hits / CONFIG.totalQuestions) * 100);
-    const emoji = pct === 100 ? '🏆' : pct >= 80 ? '⭐' : pct >= 50 ? '👍' : '💪';
-    const title = pct === 100 ? '¡Perfecto!' : pct >= 80 ? '¡Muy bien!' : pct >= 50 ? '¡Bien!' : '¡Sigue practicando!';
+  if (screen === 'result' && diff) {
+    const gotCopa  = endReason === 'copa';
+    const outLives = endReason === 'vidas';
+    const emoji = gotCopa ? '🏆' : outLives ? '💔' : hits >= diff.goal * 0.8 ? '⭐' : hits >= diff.goal * 0.5 ? '👍' : '💪';
+    const title = gotCopa ? '¡Conseguiste la copa!'
+      : outLives ? '¡Se acabaron las vidas!'
+      : hits >= diff.goal * 0.8 ? '¡Muy bien!'
+      : hits >= diff.goal * 0.5 ? '¡Buen intento!'
+      : '¡Sigue practicando!';
+    const subtitle = gotCopa ? '¡Lo lograste, eres increíble!'
+      : outLives ? `Llegaste a ${hits} aciertos. ¡La próxima lo logras!`
+      : `Tiempo agotado. Llegaste a ${hits} de ${diff.goal} aciertos.`;
 
     return (
-      <div className="tg-result">
+      <div className="tg-wrap tg-result">
         <div className="tg-result-emoji">{emoji}</div>
-        <h3 className="tg-result-title">{title}</h3>
+        <div className="tg-result-title">{title}</div>
+        <div className="tg-result-subtitle">{subtitle}</div>
         <div className="tg-result-stats">
           <div className="tg-stat">
-            <span className="tg-stat-val">{hits}<span className="tg-stat-total">/{CONFIG.totalQuestions}</span></span>
+            <span className="tg-stat-val">{hits}</span>
             <span className="tg-stat-label">Aciertos</span>
           </div>
           <div className="tg-stat">
-            <span className="tg-stat-val">{score}<span className="tg-stat-total">/{maxScore}</span></span>
-            <span className="tg-stat-label">Puntos</span>
+            <span className="tg-stat-val">{misses}</span>
+            <span className="tg-stat-label">Errores</span>
           </div>
           <div className="tg-stat">
-            <span className="tg-stat-val">{pct}<span className="tg-stat-total">%</span></span>
-            <span className="tg-stat-label">Precisión</span>
+            <span className="tg-stat-val">{CONFIG.gameDuration - timeLeft}s</span>
+            <span className="tg-stat-label">Tiempo</span>
           </div>
         </div>
         <div className="tg-result-actions">
-          <button className="tg-action-btn tg-action-btn--primary" onClick={() => { setCurrent(0); setScreen('setup'); }}>
+          <button className="tg-action-btn tg-action-btn--secondary"
+            onClick={() => setScreen('setup')}>
+            Cambiar opciones
+          </button>
+          <button className="tg-action-btn tg-action-btn--primary"
+            onClick={startGame}>
             Otra vez
           </button>
         </div>
