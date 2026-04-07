@@ -19,8 +19,14 @@ export default function FiltrosBlock({
   nivel, tema, subtema, tipoId,
   onNivelChange, onTemaChange, onSubtemaChange, onTipoChange,
 }: Props) {
-  const temas = Object.keys(MATH_OPTIONS);
-  const subtemas = Object.keys(MATH_OPTIONS[tema] ?? {});
+  const temas = Object.keys(MATH_OPTIONS).filter((t) =>
+    Object.values(MATH_OPTIONS[t]).some((tipos) =>
+      tipos.some((tipo) => tipo.niveles.includes(nivel))
+    )
+  );
+  const subtemas = Object.keys(MATH_OPTIONS[tema] ?? {}).filter((s) =>
+    (MATH_OPTIONS[tema]?.[s] ?? []).some((tipo) => tipo.niveles.includes(nivel))
+  );
   const tipos: TipoEjercicio[] = (MATH_OPTIONS[tema]?.[subtema] ?? [])
     .filter((t) => t.niveles.includes(nivel));
 
