@@ -28,54 +28,62 @@ export function renderLcm(root: HTMLElement, data: ExerciseResponse): void {
   const tabla = document.createElement('table');
   tabla.className = 'lcm-tabla';
 
-  // Encabezado con los números originales
+  // Encabezado
   const thead = document.createElement('thead');
   const trHead = document.createElement('tr');
 
-  solucion.numeros.forEach((n) => {
-    const th = document.createElement('th');
-    th.textContent = String(n);
-    trHead.appendChild(th);
-  });
+  const thNums = document.createElement('th');
+  thNums.textContent = 'Números';
+  thNums.colSpan = solucion.numeros.length;
+  trHead.appendChild(thNums);
 
-  // Columna del divisor
   const thDiv = document.createElement('th');
-  thDiv.textContent = 'Divisor';
+  thDiv.textContent = 'Divisor primo';
   thDiv.className = 'lcm-col-divisor';
   trHead.appendChild(thDiv);
 
   thead.appendChild(trHead);
   tabla.appendChild(thead);
 
-  // Filas de la escalera
   const tbody = document.createElement('tbody');
 
-  solucion.filas.forEach((fila) => {
-    const tr = document.createElement('tr');
+  // Primera fila: números originales + divisores[0]
+  const trPrimera = document.createElement('tr');
+  solucion.numeros.forEach((n) => {
+    const td = document.createElement('td');
+    td.textContent = String(n);
+    trPrimera.appendChild(td);
+  });
+  const tdDivPrimero = document.createElement('td');
+  tdDivPrimero.textContent = String(solucion.divisores[0]);
+  tdDivPrimero.className = 'lcm-col-divisor';
+  trPrimera.appendChild(tdDivPrimero);
+  tbody.appendChild(trPrimera);
 
+  // Filas intermedias: filas[0..N-2] + divisores[1..N-1]
+  solucion.filas.slice(0, -1).forEach((fila, i) => {
+    const tr = document.createElement('tr');
     fila.valores.forEach((v) => {
       const td = document.createElement('td');
       td.textContent = String(v);
       tr.appendChild(td);
     });
-
     const tdDiv = document.createElement('td');
-    tdDiv.textContent = String(fila.divisor);
+    tdDiv.textContent = String(solucion.divisores[i + 1]);
     tdDiv.className = 'lcm-col-divisor';
     tr.appendChild(tdDiv);
-
     tbody.appendChild(tr);
   });
 
-  // Fila final de unos
+  // Fila final: última fila de filas (los unos), sin divisor
   const trFinal = document.createElement('tr');
   trFinal.className = 'lcm-fila-final';
-  solucion.numeros.forEach(() => {
+  const ultimaFila = solucion.filas[solucion.filas.length - 1];
+  ultimaFila.valores.forEach((v) => {
     const td = document.createElement('td');
-    td.textContent = '1';
+    td.textContent = String(v);
     trFinal.appendChild(td);
   });
-  // Celda vacía en columna divisor
   const tdVacia = document.createElement('td');
   trFinal.appendChild(tdVacia);
   tbody.appendChild(trFinal);
@@ -83,12 +91,10 @@ export function renderLcm(root: HTMLElement, data: ExerciseResponse): void {
   tabla.appendChild(tbody);
   wrap.appendChild(tabla);
 
-  // ── Operación y resultado ──────────────────────────────────────────────
+  // ── Resultado ──────────────────────────────────────────────────────────
   const resultado = document.createElement('div');
   resultado.className = 'lcm-resultado';
-  resultado.innerHTML = `
-    <span class="lcm-operacion">MCM = ${solucion.operacion}</span>
-  `;
+  resultado.innerHTML = `<span class="lcm-operacion">MCM = ${solucion.operacion}</span>`;
   wrap.appendChild(resultado);
 
   root.appendChild(wrap);

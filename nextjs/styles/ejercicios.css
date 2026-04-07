@@ -635,3 +635,65 @@
     grid-row: auto;
   }
 }
+
+/* ── Tabla MCM (método de la escalera) ───────────────────────────────── */
+
+.lcm-solucion {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lcm-tabla {
+  border-collapse: collapse;
+  font-size: 15px;
+  color: var(--txt);
+}
+
+.lcm-tabla thead tr {
+  border-bottom: 2px solid var(--primary);
+}
+
+.lcm-tabla thead th {
+  padding: 6px 16px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--txt);
+}
+
+.lcm-tabla thead th.lcm-col-divisor {
+  color: var(--primary);
+  border-left: 2px solid var(--primary);
+}
+
+.lcm-tabla tbody td {
+  padding: 5px 16px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.lcm-tabla tbody td.lcm-col-divisor {
+  color: var(--primary);
+  font-weight: 600;
+  border-left: 2px solid var(--primary);
+}
+
+.lcm-fila-final td {
+  color: var(--txt-muted);
+  font-style: italic;
+  border-bottom: none;
+}
+
+.lcm-resultado {
+  font-size: 15px;
+  color: var(--txt);
+  padding: 0.75rem 1rem;
+  background: var(--primary-lt);
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.lcm-operacion {
+  font-weight: 600;
+  color: var(--primary);
+}
