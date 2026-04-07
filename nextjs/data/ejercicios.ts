@@ -25,6 +25,26 @@ export const NIVELES: Nivel[] = ['Básica', 'Media', 'Universitario'];
 // ── Opciones de Matemáticas ────────────────────────────────────────────────
 
 export const MATH_OPTIONS: OpcionesEjercicios = {
+  'Aritmética': {
+    'Mínimo Común Múltiplo': [
+      {
+        id:      'mcm_dos_numeros',
+        label:   'MCM de 2 números',
+        niveles: ['Básica'],
+      },
+      {
+        id:      'mcm_tres_numeros',
+        label:   'MCM de 3 números',
+        niveles: ['Básica'],
+      },
+      {
+        id:      'mcm_cuatro_numeros',
+        label:   'MCM de 4 números',
+        niveles: ['Básica'],
+      },
+    ],
+  },
+
   'Álgebra': {
     'Función cuadrática': [
       {

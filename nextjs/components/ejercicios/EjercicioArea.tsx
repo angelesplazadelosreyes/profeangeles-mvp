@@ -31,9 +31,21 @@ export default function EjercicioArea({
   useEffect(() => {
     if (!ejercicio || !enunciadoRef.current) return;
 
+    const el = enunciadoRef.current;
     const latex = (ejercicio.latex_enunciado as string) ?? '';
-    enunciadoRef.current.innerHTML = latex ? `$$${latex}$$` : '';
-    window.MathJax?.typesetPromise([enunciadoRef.current]);
+    const texto = (ejercicio.enunciado as string) ?? '';
+
+    if (latex) {
+      el.innerHTML = `$$${latex}$$`;
+      window.MathJax?.typesetPromise([el]);
+    } else if (texto) {
+      el.innerHTML = '';
+      const p = document.createElement('p');
+      p.textContent = texto;
+      el.appendChild(p);
+    } else {
+      el.innerHTML = '';
+    }
   }, [ejercicio]);
 
   // Renderiza solución con el renderer correcto

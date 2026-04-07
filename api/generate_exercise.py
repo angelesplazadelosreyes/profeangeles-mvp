@@ -19,6 +19,7 @@ from .exercises.quadratic.latex import (
     latex_canonical_from_vertex,
     latex_general_function,
 )
+from .exercises.lcm.core import generar_ejercicio_mcm
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
@@ -384,6 +385,32 @@ def generate_exercise():
     subtopic = request.args.get("subtopic", "Función cuadrática")
     etype = request.args.get("type", "analisis_completo")
 
+    # ── MCM — se resuelve antes de cualquier lógica de cuadrática ──────────
+    if etype in ("mcm_dos_numeros", "mcm_tres_numeros", "mcm_cuatro_numeros"):
+        nivel_map = {
+            "mcm_dos_numeros":  "facil",
+            "mcm_tres_numeros": "medio",
+            "mcm_cuatro_numeros": "dificil",
+        }
+        nivel = nivel_map[etype]
+        ejercicio = generar_ejercicio_mcm(nivel)
+
+        payload = {
+            "enunciado": ejercicio["enunciado"],
+            "numeros":   ejercicio["numeros"],
+            "nivel":     ejercicio["nivel"],
+            "solucion":  ejercicio["solucion"],
+            "meta": {
+                "exercise_id": f"lcm_{int(time.time()*1000)}",
+                "timestamp":   int(time.time()),
+                "topic":       "mcm",
+                "filters":     {"topic": topic, "subtopic": subtopic, "type": etype},
+            },
+        }
+        return Response(json.dumps(payload), mimetype="application/json")
+
+    # ── Cuadrática ─────────────────────────────────────────────────────────
+
     # 1) Generación de coeficientes según tipo
     x1 = x2 = None
     h_can = k_can = None
@@ -402,7 +429,6 @@ def generate_exercise():
 
     # 3) Enunciado + Solución según tipo
     if etype == "convert_factorizada_a_general_y_canonica":
-        # Enunciado: factorizada (sin pista; ya existe por construcción)
         fx_fact = latex_factorized_from_roots(a, x1, x2)
         latex_enunciado = (
             r"\begin{aligned}"
@@ -411,12 +437,8 @@ def generate_exercise():
             rf"f(x)= {fx_fact}"
             r"\end{aligned}"
         )
-
-
-        # Solución: general y canónica (orden solicitado)
         fx_general = latex_general_function(a, b, c)
         fx_canon = latex_canonical_from_vertex(a, h, k)
-
         latex_solucion = (
             r"\begin{aligned}"
             r"\textbf{Forma general:}~ f(x)=" + fx_general +
@@ -426,10 +448,7 @@ def generate_exercise():
         )
 
     elif etype == "convert_canonica_a_general_y_factorizada":
-        # Enunciado (3 líneas): consigna + función + pista
-        # OJO: h_can / k_can pueden ser Fraction; para el LaTeX aceptamos float aquí.
         fx_canon_given = latex_canonical_from_vertex(a, float(h_can), float(k_can))
-
         latex_enunciado = (
             r"\begin{aligned}"
             r"\text{Convierte la función desde forma canónica a forma general y factorizada:}"
@@ -439,13 +458,7 @@ def generate_exercise():
             r"\textit{Pista: la forma factorizada existe solo si hay raíces reales }(\Delta \ge 0)."
             r"\end{aligned}"
         )
-
-
-
-        # Forma general (desde a,b,c ya calculados) — aseguramos floats para el formateador
         fx_general = format_latex_quadratic(float(a), float(b), float(c)).replace("= 0", "").strip()
-
-        # Forma factorizada: solo si raíces reales
         if len(roots) == 2:
             r1, r2 = roots[0], roots[1]
             fx_fact = latex_factorized_from_roots(float(a), r1, r2)
@@ -456,7 +469,6 @@ def generate_exercise():
             fact_line = rf"\textbf{{Forma factorizada:}}~ f(x)= {fx_fact}"
         else:
             fact_line = r"\textbf{Forma factorizada:}~ \text{No es factorizable en } \mathbb{R}"
-
         latex_solucion = (
             r"\begin{aligned}"
             r"\textbf{Forma general:}~ f(x)=" + fx_general +
@@ -466,15 +478,14 @@ def generate_exercise():
         )
 
     else:
-        # Tipo actual (análisis completo)
         latex_eq = format_latex_quadratic(a, b, c)
         latex_enunciado = rf"\text{{Analiza la función cuadrática: }}~ {latex_eq}"
         latex_solucion = latex_solution(a, b, c, D, h, k, roots)
 
-    # 4) Plot (importante: pasar floats si hay Fraction)
+    # 4) Plot
     png_b64 = plot_quadratic_png(float(a), float(b), float(c))
 
-    # 5) Payload (convertimos Fraction -> float para evitar 500 en json.dumps)
+    # 5) Payload
     payload = {
         "coeffs": {
             "a": to_json_number(a),
@@ -507,7 +518,6 @@ def generate_exercise():
     }
 
     return Response(json.dumps(payload), mimetype="application/json")
-
 @app.route("/api/generate-guide-pdf", methods=["POST"])
 def generate_guide_pdf():
     """
