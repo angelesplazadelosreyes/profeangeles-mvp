@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { MATH_OPTIONS, Nivel, NIVELES } from '@/data/ejercicios';
+import { MATH_OPTIONS, Nivel } from '@/data/ejercicios';
 import { ExerciseResponse } from '@/lib/api.client';
 import Sidebar from '@/components/ejercicios/Sidebar';
 import FiltrosBlock from '@/components/ejercicios/FiltrosBlock';
@@ -11,12 +11,18 @@ import ColdStartModal from '@/components/ejercicios/ColdStartModal';
 
 const COLD_START_UMBRAL_MS = 2000;
 
-function getPrimerTema(): string {
-  return Object.keys(MATH_OPTIONS)[0] ?? '';
+function getPrimerTemaDisponible(n: Nivel): string {
+  return Object.keys(MATH_OPTIONS).find((t) =>
+    Object.values(MATH_OPTIONS[t]).some((tipos) =>
+      tipos.some((tipo) => tipo.niveles.includes(n))
+    )
+  ) ?? '';
 }
 
-function getPrimerSubtema(tema: string): string {
-  return Object.keys(MATH_OPTIONS[tema] ?? {})[0] ?? '';
+function getPrimerSubtemaDisponible(tema: string, n: Nivel): string {
+  return Object.keys(MATH_OPTIONS[tema] ?? {}).find((s) =>
+    (MATH_OPTIONS[tema]?.[s] ?? []).some((tipo) => tipo.niveles.includes(n))
+  ) ?? '';
 }
 
 function getPrimerTipo(tema: string, subtema: string, nivel: Nivel): string {
@@ -27,51 +33,52 @@ function getPrimerTipo(tema: string, subtema: string, nivel: Nivel): string {
 }
 
 export default function EjerciciosPage() {
-  // ── Estado de filtros ────────────────────────────────────────────────
-  const primerTema    = getPrimerTema();
-  const primerSub     = getPrimerSubtema(primerTema);
   const nivelInicial: Nivel = 'Media';
+  const temaInicial         = getPrimerTemaDisponible(nivelInicial);
+  const subtemaInicial      = getPrimerSubtemaDisponible(temaInicial, nivelInicial);
 
-  const [materia,  setMateria]  = useState('matematicas');
-  const [nivel,    setNivel]    = useState<Nivel>(nivelInicial);
-  const [tema,     setTema]     = useState(primerTema);
-  const [subtema,  setSubtema]  = useState(primerSub);
-  const [tipoId,   setTipoId]   = useState(() =>
-    getPrimerTipo(primerTema, primerSub, nivelInicial)
+  const [materia,         setMateria]         = useState('matematicas');
+  const [nivel,           setNivel]           = useState<Nivel>(nivelInicial);
+  const [tema,            setTema]            = useState(temaInicial);
+  const [subtema,         setSubtema]         = useState(subtemaInicial);
+  const [tipoId,          setTipoId]          = useState(() =>
+    getPrimerTipo(temaInicial, subtemaInicial, nivelInicial)
   );
+  const [mostrarFiltros,  setMostrarFiltros]  = useState(true);
+  const [ejercicio,       setEjercicio]       = useState<ExerciseResponse | null>(null);
+  const [mostrarSolucion, setMostrarSolucion] = useState(false);
+  const [status,          setStatus]          = useState('');
+  const [error,           setError]           = useState<string | null>(null);
+  const [cargando,        setCargando]        = useState(false);
+  const [coldStart,       setColdStart]       = useState(false);
 
-  // ── Estado de UI ─────────────────────────────────────────────────────
-  const [mostrarFiltros,   setMostrarFiltros]   = useState(true);
-  const [ejercicio,        setEjercicio]        = useState<ExerciseResponse | null>(null);
-  const [mostrarSolucion,  setMostrarSolucion]  = useState(false);
-  const [status,           setStatus]           = useState('');
-  const [error,            setError]            = useState<string | null>(null);
-  const [cargando,         setCargando]         = useState(false);
-  const [coldStart,        setColdStart]        = useState(false);
-
-  // ── Warmup proactivo al montar ───────────────────────────────────────
+  // Warmup proactivo al montar
   useEffect(() => {
     fetch('/api/ejercicios/health').catch(() => {});
   }, []);
 
-  // ── Sincronizar tipo cuando cambian tema/subtema/nivel ───────────────
+  // Sincronizar tipo cuando cambian tema/subtema/nivel
   useEffect(() => {
     setTipoId(getPrimerTipo(tema, subtema, nivel));
   }, [tema, subtema, nivel]);
 
-  useEffect(() => {
-    setSubtema(getPrimerSubtema(tema));
-  }, [tema]);
-
-  // ── Handlers de filtros ──────────────────────────────────────────────
+  // Handlers de filtros
   function handleNivel(n: Nivel) {
+    const nuevoTema    = getPrimerTemaDisponible(n);
+    const nuevoSubtema = getPrimerSubtemaDisponible(nuevoTema, n);
     setNivel(n);
+    setTema(nuevoTema);
+    setSubtema(nuevoSubtema);
+    setTipoId(getPrimerTipo(nuevoTema, nuevoSubtema, n));
     setEjercicio(null);
     setMostrarSolucion(false);
   }
 
   function handleTema(t: string) {
+    const nuevoSubtema = getPrimerSubtemaDisponible(t, nivel);
     setTema(t);
+    setSubtema(nuevoSubtema);
+    setTipoId(getPrimerTipo(t, nuevoSubtema, nivel));
     setEjercicio(null);
     setMostrarSolucion(false);
   }
@@ -88,7 +95,7 @@ export default function EjerciciosPage() {
     setMostrarSolucion(false);
   }
 
-  // ── Generar ejercicio ────────────────────────────────────────────────
+  // Generar ejercicio
   const generarEjercicio = useCallback(async () => {
     setCargando(true);
     setError(null);
@@ -96,7 +103,6 @@ export default function EjerciciosPage() {
     setMostrarSolucion(false);
     setEjercicio(null);
 
-    // Timer para mostrar modal de cold start
     const timer = setTimeout(() => setColdStart(true), COLD_START_UMBRAL_MS);
 
     try {
@@ -119,7 +125,7 @@ export default function EjerciciosPage() {
     }
   }, [tema, subtema, tipoId]);
 
-  // ── Mostrar respuesta ────────────────────────────────────────────────
+  // Mostrar respuesta
   async function mostrarRespuesta() {
     if (!ejercicio) {
       await generarEjercicio();
@@ -127,7 +133,6 @@ export default function EjerciciosPage() {
     setMostrarSolucion(true);
   }
 
-  // ── Resumen de filtros (Estado 2) ────────────────────────────────────
   const tipoLabel = (MATH_OPTIONS[tema]?.[subtema] ?? [])
     .find((t) => t.id === tipoId)?.label ?? tipoId;
 
@@ -141,13 +146,10 @@ export default function EjerciciosPage() {
     <main className="ejercicios-page">
       <div className="ejercicios-layout">
 
-        {/* Sidebar de materias */}
         <Sidebar materiaActiva={materia} onSelect={setMateria} />
 
-        {/* Panel derecho */}
         <div className="ejercicios-panel">
 
-          {/* Cabecera */}
           <div className="panel-header">
             {mostrarFiltros ? (
               <h1 className="panel-title">Generador de ejercicios · Matemáticas</h1>
@@ -172,7 +174,6 @@ export default function EjerciciosPage() {
             )}
           </div>
 
-          {/* Filtros — se ocultan al generar */}
           {mostrarFiltros && (
             <FiltrosBlock
               nivel={nivel}
@@ -186,7 +187,6 @@ export default function EjerciciosPage() {
             />
           )}
 
-          {/* Botones de acción — siempre visibles */}
           <div className="acciones-row">
             <button
               className="btn-ejercicio btn-ejercicio--primary"
@@ -204,7 +204,6 @@ export default function EjerciciosPage() {
             </button>
           </div>
 
-          {/* Área del ejercicio */}
           <EjercicioArea
             ejercicio={ejercicio}
             mostrarSolucion={mostrarSolucion}
@@ -215,7 +214,6 @@ export default function EjerciciosPage() {
         </div>
       </div>
 
-      {/* Modal cold start */}
       <ColdStartModal visible={coldStart} />
     </main>
   );
