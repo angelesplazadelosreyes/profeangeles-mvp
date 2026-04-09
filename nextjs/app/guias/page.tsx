@@ -28,7 +28,7 @@ export default function GuiasPage() {
       const res = await fetch('/api/guias', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ count: cantidad, skills }),
+        body: JSON.stringify({ count: cantidad, skills, module: 'quadratic_media', params: {} }),
       });
 
       if (!res.ok) {

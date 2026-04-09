@@ -15,11 +15,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { count, skills } = body as { count?: number; skills?: string[] };
+  const { count, skills, module: mod, params } = body as {
+    count?:   number;
+    skills?:  string[];
+    module?:  string;
+    params?:  Record<string, unknown>;
+  };
 
-  if (!count || !Array.isArray(skills) || skills.length === 0) {
+  if (!count || !Array.isArray(skills) || skills.length === 0 || !mod) {
     return NextResponse.json(
-      { error: 'Faltan parámetros: count (number) y skills (string[])' },
+      { error: 'Faltan parámetros: count, skills, module' },
       { status: 400 }
     );
   }
@@ -33,7 +38,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
         'X-API-Key':    API_KEY,
       },
-      body: JSON.stringify({ count, skills }),
+      body: JSON.stringify({ module: mod, params: params ?? {}, skills, count }),
     });
 
     if (!res.ok) {
@@ -43,14 +48,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Flask devuelve un PDF binario — lo pasamos como blob
     const pdfBuffer = await res.arrayBuffer();
-
     return new NextResponse(pdfBuffer, {
       status: 200,
       headers: {
         'Content-Type':        'application/pdf',
-        'Content-Disposition': 'attachment; filename="guia-funcion-cuadratica.pdf"',
+        'Content-Disposition': `attachment; filename="guia-${mod}.pdf"`,
       },
     });
   } catch (err) {
