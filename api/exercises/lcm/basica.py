@@ -35,86 +35,59 @@ class LcmBasica(ExerciseModule):
         ]
 
     def render_exercise_html(self, exercise: dict, index: int, skills: list[str] = None) -> str:
-        statement = exercise["statement"]
-        skills_chips = "".join(
-            f'<span class="chip">{s["label"]}</span>'
-            for s in self.get_skills()
-        )
-        return f"""
-        <div class="exercise-card">
-          <div class="exercise-number">Ejercicio {index}</div>
-          <div class="exercise-statement">{statement}</div>
-          <div class="chips">{skills_chips}</div>
-        </div>
-        """
+      statement = exercise["statement"]
+      skills = skills or [s["id"] for s in self.get_skills()]
+      chips = "".join(
+          f'<span class="chip">{s["label"]}</span>'
+          for s in self.get_skills()
+          if s["id"] in skills
+      )
+      return f"""
+      <div class="exercise-card">
+        <div class="exercise-number">Ejercicio {index}</div>
+        <div class="exercise-statement">{statement}</div>
+        <div class="chips">{chips}</div>
+      </div>
+      """
 
-    def render_solution_html(self, exercise: dict, index: int, skills: list[str] = None) -> str:
-        statement = exercise["statement"]
-        sol       = exercise["solution"]
-        filas     = sol["filas"]
-        mcm       = sol["mcm"]
-        operacion = sol["operacion"]
-        numeros   = sol["numeros"]
+    def render_solution_html(self, exercise: dict, index: int, skills: list[str] = None) -> str:  
+      statement = exercise["statement"]
+      sol       = exercise["solution"]
+      skills    = skills or [s["id"] for s in self.get_skills()]
 
-        headers   = "".join(f"<th>{n}</th>" for n in numeros)
-        table_rows = ""
-        for fila in filas:
-            celdas = "".join(f"<td>{v}</td>" for v in fila["valores"])
-            table_rows += f"<tr><td class='divisor'>{fila['divisor']}</td>{celdas}</tr>"
+      rows = ""
 
-        return f"""
-        <div class="solution-card">
-          <div class="solution-title">Ejercicio {index} · <em>{statement}</em></div>
+      if "escalera" in skills:
+          numeros  = sol["numeros"]
+          filas    = sol["filas"]
+          operacion = sol["operacion"]
+          headers  = "".join(f"<th>{n}</th>" for n in numeros)
+          table_rows = ""
+          for fila in filas:
+              celdas = "".join(f"<td>{v}</td>" for v in fila["valores"])
+              table_rows += f"<tr><td class='divisor'>{fila['divisor']}</td>{celdas}</tr>"
+
+          rows += f"""
           <div class="sol-row">
             <span class="sol-label">Método de la escalera:</span>
           </div>
           <table class="escalera-table">
-            <thead>
-              <tr><th>÷</th>{headers}</tr>
-            </thead>
-            <tbody>
-              {table_rows}
-            </tbody>
+            <thead><tr><th>÷</th>{headers}</tr></thead>
+            <tbody>{table_rows}</tbody>
           </table>
+          """
+
+      if "mcm" in skills:
+          rows += f"""
           <div class="sol-row" style="margin-top:8px">
             <span class="sol-letter">∴</span>
-            <span><span class="sol-label">MCM =</span> {operacion}</span>
+            <span><span class="sol-label">MCM =</span> {sol["operacion"]}</span>
           </div>
-        </div>
-        """
-        statement = exercise["statement"]
-        sol       = exercise["solution"]
-        filas     = sol["filas"]
-        mcm       = sol["mcm"]
-        operacion = sol["operacion"]
-        numeros   = sol["numeros"]
+          """
 
-        # Encabezado de la tabla escalera
-        headers = "".join(f"<th>{n}</th>" for n in numeros)
-        table_rows = ""
-        valores_actuales = list(numeros)
-        for fila in filas:
-            celdas = "".join(f"<td>{v}</td>" for v in fila["valores"])
-            table_rows += f"<tr><td class='divisor'>{fila['divisor']}</td>{celdas}</tr>"
-            valores_actuales = fila["valores"]
-
-        return f"""
-        <div class="solution-card">
-          <div class="solution-title">Ejercicio {index} · <em>{statement}</em></div>
-          <div class="sol-row">
-            <span class="sol-label">Método de la escalera:</span>
-          </div>
-          <table class="escalera-table">
-            <thead>
-              <tr><th>÷</th>{headers}</tr>
-            </thead>
-            <tbody>
-              {table_rows}
-            </tbody>
-          </table>
-          <div class="sol-row" style="margin-top:8px">
-            <span class="sol-letter">∴</span>
-            <span><span class="sol-label">MCM =</span> {operacion}</span>
-          </div>
-        </div>
-        """
+      return f"""
+      <div class="solution-card">
+        <div class="solution-title">Ejercicio {index} · <em>{statement}</em></div>
+        {rows}
+      </div>
+      """

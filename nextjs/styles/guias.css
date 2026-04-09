@@ -293,3 +293,52 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Selector de nivel */
+.guias-niveles-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.guias-nivel-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--primary, #7c6fcd);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--primary, #7c6fcd);
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+.guias-nivel-chip.activo {
+  background: var(--primary, #7c6fcd);
+  color: white;
+}
+
+.guias-nivel-chip.deshabilitado {
+  border-color: var(--color-border, #D3D1C7);
+  color: #888780;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.guias-nivel-chip input[type="radio"] {
+  display: none;
+}
+
+.guias-proximamente {
+  font-size: 10px;
+  font-weight: 600;
+  background: #F1EFE8;
+  color: #888780;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+}
