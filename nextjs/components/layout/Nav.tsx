@@ -8,7 +8,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import LoginModal from "@/components/auth/LoginModal";
+import InfoRegistroModal from "@/components/auth/InfoRegistroModal";
 
 interface NavItem {
   href: string;
@@ -25,16 +28,47 @@ const navItems: NavItem[] = [
   { href: "/informatica", icon: "💻", label: "Informática" },
 ];
 
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export default function Nav() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen]         = useState(false);
+  const [modalLogin, setModalLogin]     = useState(false);
+  const [modalInfo, setModalInfo]       = useState(false);
+  const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
+
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.email) {
+        setNombreUsuario(session.user.email.replace('@profeangeles.cl', ''));
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user?.email) {
+        setNombreUsuario(session.user.email.replace('@profeangeles.cl', ''));
+      } else {
+        setNombreUsuario(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setNombreUsuario(null);
+  }
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <>
-
       {/* ── BARRA PRINCIPAL ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
@@ -54,6 +88,14 @@ export default function Nav() {
           color: "var(--txt)",
         }}>
           Profe<span style={{ color: "var(--cta)" }}>Á</span>ngeles
+          {nombreUsuario && (
+            <span style={{ color: "var(--txt-muted)", fontWeight: 400 }}> — </span>
+          )}
+          {nombreUsuario && (
+            <span style={{ color: "var(--primary)", fontWeight: 800 }}>
+              {capitalize(nombreUsuario)}
+            </span>
+          )}
         </Link>
 
         {/* ── Desktop: ítems horizontales ── */}
@@ -92,19 +134,31 @@ export default function Nav() {
             </li>
           ))}
 
-          {/* Inicio sesión */}
+          {/* Inicio sesión / Cerrar sesión — desktop */}
           <li style={{ height: "100%", display: "flex", alignItems: "center" }}>
-            <button style={{
-              display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center",
-              gap: "3px", padding: "0 1rem", height: "100%",
-              minWidth: "64px", border: "none", background: "none",
-              cursor: "pointer", color: "var(--txt-muted)",
-              borderBottom: "2px solid transparent",
-            }}>
-              <span style={{ fontSize: "1.25rem", lineHeight: 1, filter: "grayscale(1) opacity(.55)" }}>👤</span>
-              <span style={{ fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
-                Inicio sesión
+            <button
+              onClick={nombreUsuario ? handleLogout : () => setModalLogin(true)}
+              style={{
+                display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center",
+                gap: "3px", padding: "0 1rem", height: "100%",
+                minWidth: "64px", border: "none", background: "none",
+                cursor: "pointer",
+                color: nombreUsuario ? "var(--primary)" : "var(--txt-muted)",
+                borderBottom: "2px solid transparent",
+              }}
+            >
+              <span style={{
+                fontSize: "1.25rem", lineHeight: 1,
+                filter: nombreUsuario ? "grayscale(0) opacity(1)" : "grayscale(1) opacity(.55)",
+              }}>
+                👤
+              </span>
+              <span style={{
+                fontSize: "0.65rem", fontWeight: nombreUsuario ? 700 : 500,
+                letterSpacing: "0.04em", whiteSpace: "nowrap",
+              }}>
+                {nombreUsuario ? "Cerrar sesión" : "Inicio sesión"}
               </span>
             </button>
           </li>
@@ -151,19 +205,40 @@ export default function Nav() {
           </Link>
         ))}
 
-        {/* Inicio sesión en móvil */}
-        <button style={{
-          display: "flex", alignItems: "center", gap: "0.75rem",
-          padding: "0.75rem 0.5rem",
-          border: "none", background: "none",
-          cursor: "pointer", width: "100%",
-          fontSize: "0.95rem", fontWeight: 500,
-          color: "var(--txt-muted)",
-        }}>
-          <span style={{ fontSize: "1.2rem" }}>👤</span>{" "}
-          Inicio sesión
+        {/* Inicio sesión / Cerrar sesión — móvil */}
+        <button
+          onClick={nombreUsuario
+            ? () => { handleLogout(); setMenuOpen(false); }
+            : () => { setModalLogin(true); setMenuOpen(false); }
+          }
+          style={{
+            display: "flex", alignItems: "center", gap: "0.75rem",
+            padding: "0.75rem 0.5rem",
+            border: "none", background: "none",
+            cursor: "pointer", width: "100%",
+            fontSize: "0.95rem", fontWeight: nombreUsuario ? 700 : 500,
+            color: nombreUsuario ? "var(--primary)" : "var(--txt-muted)",
+          }}
+        >
+          <span style={{ fontSize: "1.2rem" }}>👤</span>
+          {nombreUsuario
+            ? `${capitalize(nombreUsuario)} — Cerrar sesión`
+            : "Inicio sesión"
+          }
         </button>
       </div>
+
+      {/* ── MODALES ── */}
+      <LoginModal
+        visible={modalLogin}
+        onClose={() => setModalLogin(false)}
+        onInfoClick={() => { setModalLogin(false); setModalInfo(true); }}
+      />
+      <InfoRegistroModal
+        visible={modalInfo}
+        onClose={() => setModalInfo(false)}
+        onBackToLogin={() => { setModalInfo(false); setModalLogin(true); }}
+      />
     </>
   );
 }
