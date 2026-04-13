@@ -5,16 +5,38 @@ import ConfiguradorGuia, { Cantidad } from '@/components/guias/ConfiguradorGuia'
 import PreviewGuia from '@/components/guias/PreviewGuia';
 import GuiaModal from '@/components/guias/GuiaModal';
 import { type Modulo, MATERIAS } from '@/lib/modules';
+import { useNivelDefault } from '@/lib/hooks/useNivelDefault';
 
 const MODULO_DEFECTO = MATERIAS[0].temas[0].subtemas[0].modulos.find(m => m.disponible) ?? null;
 const SKILLS_DEFECTO = MODULO_DEFECTO?.skills.slice(0, 4).map(s => s.id) ?? [];
 
+function primerModuloPorNivel(nivel: string): Modulo | null {
+  for (const materia of MATERIAS) {
+    for (const tema of materia.temas) {
+      for (const subtema of tema.subtemas) {
+        const m = subtema.modulos.find(m => m.disponible && m.nivel === nivel);
+        if (m) return m;
+      }
+    }
+  }
+  return null;
+}
+
 export default function GuiasPage() {
+  const { nivel: nivelBD } = useNivelDefault();
+
   const [modulo,   setModulo]   = useState<Modulo | null>(MODULO_DEFECTO);
   const [cantidad, setCantidad] = useState<Cantidad>(10);
   const [skills,   setSkills]   = useState<string[]>(SKILLS_DEFECTO);
   const [cargando, setCargando] = useState(false);
   const [error,    setError]    = useState<string | null>(null);
+
+  // Preseleccionar módulo según nivel del usuario autenticado
+  useEffect(() => {
+    if (!nivelBD) return;
+    const moduloNivel = primerModuloPorNivel(nivelBD);
+    if (moduloNivel) setModulo(moduloNivel);
+  }, [nivelBD]);
 
   // Al cambiar módulo, resetear skills al defecto del nuevo módulo
   useEffect(() => {

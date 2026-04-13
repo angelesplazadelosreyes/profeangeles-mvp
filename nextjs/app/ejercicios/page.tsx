@@ -8,6 +8,7 @@ import Sidebar from '@/components/ejercicios/Sidebar';
 import FiltrosBlock from '@/components/ejercicios/FiltrosBlock';
 import EjercicioArea from '@/components/ejercicios/EjercicioArea';
 import ColdStartModal from '@/components/ejercicios/ColdStartModal';
+import { useNivelDefault } from '@/lib/hooks/useNivelDefault';
 
 const COLD_START_UMBRAL_MS = 2000;
 
@@ -32,8 +33,16 @@ function getPrimerTipo(tema: string, subtema: string, nivel: Nivel): string {
   return tipos[0]?.id ?? '';
 }
 
+const NIVEL_BD_A_UI: Record<string, Nivel> = {
+  basica:        'Básica',
+  media:         'Media',
+  universitario: 'Universitario',
+};
+
 export default function EjerciciosPage() {
-  const nivelInicial: Nivel = 'Media';
+  const { nivel: nivelBD } = useNivelDefault();
+
+  const nivelInicial: Nivel = nivelBD ? (NIVEL_BD_A_UI[nivelBD] ?? 'Media') : 'Media';
   const temaInicial         = getPrimerTemaDisponible(nivelInicial);
   const subtemaInicial      = getPrimerSubtemaDisponible(temaInicial, nivelInicial);
 
@@ -56,6 +65,13 @@ export default function EjerciciosPage() {
   useEffect(() => {
     fetch('/api/ejercicios/health').catch(() => {});
   }, []);
+
+  // Aplicar nivel del usuario autenticado cuando el hook responde
+useEffect(() => {
+  if (nivelBD) {
+    handleNivel(NIVEL_BD_A_UI[nivelBD] ?? 'Media');
+  }
+}, [nivelBD]);
 
   // Sincronizar tipo cuando cambian tema/subtema/nivel
   useEffect(() => {
